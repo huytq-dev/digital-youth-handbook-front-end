@@ -1,0 +1,387 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  :root {
+    /* Background & Foreground */
+    --background: 210 40% 98%; /* gần với Tailwind gray-50 */
+    --foreground: 222.2 84% 4.9%; /* gần với Tailwind slate-950 */
+
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    /* Primary - Youth Blue (Tailwind blue-600: #2563EB) */
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 210 40% 98%;
+
+    /* Secondary */
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    /* Muted */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    /* Accent (nhẹ, giữ làm nền nhấn nhẹ) */
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    /* Destructive */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Border & Input */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 217.2 91.2% 59.8%;
+
+    /* Radius */
+    --radius: 0.5rem;
+
+    /* Status Colors */
+    --pending: 45 93% 47%;
+    --accepted: 142 76% 36%;
+
+    /* Chart Colors */
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+
+    /* Sidebar */
+    --sidebar: 0 0% 100%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 221.2 83.2% 53.3%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Color Palette Variables - Custom Brand Colors (Concept: Gen Z Tiếp Bước) */
+    /* Nền sáng, hơi kem để giống tạp chí số hiện đại */
+    --color-cream: #f9fafb;
+    /* Youth Blue & Light Blue dùng cho text / nền phụ */
+    --color-light-blue: #60a5fa; /* Tailwind blue-400 */
+    --color-dark-blue: #2563eb; /* Tailwind blue-600 */
+    --color-black: #000000;
+
+    /* Semantic color names */
+    --color-primary: var(--color-dark-blue);
+    --color-secondary: var(--color-light-blue);
+    --color-background: var(--color-cream);
+    --color-text-dark: var(--color-black);
+
+    /* 
+    #fbfdff
+    #e3dcda
+    #000202
+    #5d2060
+    #f70015
+    #78ea61 */
+  }
+
+  .dark {
+    /* Background & Foreground */
+    --background: 222.2 47.4% 11.2%;
+    --foreground: 210 40% 98%;
+
+    /* Card */
+    --card: 222.2 47.4% 15.2%;
+    --card-foreground: 210 40% 98%;
+
+    /* Popover */
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Primary */
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    /* Secondary */
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    /* Muted */
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    /* Accent */
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    /* Destructive */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Border & Input */
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+
+    /* Status Colors */
+    --accepted: 142 76% 36%;
+    --pending: 45 93% 47%;
+
+    /* Chart Colors */
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+
+    /* Sidebar */
+    --sidebar: 222.2 47.4% 15.2%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217.2 91.2% 59.8%;
+    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Color Palette Variables - Custom Brand Colors (Dark Mode) */
+    --color-cream: #efece3;
+    --color-light-blue: #8fabd4;
+    --color-dark-blue: #4a70a9;
+    --color-black: #000000;
+
+    /* Semantic color names */
+    --color-primary: var(--color-dark-blue);
+    --color-secondary: var(--color-light-blue);
+    --color-background: var(--color-cream);
+    --color-text-dark: var(--color-black);
+  }
+
+  /* Base Element Styles */
+  * {
+    border-color: hsl(var(--border));
+    outline-color: hsl(var(--ring) / 0.5);
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "Roboto", "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans",
+      sans-serif;
+    transition: color 0.3s, background-color 0.3s;
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+  }
+
+  a {
+    font-weight: 500;
+    text-decoration: inherit;
+  }
+
+  /* Glassmorphism Utility */
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Hide Scrollbar Utility */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground) / 0.5);
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+.scrollbar-small::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-small::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.scrollbar-small::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground) / 0.5);
+}
+
+.scrollbar-small::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 12px;
+}
+
+.scrollbar-small::-webkit-scrollbar-button {
+  display: none;
+}
+
+@layer utilities {
+  .card,
+  .button,
+  .input,
+  .badge,
+  .label,
+  .link {
+    transition: color 0.3s, background-color 0.3s, border-color 0.3s;
+  }
+}
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+@layer utilities {
+  .animate-shimmer {
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+/* Mobile Performance Optimizations */
+@media (max-width: 768px) {
+  /* Reduce backdrop-blur intensity on mobile for better performance */
+  [class*="backdrop-blur-xl"],
+  [class*="backdrop-blur-2xl"] {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+
+  [class*="backdrop-blur-md"] {
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+  }
+
+  /* Reduce blur radius for large blur effects */
+  [class*="blur-\[100px\]"],
+  [class*="blur-\[120px\]"] {
+    filter: blur(40px) !important;
+  }
+
+  /* Optimize transforms for mobile */
+  * {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [class*="animate-"] {
+    animation: none !important;
+  }
+}
+
+/* Scrollbar Hide Utility */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Touch optimization for mobile */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase tap target sizes */
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Disable hover effects on touch devices */
+  *:hover {
+    transform: none !important;
+  }
+}
+
+/* Ẩn nút xem mật khẩu mặc định của trình duyệt (Edge/IE) */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+/* Animated Underline Link Effect */
+.animated-underline {
+  position: relative;
+  text-decoration: none;
+}
+
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: currentColor;
+  transition: width 0.3s ease-in-out;
+}
+
+.animated-underline:hover::after {
+  width: 100%;
+}
