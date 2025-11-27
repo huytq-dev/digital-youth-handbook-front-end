@@ -1,0 +1,445 @@
+{
+  "common": {
+    "home": "Trang chủ",
+    "about": "Về chúng tôi",
+    "services": "Dịch vụ",
+    "pricing": "Bảng giá",
+    "contact": "Liên hệ",
+    "signIn": "Đăng nhập",
+    "signUp": "Đăng ký",
+    "logout": "Đăng xuất",
+    "language": "Ngôn ngữ",
+    "help": "Trợ giúp",
+    "loading": "Đang xử lý...",
+    "pleaseWait": "Vui lòng đợi trong giây lát"
+  },
+  "header": {
+    "about": "Về chúng tôi",
+    "bookingGuide": "Hướng dẫn đặt xe",
+    "forPartners": "Dành cho Đối tác/Tài xế",
+    "promotions": "Khuyến mãi",
+    "contact": "Liên hệ"
+  },
+  "hero": {
+    "badge": "Nền tảng ghép xe số 1 Việt Nam",
+    "title": "Vi vu liên tỉnh – Ghép chuyến thông minh, Tiết kiệm chi phí",
+    "subtitle": "Kết nối hành khách và nhà xe uy tín. Lựa chọn đi ghép giá rẻ hoặc bao xe riêng tư chỉ với 1 chạm.",
+    "downloadApp": "Tải ứng dụng ngay",
+    "learnMore": "Tìm hiểu thêm",
+    "bookingWidget": {
+      "carpoolTab": "Đi ghép",
+      "carpoolTabDesc": "Tiết kiệm 40%",
+      "privateTab": "Bao xe",
+      "privateTabDesc": "Riêng tư",
+      "from": "Điểm đi",
+      "fromPlaceholder": "Nhập điểm đón...",
+      "to": "Điểm đến",
+      "toPlaceholder": "Nhập điểm đến...",
+      "date": "Ngày đi",
+      "datePlaceholder": "Chọn ngày",
+      "seats": "Số ghế",
+      "findTrip": "Tìm chuyến ghép",
+      "findPrivateTrip": "Tìm xe bao chuyến",
+      "trustBadge": "Hơn 1,000+ chuyến xe mỗi ngày"
+    }
+  },
+  "usp": {
+    "title": "Tại sao chọn Digi Transport?",
+    "badge": "Tại sao chọn Digi Transport?",
+    "subtitle": "Chúng tôi không chỉ cung cấp chuyến đi, chúng tôi mang đến trải nghiệm kết nối liền mạch giữa hành khách và đối tác vận tải.",
+    "stats": {
+      "dailyTrips": "Chuyến đi mỗi ngày",
+      "satisfiedCustomers": "Khách hàng hài lòng",
+      "partners": "Đối tác nhà xe",
+      "provinces": "Tỉnh thành phủ sóng"
+    },
+    "items": {
+      "smartMatching": {
+        "title": "Ghép chuyến thông minh (AI Matching)",
+        "description": "Tự động tìm người đi cùng lộ trình giúp chia sẻ chi phí vé xe rẻ hơn đến 40%."
+      },
+      "flexible": {
+        "title": "Đa dạng lựa chọn",
+        "description": "Linh hoạt giữa vé lẻ (ghép xe) hoặc thuê trọn gói (4 chỗ, 7 chỗ, 16 chỗ...)."
+      },
+      "transparent": {
+        "title": "Minh bạch & An toàn",
+        "description": "Biết trước giá cước, không phụ phí. Theo dõi lộ trình xe chạy theo thời gian thực (GPS)."
+      },
+      "payment": {
+        "title": "Thanh toán tiện lợi",
+        "description": "Hỗ trợ thanh toán không tiền mặt qua VNPay, Momo, ZaloPay và xuất hóa đơn điện tử."
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "Quy trình hoạt động",
+    "subtitle": "Đặt xe chỉ với 4 bước đơn giản",
+    "steps": {
+      "step1": {
+        "title": "Tìm chuyến",
+        "description": "Nhập điểm đi, điểm đến và thời gian"
+      },
+      "step2": {
+        "title": "Chọn xe",
+        "description": "Xem danh sách các xe đang tiện chuyến hoặc nhà xe có tuyến phù hợp"
+      },
+      "step3": {
+        "title": "Đặt & Thanh toán",
+        "description": "Xác nhận ghế ngồi và thanh toán an toàn"
+      },
+      "step4": {
+        "title": "Tận hưởng hành trình",
+        "description": "Tài xế đón tận nơi, theo dõi xe qua App và đánh giá sau chuyến đi"
+      }
+    }
+  },
+  "popularRoutes": {
+    "title": "Tuyến đường phổ biến",
+    "subtitle": "Khám phá các tuyến đường được yêu thích nhất",
+    "viewAll": "Xem tất cả tuyến đường",
+    "badge": "Điểm đến hàng đầu",
+    "duration": "di chuyển",
+    "bookNow": "Đặt vé ngay",
+    "routes": {
+      "hn-hp": {
+        "name": "Hà Nội ⇄ Hải Phòng",
+        "price": "Từ 150k/ghế"
+      },
+      "hcm-vt": {
+        "name": "TP.HCM ⇄ Vũng Tàu",
+        "price": "Từ 120k/ghế"
+      },
+      "dn-hue": {
+        "name": "Đà Nẵng ⇄ Huế",
+        "price": "Từ 100k/ghế"
+      }
+    }
+  },
+  "driverRecruitment": {
+    "title": "Hợp tác cùng Digi Transport – Gia tăng thu nhập từ ghế trống",
+    "subtitle": "Tham gia cùng chúng tôi để tối ưu hóa doanh thu và quản lý chuyến đi hiệu quả",
+    "benefits": {
+      "revenue": {
+        "title": "Tối ưu doanh thu",
+        "description": "Lấp đầy ghế trống chiều đi hoặc chiều về (xe tiện chuyến)"
+      },
+      "management": {
+        "title": "Quản lý dễ dàng",
+        "description": "App riêng dành cho tài xế quản lý lịch chạy, doanh thu"
+      },
+      "flexible": {
+        "title": "Không áp doanh số",
+        "description": "Chạy khi nào bạn muốn"
+      }
+    },
+    "cta": "Đăng ký trở thành Tài xế",
+    "downloadApp": "Tải App Tài xế",
+    "footnote": "Thu nhập thực tế có thể thay đổi tùy theo khu vực và thời gian hoạt động."
+  },
+  "mobileApp": {
+    "title": "Trải nghiệm tốt hơn trên ứng dụng Digi Transport",
+    "subtitle": "Đặt xe mọi lúc mọi nơi, theo dõi vị trí tài xế chuẩn xác",
+    "download": "Tải ứng dụng",
+    "googlePlay": "Tải trên Google Play",
+    "appStore": "Tải trên App Store",
+    "scanQR": "Quét mã QR để tải nhanh",
+    "platforms": "Hỗ trợ iOS & Android",
+    "mockupTitle": "Digi Transport",
+    "mockupSubtitle": "Theo dõi chuyến đi của bạn"
+  },
+  "promotions": {
+    "subtitle": "Khuyến mãi đặc biệt dành cho bạn",
+    "promoCode": "Mã khuyến mãi",
+    "discount": "Giảm giá",
+    "copyCode": "Sao chép mã",
+    "copied": "Đã copy mã",
+    "items": {
+      "firstTrip": {
+        "title": "Giảm 20k cho chuyến đi đầu tiên",
+        "description": "Áp dụng cho khách hàng mới đăng ký",
+        "discount": "20k",
+        "code": "FIRST20"
+      },
+      "weekend": {
+        "title": "Giảm 15% cho chuyến đi cuối tuần",
+        "description": "Áp dụng cho các chuyến đi thứ 7 và Chủ nhật",
+        "discount": "15%",
+        "code": "WEEKEND15"
+      },
+      "private": {
+        "title": "Tặng 50k khi đặt xe nguyên chuyến",
+        "description": "Áp dụng cho đặt bao nguyên xe từ 4 chỗ trở lên",
+        "discount": "50k",
+        "code": "PRIVATE50"
+      }
+    }
+  },
+  "pricing": {
+    "title": "Bảng Giá Linh Hoạt",
+    "subtitle": "Chọn gói phù hợp với nhu cầu của bạn. Khách hàng miễn phí, tài xế chỉ trả phí khi có đơn hàng thành công.",
+    "passenger": {
+      "name": "Hành Khách",
+      "price": "Miễn phí",
+      "description": "Dành cho khách hàng đặt vé đi liên tỉnh",
+      "cta": "Đăng ký ngay",
+      "features": [
+        "Đặt vé ghép chuyến không giới hạn",
+        "Đặt vé nguyên chuyến",
+        "Thanh toán online (VNPay, Momo, ZaloPay)",
+        "Theo dõi chuyến đi theo thời gian thực (GPS)",
+        "Xem lịch sử đặt vé",
+        "Đánh giá tài xế và nhà xe",
+        "Hỗ trợ khách hàng 24/7"
+      ]
+    },
+    "driver": {
+      "name": "Tài Xế / Nhà Xe",
+      "price": "5%",
+      "period": "/đơn hàng",
+      "description": "Dành cho tài xế và nhà xe nhỏ",
+      "cta": "Đăng ký làm đối tác",
+      "features": [
+        "Đăng ký tuyến và quản lý chuyến",
+        "Nhận đơn đặt xe tự động",
+        "Theo dõi doanh thu chi tiết",
+        "Quản lý lịch chạy và số ghế",
+        "Cập nhật trạng thái chuyến",
+        "Hỗ trợ kỹ thuật qua email",
+        "Báo cáo doanh thu hàng tháng"
+      ]
+    },
+    "enterprise": {
+      "name": "Doanh Nghiệp",
+      "price": "Liên hệ",
+      "description": "Dành cho công ty vận tải lớn và nhà xe chuyên nghiệp",
+      "cta": "Liên hệ tư vấn",
+      "features": [
+        "Quản lý nhiều tuyến và đội xe",
+        "Phí hoa hồng ưu đãi (từ 3%)",
+        "API tích hợp hệ thống",
+        "Báo cáo doanh thu nâng cao",
+        "Hỗ trợ ưu tiên 24/7",
+        "Tích hợp thanh toán tự động",
+        "Quản lý nhân viên và phân quyền",
+        "Tư vấn và hỗ trợ chuyên nghiệp"
+      ]
+    },
+    "popular": "Phổ biến nhất",
+    "note": "Lưu ý: Khách hàng không cần trả phí đăng ký, chỉ thanh toán giá vé khi đặt chuyến. Tài xế/nhà xe chỉ trả phí hoa hồng khi có đơn hàng thành công.",
+    "contactUs": "Liên hệ chúng tôi",
+    "contactUsDesc": "để được tư vấn gói doanh nghiệp phù hợp."
+  },
+  "testimonials": {
+    "title": "Khách Hàng Nói Gì Về Chúng Tôi",
+    "subtitle": "Hãy lắng nghe những chia sẻ từ hành khách đã sử dụng dịch vụ đặt xe và ghép xe của Digi Transport.",
+    "badge": "Đánh giá từ khách hàng"
+  },
+  "contact": {
+    "title": "Liên Hệ Với Chúng Tôi",
+    "subtitle": "Chúng tôi luôn sẵn sàng hỗ trợ bạn. Hãy liên hệ với chúng tôi qua các kênh sau hoặc điền form bên dưới.",
+    "supportBadge": "Hỗ trợ 24/7",
+    "info": {
+      "title": "Thông Tin Liên Hệ",
+      "description": "Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng giải đáp mọi thắc mắc của bạn.",
+      "phone": {
+        "title": "Hotline",
+        "content": "1900 1234",
+        "subContent": "Thứ 2 - CN (24/7)"
+      },
+      "email": {
+        "title": "Email",
+        "content": "support@digitransport.com",
+        "subContent": "Phản hồi trong 24h"
+      },
+      "address": {
+        "title": "Địa Chỉ",
+        "content": "Tầng 12, Tòa nhà Digi Tower",
+        "subContent": "Đà Nẵng, Việt Nam"
+      },
+      "hours": {
+        "title": "Giờ Làm Việc",
+        "content": "08:00 - 17:00",
+        "subContent": "Giờ hành chính"
+      }
+    },
+    "form": {
+      "title": "Gửi Tin Nhắn",
+      "name": "Họ và Tên",
+      "email": "Email",
+      "phone": "Số Điện Thoại",
+      "subject": "Chủ Đề",
+      "selectSubject": "Chọn chủ đề",
+      "options": {
+        "booking": "Đặt vé / Ghép xe",
+        "partnership": "Hợp tác / Đối tác",
+        "support": "Hỗ trợ kỹ thuật",
+        "other": "Khác"
+      },
+      "message": "Nội Dung",
+      "submit": "Gửi Tin Nhắn",
+      "sending": "Đang gửi...",
+      "successTitle": "Gửi thành công!",
+      "successMessage": "Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.",
+      "successSubtext": "Chúng tôi sẽ liên hệ lại với bạn trong vòng 24 giờ.",
+      "errorMessage": "Có lỗi xảy ra. Vui lòng thử lại sau.",
+      "validation": {
+        "name": {
+          "min": "Tên phải có ít nhất 2 ký tự",
+          "max": "Tên không được quá 50 ký tự"
+        },
+        "phone": "Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam (10 số, bắt đầu bằng 0)",
+        "email": {
+          "required": "Email là bắt buộc",
+          "invalid": "Email không hợp lệ"
+        },
+        "subject": "Vui lòng chọn chủ đề",
+        "message": {
+          "min": "Tin nhắn phải có ít nhất 10 ký tự",
+          "max": "Tin nhắn không được quá 1000 ký tự"
+        }
+      },
+      "placeholders": {
+        "name": "Nguyễn Văn A",
+        "phone": "0912 345 678",
+        "email": "example@email.com",
+        "message": "Nội dung tin nhắn..."
+      }
+    }
+  },
+  "footer": {
+    "companyName": "Digi Transport",
+    "tagline": "Đối tác tin cậy của bạn cho giải pháp vận tải hiệu quả.",
+    "companyInfo": {
+      "name": "Digi Transport",
+      "taxCode": "Mã số thuế: 0123456789",
+      "address": "Địa chỉ: 123 Đường ABC, Quận XYZ, Đà Nẵng",
+      "hotline": "Hotline hỗ trợ: 1900 1234"
+    },
+    "quickLinks": "Liên kết nhanh",
+    "legal": "Pháp lý",
+    "support": "Hỗ trợ",
+    "newsletter": {
+      "title": "Đăng ký nhận tin",
+      "subtitle": "Nhập email để nhận mã giảm giá",
+      "placeholder": "Nhập email của bạn",
+      "subscribe": "Đăng ký"
+    },
+    "backToTop": "Về đầu trang",
+    "copyright": "© {{year}} Digi Transport. Tất cả quyền được bảo lưu.",
+    "links": {
+      "privacy": "Chính sách bảo mật",
+      "terms": "Điều khoản sử dụng",
+      "regulations": "Quy chế hoạt động",
+      "complaints": "Giải quyết khiếu nại"
+    },
+    "social": {
+      "facebook": "Facebook",
+      "zalo": "Zalo OA",
+      "tiktok": "TikTok"
+    }
+  },
+  "auth": {
+    "signUp": {
+      "title": "Đăng ký tài khoản",
+      "subtitle": "Tạo tài khoản để bắt đầu hành trình của bạn",
+      "name": "Họ và Tên",
+      "namePlaceholder": "Nguyễn Văn A",
+      "email": "Email",
+      "emailPlaceholder": "example@email.com",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "Tối thiểu 6 ký tự",
+      "confirmPassword": "Xác nhận mật khẩu",
+      "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
+      "agreeTo": "Tôi đồng ý với ",
+      "terms": "Điều khoản dịch vụ",
+      "privacy": "Chính sách bảo mật",
+      "orContinueWith": "Hoặc tiếp tục với",
+      "socialComingSoon": "Tính năng đăng nhập bằng Google sẽ sớm có mặt",
+      "submit": "Đăng ký",
+      "submitting": "Đang đăng ký...",
+      "haveAccount": "Đã có tài khoản?",
+      "signInLink": "Đăng nhập",
+      "successTitle": "Đăng ký thành công!",
+      "successMessage": "Vui lòng kiểm tra email để xác nhận tài khoản.",
+      "redirectMessage": "Đang chuyển đến trang đăng nhập...",
+      "errorTitle": "Đăng ký thất bại",
+      "errorMessage": "Có lỗi xảy ra. Vui lòng thử lại sau."
+    },
+    "signIn": {
+      "title": "Đăng nhập",
+      "subtitle": "Chào mừng bạn trở lại Digi Transport",
+      "email": "Email",
+      "emailPlaceholder": "example@email.com",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "Nhập mật khẩu của bạn",
+      "submit": "Đăng nhập",
+      "submitting": "Đang đăng nhập...",
+      "forgotPassword": "Quên mật khẩu?",
+      "noAccount": "Chưa có tài khoản?",
+      "signUpLink": "Đăng ký ngay",
+      "orContinueWith": "Hoặc tiếp tục với",
+      "socialComingSoon": "Tính năng này sắp ra mắt",
+      "successTitle": "Đăng nhập thành công!",
+      "successMessage": "Chào mừng bạn trở lại!",
+      "errorTitle": "Đăng nhập thất bại",
+      "errorMessage": "Có lỗi xảy ra. Vui lòng thử lại sau."
+    },
+    "forgotPassword": {
+      "title": "Quên mật khẩu",
+      "subtitle": "Đặt lại mật khẩu của bạn",
+      "description": "Nhập email của bạn và chúng tôi sẽ gửi link đặt lại mật khẩu cho bạn.",
+      "email": "Email",
+      "emailPlaceholder": "example@email.com",
+      "submit": "Gửi link đặt lại mật khẩu",
+      "submitting": "Đang gửi...",
+      "backToSignIn": "Quay lại đăng nhập",
+      "resendEmail": "Gửi lại email",
+      "successTitle": "Email đã được gửi!",
+      "successMessage": "Vui lòng kiểm tra email của bạn. Chúng tôi đã gửi link đặt lại mật khẩu đến địa chỉ email bạn đã cung cấp.",
+      "errorTitle": "Gửi email thất bại",
+      "errorMessage": "Có lỗi xảy ra. Vui lòng thử lại sau."
+    },
+    "resetPassword": {
+      "title": "Đặt lại mật khẩu",
+      "subtitle": "Tạo mật khẩu mới cho tài khoản của bạn",
+      "description": "Nhập mật khẩu mới của bạn. Mật khẩu phải có ít nhất 6 ký tự.",
+      "newPassword": "Mật khẩu mới",
+      "newPasswordPlaceholder": "Tối thiểu 6 ký tự",
+      "confirmPassword": "Xác nhận mật khẩu",
+      "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
+      "submit": "Đặt lại mật khẩu",
+      "submitting": "Đang xử lý...",
+      "backToSignIn": "Quay lại đăng nhập",
+      "goToSignIn": "Đi đến đăng nhập",
+      "loading": "Đang kiểm tra token...",
+      "invalidToken": "Token không hợp lệ hoặc đã hết hạn",
+      "successTitle": "Đặt lại mật khẩu thành công!",
+      "successMessage": "Mật khẩu của bạn đã được đặt lại thành công. Bạn có thể đăng nhập bằng mật khẩu mới.",
+      "redirectMessage": "Đang chuyển đến trang đăng nhập...",
+      "errorTitle": "Đặt lại mật khẩu thất bại",
+      "errorMessage": "Có lỗi xảy ra. Vui lòng thử lại sau."
+    },
+    "verifyEmail": {
+      "title": "Xác nhận email",
+      "verifying": "Đang xác nhận email...",
+      "verifyingMessage": "Vui lòng đợi trong giây lát",
+      "invalidToken": "Token không hợp lệ hoặc không tồn tại",
+      "successTitle": "Xác nhận email thành công!",
+      "successMessage": "Email của bạn đã được xác nhận thành công. Bạn có thể đăng nhập ngay bây giờ.",
+      "errorTitle": "Xác nhận email thất bại",
+      "errorMessage": "Có lỗi xảy ra. Vui lòng thử lại sau.",
+      "goToSignIn": "Đi đến đăng nhập",
+      "backToSignIn": "Quay lại đăng nhập",
+      "resendEmail": "Đăng ký lại"
+    },
+    "socialLogin": {
+      "successTitle": "Đăng nhập thành công!",
+      "successMessage": "Chào mừng bạn trở lại!",
+      "errorTitle": "Đăng nhập thất bại",
+      "errorMessage": "Có lỗi xảy ra. Vui lòng thử lại sau.",
+      "loading": "Đang xử lý...",
+      "loadingMessage": "Vui lòng đợi trong giây lát"
+    }
+  }
+}
