@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -23,14 +24,14 @@
     /* Secondary */
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-
+    
     /* Muted */
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Accent (nhẹ, giữ làm nền nhấn nhẹ) */
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - Orange (Tailwind orange-500: #f97316) */
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 100%;
 
     /* Destructive */
     --destructive: 0 84.2% 60.2%;
@@ -65,27 +66,21 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    /* Color Palette Variables - Custom Brand Colors (Concept: Gen Z Tiếp Bước) */
-    /* Nền sáng, hơi kem để giống tạp chí số hiện đại */
-    --color-cream: #f9fafb;
-    /* Youth Blue & Light Blue dùng cho text / nền phụ */
-    --color-light-blue: #60a5fa; /* Tailwind blue-400 */
-    --color-dark-blue: #2563eb; /* Tailwind blue-600 */
-    --color-black: #000000;
+    /* Brand Color Palette - HSL Format */
+    /* Blue shades */
+    --blue-50: 214 100% 97%;
+    --blue-100: 214 100% 93%;
+    --blue-500: 217 91% 60%;
+    --blue-600: 217 91% 50%;
+    --blue-700: 217 91% 40%;
+    --blue-900: 217 91% 30%;
 
-    /* Semantic color names */
-    --color-primary: var(--color-dark-blue);
-    --color-secondary: var(--color-light-blue);
-    --color-background: var(--color-cream);
-    --color-text-dark: var(--color-black);
+    /* Orange shades */
+    --orange-50: 33 100% 97%;
+    --orange-100: 25 95% 90%;
+    --orange-200: 25 95% 85%;
+    --orange-500: 25 95% 53%;
 
-    /* 
-    #fbfdff
-    #e3dcda
-    #000202
-    #5d2060
-    #f70015
-    #78ea61 */
   }
 
   .dark {
@@ -113,9 +108,9 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    /* Accent */
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Accent - Orange */
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 100%;
 
     /* Destructive */
     --destructive: 0 62.8% 30.6%;
@@ -147,17 +142,20 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    /* Color Palette Variables - Custom Brand Colors (Dark Mode) */
-    --color-cream: #efece3;
-    --color-light-blue: #8fabd4;
-    --color-dark-blue: #4a70a9;
-    --color-black: #000000;
+    /* Brand Color Palette - HSL Format (Dark Mode) */
+    /* Blue shades */
+    --blue-50: 217 32% 20%;
+    --blue-100: 217 32% 25%;
+    --blue-500: 217 91% 60%;
+    --blue-600: 217 91% 55%;
+    --blue-700: 217 91% 50%;
+    --blue-900: 217 91% 40%;
 
-    /* Semantic color names */
-    --color-primary: var(--color-dark-blue);
-    --color-secondary: var(--color-light-blue);
-    --color-background: var(--color-cream);
-    --color-text-dark: var(--color-black);
+    /* Orange shades */
+    --orange-50: 25 32% 20%;
+    --orange-100: 25 32% 25%;
+    --orange-200: 25 50% 35%;
+    --orange-500: 25 95% 53%;
   }
 
   /* Base Element Styles */
@@ -270,6 +268,33 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
 /* Shimmer Animation */
@@ -384,4 +409,14 @@ input::-ms-clear {
 
 .animated-underline:hover::after {
   width: 100%;
+}
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
