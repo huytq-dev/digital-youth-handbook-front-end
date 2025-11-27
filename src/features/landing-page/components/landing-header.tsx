@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Menu, X, ChevronDown, Star, Zap } from 'lucide-react';
-import { Button, Card } from '../../../components/ui/primitives';
-import { cn } from '../../../lib/utils';
+import { Button, Card } from '@/components/ui/primitives';
+import { cn } from '@/lib/utils';
 
 type NavSubItem = {
   label: string;
@@ -95,7 +95,7 @@ export const LandingHeader = () => {
           <div className="hidden lg:flex items-center space-x-1 bg-white/50 backdrop-blur-md px-2 py-1.5 rounded-full border border-white/50 shadow-sm">
             {NAVIGATION.map((item: NavItem) => (
               <div key={item.label} className="relative group">
-                <Button variant="ghost" className="text-[hsl(var(--muted-foreground))] font-semibold hover:text-[hsl(var(--primary))] rounded-full">
+                <Button variant="ghost" className="text-[hsl(var(--muted-foreground))] font-semibold hover:text-[hsl(var(--primary))] hover:bg-blue-50/50 rounded-full transition-all duration-200">
                   {item.label}
                   {item.subItems && <ChevronDown className="ml-1 w-3 h-3 transition-transform group-hover:rotate-180" />}
                 </Button>

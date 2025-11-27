@@ -17,7 +17,7 @@ const buttonVariants = cva(
         secondary:
           "bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] hover:bg-[hsl(var(--secondary))]/80",
         ghost:
-          "hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))]",
+          "hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--primary-foreground))]",
         link: "text-[hsl(var(--primary))] underline-offset-4 hover:underline",
       },
       size: {
