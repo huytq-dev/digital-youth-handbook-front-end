@@ -1,5 +1,5 @@
-import { Play, Sparkles, ArrowRight } from "lucide-react";
-import { Button, Badge } from "@/components/ui/primitives";
+import { Play, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/primitives";
 
 export const LandingIntroduction = () => {
   return (
