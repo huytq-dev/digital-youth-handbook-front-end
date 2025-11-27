@@ -131,12 +131,12 @@ export const LandingHeader = () => {
           <div className="hidden lg:flex items-center gap-3">
             {/* [UPDATE] Đã xóa Button Search và Divider */}
             <div className="flex items-center gap-2">
-                <Link to="/login">
+                <Link to="/auth/sign-in">
                     <Button variant="ghost" className="font-semibold text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary))] hover:bg-white/50 rounded-full px-5">
                         Đăng nhập
                     </Button>
                 </Link>
-                <Link to="/register">
+                <Link to="/auth/sign-up">
                     <Button variant="default" className="rounded-full shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all px-5 font-bold">
                         Đăng ký
                     </Button>
@@ -178,12 +178,16 @@ export const LandingHeader = () => {
          </div>
 
          <div className="mt-auto pt-6 border-t border-[hsl(var(--border))] grid grid-cols-2 gap-3">
-            <Button variant="outline" className="w-full rounded-xl border-[hsl(var(--border))] font-semibold">
-                <LogIn size={16} className="mr-2" /> Đăng nhập
-            </Button>
-            <Button variant="default" className="w-full rounded-xl font-bold shadow-md">
-                <UserPlus size={16} className="mr-2" /> Đăng ký
-            </Button>
+            <Link to="/auth/sign-in" className="w-full">
+              <Button variant="outline" className="w-full rounded-xl border-[hsl(var(--border))] font-semibold">
+                  <LogIn size={16} className="mr-2" /> Đăng nhập
+              </Button>
+            </Link>
+            <Link to="/auth/sign-up" className="w-full">
+              <Button variant="default" className="w-full rounded-xl font-bold shadow-md">
+                  <UserPlus size={16} className="mr-2" /> Đăng ký
+              </Button>
+            </Link>
          </div>
        </SheetOverlay>
     </nav>
