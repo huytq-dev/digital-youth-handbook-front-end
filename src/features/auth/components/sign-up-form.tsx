@@ -212,7 +212,7 @@ export function SignUpForm() {
         <p className="text-[hsl(var(--muted-foreground))] text-sm">
           <AnimatedText>
             {t("auth.signUp.subtitle") ||
-              "Tạo tài khoản để bắt đầu hành trình của bạn"}
+              "Tham gia cộng đồng học tập và phát triển bản thân"}
           </AnimatedText>
         </p>
       </motion.div>
