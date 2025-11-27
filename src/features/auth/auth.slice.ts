@@ -1,0 +1,139 @@
+import { baseApi } from '@/redux/baseApi';
+import type {
+  SignInRequestModel,
+  SignInResponseModel,
+  SignUpRequestModel,
+  SignUpResponseModel,
+  SignOutRequestModel,
+  SignOutResponseModel,
+  RefreshTokenRequestModel,
+  RefreshTokenResponseModel,
+  SocialSignInRequestModel,
+  SocialSignInResponseModel,
+  EmailRequestModel,
+  SendEmailVerificationResponseModel,
+  VerifyEmailRequestModel,
+  ConfirmEmailResponseModel,
+  ForgotPasswordRequestModel,
+  ForgotPasswordResponseModel,
+  ResetPasswordRequestModel,
+  ResetPasswordResponseModel,
+} from './auth.type';
+
+export const authApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    // POST /api/auth/login
+    signIn: builder.mutation<SignInResponseModel, SignInRequestModel>({
+      query: (body) => ({
+        url: 'auth/login',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    // POST /api/auth/register
+    signUp: builder.mutation<SignUpResponseModel, SignUpRequestModel>({
+      query: (body) => ({
+        url: 'auth/register',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    // POST /api/auth/logout
+    signOut: builder.mutation<SignOutResponseModel, SignOutRequestModel>({
+      query: (body) => ({
+        url: 'auth/logout',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    // POST /api/auth/refresh-token
+    refreshToken: builder.mutation<
+      RefreshTokenResponseModel,
+      RefreshTokenRequestModel
+    >({
+      query: (body) => ({
+        url: 'auth/refresh-token',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    // POST /api/auth/social-login
+    // Nhận AccessToken (có thể là ID token, access token, hoặc authorization code)
+    // và Provider (Google = 1, Facebook = 2)
+    socialSignIn: builder.mutation<
+      SocialSignInResponseModel,
+      SocialSignInRequestModel
+    >({
+      query: (body) => ({
+        url: 'auth/social-login',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    // POST /api/auth/email/send
+    sendVerificationEmail: builder.mutation<
+      SendEmailVerificationResponseModel,
+      EmailRequestModel
+    >({
+      query: (body) => ({
+        url: 'auth/email/send',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    // POST /api/auth/email/verify
+    verifyEmail: builder.mutation<
+      ConfirmEmailResponseModel,
+      VerifyEmailRequestModel
+    >({
+      query: (body) => ({
+        url: 'auth/email/verify',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    // POST /api/auth/password/forgot
+    forgotPassword: builder.mutation<
+      ForgotPasswordResponseModel,
+      ForgotPasswordRequestModel
+    >({
+      query: (body) => ({
+        url: 'auth/password/forgot',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    // POST /api/auth/password/reset
+    resetPassword: builder.mutation<
+      ResetPasswordResponseModel,
+      ResetPasswordRequestModel
+    >({
+      query: (body) => ({
+        url: 'auth/password/reset',
+        method: 'POST',
+        body,
+      }),
+    }),
+  }),
+});
+
+export const {
+  useSignInMutation,
+  useSignUpMutation,
+  useSignOutMutation,
+  useRefreshTokenMutation,
+  useSocialSignInMutation,
+  useSendVerificationEmailMutation,
+  useVerifyEmailMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+} = authApi;
+
