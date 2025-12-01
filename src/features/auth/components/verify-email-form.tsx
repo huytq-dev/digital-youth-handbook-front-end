@@ -16,7 +16,6 @@ export function VerifyEmailForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [token, setToken] = useState<string>("");
   const [isVerified, setIsVerified] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -27,7 +26,6 @@ export function VerifyEmailForm() {
   useEffect(() => {
     const tokenFromUrl = searchParams.get("token");
     if (tokenFromUrl) {
-      setToken(tokenFromUrl);
       // Tự động gọi API verify khi có token
       handleVerify(tokenFromUrl);
     } else {
