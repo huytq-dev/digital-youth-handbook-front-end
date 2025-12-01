@@ -1,14 +1,15 @@
 import { AuthLayout } from "@/components/layout/app/auth/auth-layout";
 import { AuthGlassCard } from "@/features/auth/components/shared/auth-glass-card";
-import { VerifyEmailForm } from "@/features/auth/components/verify-email-form";
+import { SignUpForm } from "@/features/auth/components/sign-up-form";
 
-export default function VerifyEmailPage() {
+export default function SignUpPage() {
   return (
     <AuthLayout>
       <AuthGlassCard>
-        <VerifyEmailForm />
+        <SignUpForm />
       </AuthGlassCard>
     </AuthLayout>
   );
 }
+
 

@@ -1,14 +1,15 @@
 import { AuthLayout } from "@/components/layout/app/auth/auth-layout";
 import { AuthGlassCard } from "@/features/auth/components/shared/auth-glass-card";
-import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
+import { SignInForm } from "@/features/auth/components/sign-in-form";
 
-export default function ResetPasswordPage() {
+export default function SignInPage() {
   return (
     <AuthLayout>
       <AuthGlassCard>
-        <ResetPasswordForm />
+        <SignInForm />
       </AuthGlassCard>
     </AuthLayout>
   );
 }
+
 
