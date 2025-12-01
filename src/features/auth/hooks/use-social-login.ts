@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
+import { showToast } from '@/lib/toast';
 import { useGoogleLogin } from '@react-oauth/google';
 import { socialLoginService } from '@/features/auth/services/social-login.service';
 import { useSocialSignInMutation } from '@/features/auth/auth.slice';
@@ -32,8 +32,8 @@ export function useSocialLogin(options?: UseSocialLoginOptions) {
       try {
         // Gọi API Backend của bạn
         const response = await socialSignIn({
-          AccessToken: accessToken,
-          Provider: provider,
+          accessToken: accessToken,
+          provider: provider,
         }).unwrap();
 
         if (isApiResponseSuccess(response)) {
@@ -48,11 +48,9 @@ export function useSocialLogin(options?: UseSocialLoginOptions) {
             authService.saveAuthData(responseData);
           }
 
-          toast.success(
+          showToast.success(
             t('auth.socialLogin.successTitle') || 'Đăng nhập thành công!',
-            {
-              description: t('auth.socialLogin.successMessage') || 'Chào mừng bạn trở lại!',
-            }
+            t('auth.socialLogin.successMessage') || 'Chào mừng bạn trở lại!'
           );
 
           if (options?.onSuccess) {
@@ -82,9 +80,9 @@ export function useSocialLogin(options?: UseSocialLoginOptions) {
           errorMessage = 'Xác thực thất bại (401). Vui lòng kiểm tra lại cấu hình.';
         }
 
-        toast.error(
+        showToast.error(
           t('auth.socialLogin.errorTitle') || 'Đăng nhập thất bại',
-          { description: errorMessage }
+          errorMessage
         );
 
         if (options?.onError) {
@@ -109,7 +107,7 @@ export function useSocialLogin(options?: UseSocialLoginOptions) {
     onError: (error) => {
       console.error('Google Login SDK Error:', error);
       stopLoading();
-      toast.error('Không thể kết nối với Google.');
+      showToast.error('Không thể kết nối với Google.');
       if (options?.onError) {
         options.onError('Google login failed');
       }
@@ -124,13 +122,13 @@ export function useSocialLogin(options?: UseSocialLoginOptions) {
   const handleFacebookLogin = useCallback(async () => {
     try {
       if (!socialLoginService.isFacebookLoaded()) {
-        toast.error('Facebook SDK chưa sẵn sàng. Hãy tải lại trang.');
+        showToast.error('Facebook SDK chưa sẵn sàng. Hãy tải lại trang.');
         return;
       }
 
       const facebookAppId = import.meta.env.VITE_FACEBOOK_APP_ID;
       if (!facebookAppId) {
-        toast.error('Thiếu cấu hình Facebook App ID.');
+        showToast.error('Thiếu cấu hình Facebook App ID.');
         return;
       }
 
@@ -146,9 +144,7 @@ export function useSocialLogin(options?: UseSocialLoginOptions) {
     } catch (error: any) {
       console.error('Facebook Login Error:', error);
       stopLoading();
-      toast.error('Lỗi đăng nhập Facebook', {
-        description: error.message || 'Vui lòng thử lại sau.',
-      });
+      showToast.error('Lỗi đăng nhập Facebook', error.message || 'Vui lòng thử lại sau.');
       if (options?.onError) {
         options.onError(error.message || 'Facebook login failed');
       }

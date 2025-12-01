@@ -9,13 +9,13 @@ import {
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // Sign In Schema
-// Backend: Email (Required, Valid email), Password (Required, Min 6 chars)
+// Backend: email (Required, Valid email), password (Required, Min 6 chars)
 export const signInSchema = z.object({
-  Email: z
+  email: z
     .string()
     .min(1, "Email is required")
     .email("Email is not a valid email format"),
-  Password: z
+  password: z
     .string()
     .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters"),
@@ -24,34 +24,34 @@ export const signInSchema = z.object({
 export type SignInFormData = z.infer<typeof signInSchema>;
 
 // Sign Up Schema
-// Backend: Name (Required), Email (Required, Valid email), Password (Required, Min 6 chars)
+// Backend: name (Required), email (Required, Valid email), password (Required, Min 6 chars)
 export const signUpSchema = z
   .object({
-    Name: z.string().min(1, "Name is required"),
-    Email: z
+    name: z.string().min(1, "Name is required"),
+    email: z
       .string()
       .min(1, "Email is required")
       .email("Email is not a valid email format"),
-    Password: z
+    password: z
       .string()
       .min(1, "Password is required")
       .min(6, "Password must be at least 6 characters"),
-    PasswordConfirm: z.string().min(1, "Password confirmation is required"),
-    TermsAccepted: z.boolean().refine((val) => val === true, {
+    passwordConfirm: z.string().min(1, "Password confirmation is required"),
+    termsAccepted: z.boolean().refine((val) => val === true, {
       message: "You must accept the terms and conditions",
     }),
   })
-  .refine((data) => data.Password === data.PasswordConfirm, {
+  .refine((data) => data.password === data.passwordConfirm, {
     message: "Passwords do not match",
-    path: ["PasswordConfirm"],
+    path: ["passwordConfirm"],
   });
 
 export type SignUpFormData = z.infer<typeof signUpSchema>;
 
 // Sign Out Schema
-// Backend: UserId (Required, must be valid Guid)
+// Backend: userId (Required, must be valid Guid)
 export const signOutSchema = z.object({
-  UserId: z
+  userId: z
     .string()
     .min(1, "UserId is required")
     .regex(uuidRegex, "UserId has an invalid format"),
@@ -60,13 +60,13 @@ export const signOutSchema = z.object({
 export type SignOutFormData = z.infer<typeof signOutSchema>;
 
 // Refresh Token Schema
-// Backend: UserId (Required, valid Guid), RefreshToken (Required, Min 10 chars)
+// Backend: userId (Required, valid Guid), refreshToken (Required, Min 10 chars)
 export const refreshTokenSchema = z.object({
-  UserId: z
+  userId: z
     .string()
     .min(1, "UserId is required")
     .regex(uuidRegex, "UserId has an invalid format"),
-  RefreshToken: z
+  refreshToken: z
     .string()
     .min(1, "RefreshToken is required")
     .min(10, "RefreshToken must be at least 10 characters"),
@@ -75,10 +75,10 @@ export const refreshTokenSchema = z.object({
 export type RefreshTokenFormData = z.infer<typeof refreshTokenSchema>;
 
 // Social Login Schema
-// Backend: AccessToken (Required), Provider (Required, enum: 1=Google, 2=Facebook)
+// Backend: accessToken (Required), provider (Required, enum: 1=Google, 2=Facebook)
 export const socialSignInSchema = z.object({
-  AccessToken: z.string().min(1, "AccessToken is required"),
-  Provider: z.union([
+  accessToken: z.string().min(1, "AccessToken is required"),
+  provider: z.union([
     z.literal(SocialProvider.Google),
     z.literal(SocialProvider.Facebook),
   ], {
@@ -115,17 +115,17 @@ export type SendVerificationEmailFormData = z.infer<
 >;
 
 // Verify Email Schema
-// Backend: Token (Required)
+// Backend: token (Required)
 export const verifyEmailSchema = z.object({
-  Token: z.string().min(1, "Token is required"),
+  token: z.string().min(1, "Token is required"),
 });
 
 export type VerifyEmailFormData = z.infer<typeof verifyEmailSchema>;
 
 // Forgot Password Schema
-// Backend: Email (Required, Valid email)
+// Backend: email (Required, Valid email)
 export const forgotPasswordSchema = z.object({
-  Email: z
+  email: z
     .string()
     .min(1, "Email is required")
     .email("Email is not a valid email format"),
@@ -134,19 +134,19 @@ export const forgotPasswordSchema = z.object({
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 // Reset Password Schema
-// Backend: Token (Required), NewPassword (Required, Min 6 chars), ConfirmPassword (Required, Must match NewPassword)
+// Backend: token (Required), newPassword (Required, Min 6 chars), confirmPassword (Required, Must match newPassword)
 export const resetPasswordSchema = z
   .object({
-    Token: z.string().min(1, "Token is required"),
-    NewPassword: z
+    token: z.string().min(1, "Token is required"),
+    newPassword: z
       .string()
       .min(1, "NewPassword is required")
       .min(6, "NewPassword must be at least 6 characters"),
-    ConfirmPassword: z.string().min(1, "ConfirmPassword is required"),
+    confirmPassword: z.string().min(1, "ConfirmPassword is required"),
   })
-  .refine((data) => data.NewPassword === data.ConfirmPassword, {
+  .refine((data) => data.newPassword === data.confirmPassword, {
     message: "ConfirmPassword must match NewPassword",
-    path: ["ConfirmPassword"],
+    path: ["confirmPassword"],
   });
 
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;

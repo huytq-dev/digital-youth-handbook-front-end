@@ -7,6 +7,7 @@ const SignInPage = lazy(() => import("@/pages/home/sign-in"));
 const SignUpPage = lazy(() => import("@/pages/home/sign-up"));
 const ForgotPasswordPage = lazy(() => import("@/pages/home/forgot-password"));
 const ResetPasswordPage = lazy(() => import("@/pages/home/reset-password"));
+const VerifyEmailPage = lazy(() => import("@/pages/home/verify-email"));
 
 const PageLoader = () => (
   <div className="flex min-h-screen items-center justify-center">
@@ -24,6 +25,7 @@ export const Router = () => {
         <Route path="/auth/sign-up" element={<SignUpPage />} />
         <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
       </Routes>
     </Suspense>
   );

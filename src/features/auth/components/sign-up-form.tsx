@@ -3,26 +3,25 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, Link } from "react-router-dom";
-// import { toast } from "sonner";
+import { showToast } from "@/lib/toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatedText } from "@/components/animated-text";
 import { signUpSchema, type SignUpFormData } from "../auth.schema";
-// import { useSignUpMutation } from "../auth.slice";
-// import {
-//   isApiResponseSuccess,
-//   getApiErrorMessage,
-// } from "@/features/common/common.type";
-// import type { ApiResponse } from "@/features/common/common.type";
+import { useSignUpMutation } from "../auth.slice";
+import {
+  isApiResponseSuccess,
+  getApiErrorMessage,
+} from "@/features/common/common.type";
 import { containerVariants, itemVariants } from "../constants/auth.constants";
 import {
   TextField,
   EmailField,
   PasswordField,
   SubmitButton,
-  SocialLoginButtons,
-  Divider,
+  // SocialLoginButtons,
+  // Divider,
 } from "./shared/auth-form-components"; // Cập nhật đường dẫn import nếu cần thiết (ví dụ: ./shared/auth-form-components)
 
 // Constants
@@ -57,8 +56,7 @@ export function SignUpForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  // const [signUp, { isLoading }] = useSignUpMutation();
-  const isLoading = false;
+  const [signUp, { isLoading }] = useSignUpMutation();
 
   const {
     register,
@@ -68,15 +66,15 @@ export function SignUpForm() {
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      Name: "",
-      Email: "",
-      Password: "",
-      PasswordConfirm: "",
-      TermsAccepted: false,
+      name: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
+      termsAccepted: false,
     },
   });
 
-  const passwordValue = watch("Password");
+  const passwordValue = watch("password");
 
   // Tối ưu: Giảm delay và bỏ reset() vì component sẽ unmount
   useEffect(() => {
@@ -92,13 +90,8 @@ export function SignUpForm() {
   // Tối ưu: Sử dụng useCallback để memoize handler
   const onSubmit = useCallback(
     async (data: SignUpFormData) => {
-      logDev("Submitting sign up request (UI test only)", data);
-      setIsSuccess(true);
-
-      /*
-      ORIGINAL API LOGIC (disabled for UI testing)
       try {
-        const { PasswordConfirm, TermsAccepted, ...submitData } = data;
+        const { passwordConfirm, termsAccepted, ...submitData } = data;
 
         logDev("Submitting sign up request", submitData);
 
@@ -108,32 +101,24 @@ export function SignUpForm() {
 
         if (isApiResponseSuccess(response)) {
           setIsSuccess(true);
-          toast.success(
-            t("auth.signUp.successTitle") || "Đăng ký thành công!",
-            {
-              description:
-                t("auth.signUp.successMessage") ||
-                "Vui lòng kiểm tra email để xác nhận tài khoản.",
-            }
-          );
+          // Không cần toast vì đã có success state hiển thị ở giữa màn hình
         } else {
           const errorMessage = getApiErrorMessage(response);
-          toast.error(t("auth.signUp.errorTitle") || "Đăng ký thất bại", {
-            description: errorMessage,
-          });
+          showToast.error(t("auth.signUp.errorTitle") || "Đăng ký thất bại", errorMessage);
         }
       } catch (error: unknown) {
         logDev("Sign up API error", error);
 
-        const errorMessage = extractErrorMessage(error, t);
+        const errorMessage = getApiErrorMessage(
+          error && typeof error === "object" && "data" in error
+            ? (error as any).data
+            : null
+        );
 
-        toast.error(t("auth.signUp.errorTitle") || "Đăng ký thất bại", {
-          description: errorMessage,
-        });
+        showToast.error(t("auth.signUp.errorTitle") || "Đăng ký thất bại", errorMessage);
       }
-      */
     },
-    [setIsSuccess]
+    [signUp, t]
   );
 
   // Tối ưu: Password strength indicator sync với schema
@@ -223,11 +208,11 @@ export function SignUpForm() {
           id="signup-name"
           label={t("auth.signUp.name") || "Họ và Tên"}
           placeholder={t("auth.signUp.namePlaceholder") || "Nguyễn Văn A"}
-          error={errors.Name?.message}
-          register={register("Name")}
+          error={errors.name?.message}
+          register={register("name")}
           disabled={isLoading}
-          focused={focusedField === "Name"}
-          onFocus={() => setFocusedField("Name")}
+          focused={focusedField === "name"}
+          onFocus={() => setFocusedField("name")}
           onBlur={() => setFocusedField(null)}
         />
       </motion.div>
@@ -238,11 +223,11 @@ export function SignUpForm() {
           id="signup-email"
           label={t("auth.signUp.email") || "Email"}
           placeholder={t("auth.signUp.emailPlaceholder") || "example@email.com"}
-          error={errors.Email?.message}
-          register={register("Email")}
+          error={errors.email?.message}
+          register={register("email")}
           disabled={isLoading}
-          focused={focusedField === "Email"}
-          onFocus={() => setFocusedField("Email")}
+          focused={focusedField === "email"}
+          onFocus={() => setFocusedField("email")}
           onBlur={() => setFocusedField(null)}
         />
       </motion.div>
@@ -255,18 +240,18 @@ export function SignUpForm() {
           placeholder={
             t("auth.signUp.passwordPlaceholder") || "Tối thiểu 6 ký tự"
           }
-          error={errors.Password?.message}
-          register={register("Password")}
+          error={errors.password?.message}
+          register={register("password")}
           disabled={isLoading}
-          focused={focusedField === "Password"}
-          onFocus={() => setFocusedField("Password")}
+          focused={focusedField === "password"}
+          onFocus={() => setFocusedField("password")}
           onBlur={() => setFocusedField(null)}
           showPassword={showPassword}
           onTogglePassword={() => setShowPassword(!showPassword)}
         />
         {/* Password Strength Indicator */}
         <AnimatePresence>
-          {passwordValue && passwordValue.length > 0 && !errors.Password && (
+          {passwordValue && passwordValue.length > 0 && !errors.password && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
@@ -295,11 +280,11 @@ export function SignUpForm() {
           placeholder={
             t("auth.signUp.confirmPasswordPlaceholder") || "Nhập lại mật khẩu"
           }
-          error={errors.PasswordConfirm?.message}
-          register={register("PasswordConfirm")}
+          error={errors.passwordConfirm?.message}
+          register={register("passwordConfirm")}
           disabled={isLoading}
-          focused={focusedField === "PasswordConfirm"}
-          onFocus={() => setFocusedField("PasswordConfirm")}
+          focused={focusedField === "passwordConfirm"}
+          onFocus={() => setFocusedField("passwordConfirm")}
           onBlur={() => setFocusedField(null)}
           showPassword={showPasswordConfirm}
           onTogglePassword={() => setShowPasswordConfirm(!showPasswordConfirm)}
@@ -317,12 +302,12 @@ export function SignUpForm() {
             type="checkbox"
             className={cn(
               "h-4 w-4 rounded border-[hsl(var(--input))] transition-all cursor-pointer mt-0.5",
-              errors.TermsAccepted
+              errors.termsAccepted
                 ? "border-[hsl(var(--destructive))] text-[hsl(var(--destructive))] focus:ring-[hsl(var(--destructive))]"
                 : "text-[hsl(var(--primary))] focus:ring-[hsl(var(--primary))] border-[hsl(var(--input))] hover:border-[hsl(var(--primary))]", // Sử dụng CSS variables từ global.css
               "focus:ring-2 focus:ring-offset-0 bg-[hsl(var(--background))]"
             )}
-            {...register("TermsAccepted")}
+            {...register("termsAccepted")}
             disabled={isLoading}
           />
         </div>
@@ -331,7 +316,7 @@ export function SignUpForm() {
             htmlFor="terms"
             className={cn(
               "text-sm font-medium leading-relaxed cursor-pointer select-none flex flex-wrap items-center",
-              errors.TermsAccepted ? "text-[hsl(var(--destructive))]" : "text-[hsl(var(--muted-foreground))]"
+              errors.termsAccepted ? "text-[hsl(var(--destructive))]" : "text-[hsl(var(--muted-foreground))]"
             )}
           >
             <AnimatedText>
@@ -358,7 +343,7 @@ export function SignUpForm() {
             </Link>
           </label>
           <AnimatePresence>
-            {errors.TermsAccepted && (
+            {errors.termsAccepted && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -367,7 +352,7 @@ export function SignUpForm() {
               >
                 <AlertCircle className="w-3.5 h-3.5 text-[hsl(var(--destructive))] flex-shrink-0" />
                 <p className="text-[11px] font-medium text-[hsl(var(--destructive))]">
-                  {errors.TermsAccepted.message}
+                  {errors.termsAccepted.message}
                 </p>
               </motion.div>
             )}
@@ -384,17 +369,16 @@ export function SignUpForm() {
         />
       </motion.div>
 
-      {/* Divider */}
-      <motion.div variants={itemVariants}>
+      {/* Social Login - Temporarily commented out for testing */}
+      {/* <motion.div variants={itemVariants}>
         <Divider
           text={t("auth.signUp.orContinueWith") || "Hoặc tiếp tục với"}
         />
       </motion.div>
 
-      {/* Social Login Buttons */}
       <motion.div variants={itemVariants}>
         <SocialLoginButtons isLoading={isLoading} />
-      </motion.div>
+      </motion.div> */}
 
       {/* Sign In Link */}
       <motion.div className="text-center pt-4" variants={itemVariants}>

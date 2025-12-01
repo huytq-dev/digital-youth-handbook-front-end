@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import { showToast } from "@/lib/toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, Eye, EyeOff, Loader2, ArrowRight, Mail, Lock, User } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -350,7 +350,7 @@ export function SocialLoginButtons({
     if (onGoogleClick) {
       onGoogleClick();
     } else {
-      toast.info(t("auth.signIn.socialComingSoon") || "Tính năng này sắp ra mắt");
+      showToast.info(t("auth.signIn.socialComingSoon") || "Tính năng này sắp ra mắt");
     }
   };
 
@@ -358,7 +358,7 @@ export function SocialLoginButtons({
     if (onFacebookClick) {
       onFacebookClick();
     } else {
-      toast.info(t("auth.signIn.socialComingSoon") || "Tính năng này sắp ra mắt");
+      showToast.info(t("auth.signIn.socialComingSoon") || "Tính năng này sắp ra mắt");
     }
   };
 

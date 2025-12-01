@@ -421,17 +421,16 @@
       "errorMessage": "Có lỗi xảy ra. Vui lòng thử lại sau."
     },
     "verifyEmail": {
-      "title": "Xác nhận email",
-      "verifying": "Đang xác nhận email...",
-      "verifyingMessage": "Vui lòng đợi trong giây lát",
-      "invalidToken": "Token không hợp lệ hoặc không tồn tại",
+      "loading": "Đang xác nhận email...",
+      "invalidToken": "Token không hợp lệ hoặc đã hết hạn",
       "successTitle": "Xác nhận email thành công!",
       "successMessage": "Email của bạn đã được xác nhận thành công. Bạn có thể đăng nhập ngay bây giờ.",
+      "redirectMessage": "Đang chuyển đến trang đăng nhập...",
       "errorTitle": "Xác nhận email thất bại",
       "errorMessage": "Có lỗi xảy ra. Vui lòng thử lại sau.",
       "goToSignIn": "Đi đến đăng nhập",
       "backToSignIn": "Quay lại đăng nhập",
-      "resendEmail": "Đăng ký lại"
+      "goToSignUp": "Đăng ký lại"
     },
     "socialLogin": {
       "successTitle": "Đăng nhập thành công!",

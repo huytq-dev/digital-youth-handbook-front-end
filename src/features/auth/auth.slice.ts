@@ -10,10 +10,10 @@ import type {
   RefreshTokenResponseModel,
   SocialSignInRequestModel,
   SocialSignInResponseModel,
-  EmailRequestModel,
-  SendEmailVerificationResponseModel,
+  SendVerificationEmailRequestModel,
+  SendVerificationEmailResponseModel,
   VerifyEmailRequestModel,
-  ConfirmEmailResponseModel,
+  VerifyEmailResponseModel,
   ForgotPasswordRequestModel,
   ForgotPasswordResponseModel,
   ResetPasswordRequestModel,
@@ -75,25 +75,25 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
-    // POST /api/auth/email/send
+    // POST /api/auth/email/verification/send
     sendVerificationEmail: builder.mutation<
-      SendEmailVerificationResponseModel,
-      EmailRequestModel
+      SendVerificationEmailResponseModel,
+      SendVerificationEmailRequestModel
     >({
       query: (body) => ({
-        url: 'auth/email/send',
+        url: 'auth/email/verification/send',
         method: 'POST',
         body,
       }),
     }),
 
-    // POST /api/auth/email/verify
+    // POST /api/auth/email/verification/confirm
     verifyEmail: builder.mutation<
-      ConfirmEmailResponseModel,
+      VerifyEmailResponseModel,
       VerifyEmailRequestModel
     >({
       query: (body) => ({
-        url: 'auth/email/verify',
+        url: 'auth/email/verification/confirm',
         method: 'POST',
         body,
       }),
