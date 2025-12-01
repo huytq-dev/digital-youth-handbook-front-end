@@ -3,11 +3,13 @@ import { Routes, Route } from "react-router-dom";
 import { ScrollToTop } from "@/components/scroll-to-top";
 
 const LandingPage = lazy(() => import("@/pages/landing-page"));
-const SignInPage = lazy(() => import("@/pages/home/sign-in"));
-const SignUpPage = lazy(() => import("@/pages/home/sign-up"));
-const ForgotPasswordPage = lazy(() => import("@/pages/home/forgot-password"));
-const ResetPasswordPage = lazy(() => import("@/pages/home/reset-password"));
-const VerifyEmailPage = lazy(() => import("@/pages/home/verify-email"));
+const HomePage = lazy(() => import("@/pages/home"));
+const ProfilePage = lazy(() => import("@/pages/profile"));
+const SignInPage = lazy(() => import("@/pages/auth/sign-in"));
+const SignUpPage = lazy(() => import("@/pages/auth/sign-up"));
+const ForgotPasswordPage = lazy(() => import("@/pages/auth/forgot-password"));
+const ResetPasswordPage = lazy(() => import("@/pages/auth/reset-password"));
+const VerifyEmailPage = lazy(() => import("@/pages/auth/verify-email"));
 
 const PageLoader = () => (
   <div className="flex min-h-screen items-center justify-center">
@@ -21,6 +23,8 @@ export const Router = () => {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/auth/sign-in" element={<SignInPage />} />
         <Route path="/auth/sign-up" element={<SignUpPage />} />
         <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />

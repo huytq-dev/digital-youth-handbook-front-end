@@ -1,14 +1,15 @@
 import { AuthLayout } from "@/components/layout/app/auth/auth-layout";
 import { AuthGlassCard } from "@/features/auth/components/shared/auth-glass-card";
-import { ForgotPasswordForm } from "@/features/auth/components/forgot-password-form";
+import { VerifyEmailForm } from "@/features/auth/components/verify-email-form";
 
-export default function ForgotPasswordPage() {
+export default function VerifyEmailPage() {
   return (
     <AuthLayout>
       <AuthGlassCard>
-        <ForgotPasswordForm />
+        <VerifyEmailForm />
       </AuthGlassCard>
     </AuthLayout>
   );
 }
+
 
