@@ -1,4 +1,5 @@
 import { ArrowRight, BookOpenCheck, Compass } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/primitives";
 import { AnimatedText } from "@/components/animated-text";
 
@@ -42,13 +43,15 @@ export const HomeHero = () => {
               <AnimatedText>Bắt đầu với gợi ý hôm nay</AnimatedText>
               <ArrowRight size={20} />
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="rounded-xl border-2 bg-white font-bold text-gray-700 shadow-md transition-colors duration-300 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-            >
-              <AnimatedText>Xem tất cả chủ đề</AnimatedText>
-            </Button>
+            <Link to="/learning-topics">
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-xl border-2 bg-white font-bold text-gray-700 shadow-md transition-colors duration-300 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+              >
+                <AnimatedText>Xem tất cả chủ đề</AnimatedText>
+              </Button>
+            </Link>
           </div>
 
           <div className="flex flex-wrap gap-4 text-sm text-gray-500">

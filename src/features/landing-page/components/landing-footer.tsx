@@ -134,7 +134,7 @@ export const LandingFooter = () => {
             <div className="space-y-3">
               <div className="flex items-start gap-3 text-sm text-slate-600 font-medium group">
                 <MapPin size={18} className="shrink-0 text-red-500 fill-red-100 group-hover:bounce" />
-                <span>60A Hoàng Văn Thụ, P.9, Q.Phú Nhuận, TP.HCM</span>
+                <span>Trường THCS Nguyễn Thị Minh Khai, Q.Thanh Khê, Đà Nẵng</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-slate-600 font-medium group">
                 <Phone size={18} className="shrink-0 text-green-600 fill-green-100" />

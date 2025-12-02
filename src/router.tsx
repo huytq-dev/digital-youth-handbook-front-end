@@ -4,6 +4,7 @@ import { ScrollToTop } from "@/components/scroll-to-top";
 
 const LandingPage = lazy(() => import("@/pages/landing-page"));
 const HomePage = lazy(() => import("@/pages/home"));
+const LearningTopicsPage = lazy(() => import("@/pages/learning-topics"));
 const ProfilePage = lazy(() => import("@/pages/profile"));
 const SignInPage = lazy(() => import("@/pages/auth/sign-in"));
 const SignUpPage = lazy(() => import("@/pages/auth/sign-up"));
@@ -24,6 +25,8 @@ export const Router = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<HomePage />} />
+        <Route path="/learning-topics" element={<LearningTopicsPage />} />
+        <Route path="/learning-topics/:slug" element={<LearningTopicsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/auth/sign-in" element={<SignInPage />} />
         <Route path="/auth/sign-up" element={<SignUpPage />} />
@@ -34,7 +37,3 @@ export const Router = () => {
     </Suspense>
   );
 };
-
-
-
-
