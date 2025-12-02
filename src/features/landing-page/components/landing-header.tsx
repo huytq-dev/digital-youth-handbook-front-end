@@ -1,21 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// [UPDATE] Đã xóa 'Search' khỏi import
 import { Menu, X, ChevronDown, Star, LogIn, UserPlus } from 'lucide-react';
-import { Button, Card } from '@/components/ui/primitives';
+import { Button } from '@/components/ui/primitives';
 import { cn } from '@/lib/utils';
-import { AnimatedText } from '@/components/animated-text';
+import { motion, AnimatePresence } from 'framer-motion';
 
-type NavSubItem = {
-  label: string;
-  href?: string;
-};
-
-type NavItem = {
-  label: string;
-  href?: string;
-  subItems?: NavSubItem[];
-};
+// --- Types ---
+type NavSubItem = { label: string; href?: string; };
+type NavItem = { label: string; href?: string; subItems?: NavSubItem[]; };
 
 const NAVIGATION: NavItem[] = [
   { label: "Trang chủ", href: "/" },
@@ -47,22 +39,95 @@ const NAVIGATION: NavItem[] = [
       { label: "Câu chuyện truyền cảm hứng" },
     ],
   },
-  {
-    label: "Thi hay",
-    href: "/thi-hay",
-  },
+  { label: "Thi hay", href: "/thi-hay" },
 ];
 
+// --- Sub-components ---
+
+// Mobile Sheet Overlay
 const SheetOverlay = ({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: React.ReactNode }) => (
   <>
     {isOpen && (
-      <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" onClick={onClose} />
+      <div 
+        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" 
+        onClick={onClose} 
+      />
     )}
-    <div className={cn("fixed inset-y-0 right-0 z-50 h-full w-3/4 gap-4 border-l bg-[hsl(var(--background))] p-6 shadow-2xl transition-transform duration-300 ease-in-out sm:max-w-sm flex flex-col", isOpen ? "translate-x-0" : "translate-x-full")}>
+    <div className={cn(
+      "fixed inset-y-0 right-0 z-50 h-full w-[85%] sm:w-[400px] bg-[#fff9f0] border-l-4 border-black p-6 shadow-[-10px_0px_0px_rgba(0,0,0,0.2)] transition-transform duration-300 ease-in-out flex flex-col",
+      isOpen ? "translate-x-0" : "translate-x-full"
+    )}>
+      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-yellow-400 to-red-500" />
       {children}
     </div>
   </>
 );
+
+// Nút Nav Desktop
+const NavLinkBtn = ({ item }: { item: NavItem }) => {
+    const [isHovered, setIsHovered] = useState(false);
+
+    return (
+        <div 
+            className="relative group h-full flex items-center"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            <Link to={item.href || "#"}>
+                <Button variant="ghost" className="relative font-bold text-slate-700 hover:text-black hover:bg-transparent px-4 text-base">
+                    <span className="relative z-10 flex items-center gap-1">
+                        {item.label}
+                        {item.subItems && (
+                            <ChevronDown 
+                                size={14} 
+                                strokeWidth={3} 
+                                className={cn("transition-transform duration-200", isHovered ? "rotate-180" : "")} 
+                            />
+                        )}
+                    </span>
+                    {/* Hiệu ứng highlight */}
+                    {isHovered && (
+                        <motion.div 
+                            layoutId="nav-highlight"
+                            className="absolute inset-0 bg-yellow-300 border-2 border-black rounded-lg -z-0 shadow-[2px_2px_0px_black]"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                        />
+                    )}
+                </Button>
+            </Link>
+
+            {/* Dropdown Menu */}
+            <AnimatePresence>
+                {item.subItems && isHovered && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10, rotateX: -15 }}
+                        animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute left-1/2 -translate-x-1/2 top-full pt-4 w-64"
+                    >
+                        {/* Mũi tên trỏ lên */}
+                        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-l-2 border-t-2 border-black rotate-45 z-20" />
+                        
+                        <div className="bg-white border-2 border-black shadow-[6px_6px_0px_black] rounded-xl overflow-hidden p-2 relative z-10">
+                            {item.subItems.map((subItem) => (
+                                <Link key={subItem.label} to={subItem.href || "#"} className="block">
+                                    <div className="px-4 py-3 hover:bg-blue-50 hover:text-blue-700 rounded-lg font-bold text-sm transition-colors border-2 border-transparent hover:border-black/10 flex items-center justify-between group/item">
+                                        {subItem.label}
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}
+
+// --- MAIN COMPONENT ---
 
 export const LandingHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,105 +140,111 @@ export const LandingHeader = () => {
   }, []);
 
   return (
-    <nav className={cn("fixed top-0 w-full z-50 transition-all duration-500 border-b border-transparent", scrolled ? "bg-white/70 backdrop-blur-xl border-[hsl(var(--border))] py-3 shadow-sm" : "bg-transparent py-5")}>
+    <nav
+      className={cn(
+        "fixed top-0 w-full z-50 transition-all duration-300 font-sans",
+        scrolled
+          ? "bg-[#fff9f0]/95 backdrop-blur-md py-2 border-b-4 border-black shadow-sm"
+          : "bg-[#fff9f0] py-4 border-b-4 border-black/10"
+      )}
+      // Đã xóa thuộc tính style chứa backgroundImage ở đây
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-12">
+        <div className="flex justify-between items-center h-14">
           
           {/* Logo Section */}
-          <Link to="/" className="flex items-center gap-3 cursor-pointer group">
+          <Link to="/" className="flex items-center gap-3 cursor-pointer group select-none">
             <div className="relative">
-              <div className="bg-[hsl(var(--primary))] w-10 h-10 rounded-xl flex items-center justify-center text-white transform group-hover:rotate-12 transition-transform shadow-lg shadow-blue-500/30">
-                <Star fill="currentColor" size={20} />
+              <div className="bg-blue-600 w-11 h-11 rounded-lg border-2 border-black flex items-center justify-center text-white shadow-[3px_3px_0px_black] group-hover:translate-x-0.5 group-hover:translate-y-0.5 group-hover:shadow-none transition-all">
+                <Star fill="currentColor" size={22} className="group-hover:rotate-180 transition-transform duration-500" />
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 bg-[hsl(var(--accent))] w-3.5 h-3.5 rounded-full border-2 border-white"></div>
+              <div className="absolute -top-1 -right-1 bg-red-500 w-3 h-3 rounded-full border-2 border-black" />
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-xl leading-none text-[hsl(var(--foreground))]">
-                <AnimatedText>
-                  TUỔI TRẺ <span className="text-[hsl(var(--primary))]">ONLINE</span>
-                </AnimatedText>
+              <span className="font-black text-xl leading-none text-slate-900 tracking-tight">
+                HÀNH TRANG <span className="text-blue-600">SỐ</span>
               </span>
-              <span className="text-[10px] font-bold text-orange-500 tracking-[0.2em] uppercase mt-1">
-                <AnimatedText>Khát Vọng</AnimatedText>
+              <span className="text-[10px] font-black text-white bg-orange-500 px-1 py-0.5 border border-black rounded-sm tracking-widest uppercase mt-1 w-fit rotate-[-2deg] group-hover:rotate-0 transition-transform">
+                Khát Vọng
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1 bg-white/40 backdrop-blur-lg px-2 py-1.5 rounded-full border border-white/40 shadow-sm/5">
-            {NAVIGATION.map((item: NavItem) => (
-              <div key={item.label} className="relative group">
-                {item.href ? (
-                  <Link to={item.href}>
-                    <Button variant="ghost" className="text-[hsl(var(--muted-foreground))] font-semibold hover:text-[hsl(var(--primary))] hover:bg-white/50 rounded-full transition-all duration-300 px-4">
-                      <AnimatedText>{item.label}</AnimatedText>
-                    </Button>
-                  </Link>
-                ) : (
-                  <Button variant="ghost" className="text-[hsl(var(--muted-foreground))] font-semibold hover:text-[hsl(var(--primary))] hover:bg-white/50 rounded-full transition-all duration-300 px-4">
-                    <AnimatedText>{item.label}</AnimatedText>
-                    {item.subItems && <ChevronDown className="ml-1 w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-all group-hover:rotate-180" />}
-                  </Button>
-                )}
-                
-                {item.subItems && (
-                  <div className="absolute left-1/2 -translate-x-1/2 top-full w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-2 translate-y-4 pt-2">
-                    <Card className="p-2 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/60 bg-white/95 backdrop-blur-xl rounded-2xl">
-                      {item.subItems.map((subItem) => (
-                        <Button key={subItem.label} variant="ghost" className="w-full justify-start text-sm font-medium rounded-xl h-auto py-2.5 hover:bg-white/50 hover:text-[hsl(var(--primary))] transition-colors">
-                            <AnimatedText>{subItem.label}</AnimatedText>
-                        </Button>
-                      ))}
-                    </Card>
-                  </div>
-                )}
-              </div>
+          <div className="hidden lg:flex items-center gap-2">
+            {NAVIGATION.map((item) => (
+                <NavLinkBtn key={item.label} item={item} />
             ))}
           </div>
 
-          {/* Right Side: Auth Buttons (Đã xóa Search Icon) */}
-          <div className="hidden lg:flex items-center gap-3">
-            {/* [UPDATE] Đã xóa Button Search và Divider */}
-            <div className="flex items-center gap-2">
-                <Link to="/auth/sign-in">
-                    <Button variant="ghost" className="font-semibold text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary))] hover:bg-white/50 rounded-full px-5">
-                        Đăng nhập
-                    </Button>
-                </Link>
-                <Link to="/auth/sign-up">
-                    <Button variant="default" className="rounded-full shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all px-5 font-bold">
-                        Đăng ký
-                    </Button>
-                </Link>
-            </div>
+          {/* Right Side: Auth Buttons */}
+          <div className="hidden lg:flex items-center gap-4">
+             <Link to="/auth/sign-in">
+                <motion.button
+                    whileHover={{ y: -2, boxShadow: "2px 2px 0px 0px black" }}
+                    whileTap={{ y: 0, boxShadow: "0px 0px 0px 0px black" }}
+                    className="h-11 px-6 rounded-lg font-bold border-2 border-black bg-white text-slate-900 shadow-[1px_1px_0px_black] transition-all flex items-center justify-center"
+                >
+                    Đăng nhập
+                </motion.button>
+             </Link>
+             
+             <Link to="/auth/sign-up">
+                <motion.button
+                    whileHover={{ y: -2, boxShadow: "4px 4px 0px 0px black" }}
+                    whileTap={{ y: 0, boxShadow: "0px 0px 0px 0px black" }}
+                    className="h-11 px-6 bg-blue-600 text-white font-bold border-2 border-black rounded-lg shadow-[2px_2px_0px_black] transition-all flex items-center gap-2 justify-center"
+                >
+                    Đăng ký <ArrowRightIcon className="w-4 h-4" />
+                </motion.button>
+             </Link>
           </div>
 
-          {/* Mobile Toggle */}
+          {/* Mobile Toggle Button */}
           <div className="lg:hidden">
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(true)}><Menu size={24} /></Button>
+            <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsOpen(true)}
+                className="border-2 border-black bg-white shadow-[2px_2px_0px_black] hover:translate-y-0.5 hover:shadow-none transition-all active:bg-gray-100"
+            >
+                <Menu size={24} strokeWidth={2.5} />
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Sheet */}
+      {/* Mobile Sheet Content */}
        <SheetOverlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
-         <div className="flex items-center justify-between mb-6">
-            <span className="font-bold text-xl"><AnimatedText>Menu</AnimatedText></span>
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}><X size={24} /></Button>
+         <div className="flex items-center justify-between mb-8 pb-4 border-b-2 border-black border-dashed">
+            <span className="font-black text-2xl flex items-center gap-2">
+                <div className="w-4 h-4 bg-orange-500 border-2 border-black rounded-full" />
+                MENU
+            </span>
+            <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsOpen(false)}
+                className="hover:bg-red-100 hover:text-red-600 rounded-full transition-colors"
+            >
+                <X size={28} strokeWidth={3} />
+            </Button>
          </div>
          
-         <div className="flex-1 overflow-y-auto flex flex-col gap-2">
+         <div className="flex-1 overflow-y-auto flex flex-col gap-2 pr-2 custom-scrollbar">
            {NAVIGATION.map((item) => (
-             <div key={item.label}>
-               <Button variant="ghost" className="w-full justify-start text-base font-semibold">
-                   <AnimatedText>{item.label}</AnimatedText>
-               </Button>
+             <div key={item.label} className="border-2 border-black rounded-xl bg-white mb-3 shadow-[3px_3px_0px_rgba(0,0,0,0.1)] overflow-hidden">
+               <div className="p-3 font-bold text-lg flex items-center justify-between bg-slate-50">
+                   {item.label}
+               </div>
                {item.subItems && (
-                 <div className="ml-4 mt-1 space-y-1 border-l border-[hsl(var(--border))] pl-2">
+                 <div className="border-t-2 border-black divide-y-2 divide-dashed divide-slate-200">
                    {item.subItems.map((subItem) => (
-                      <Button key={subItem.label} variant="ghost" className="w-full justify-start text-sm text-[hsl(var(--muted-foreground))]">
-                        <AnimatedText>{subItem.label}</AnimatedText>
-                      </Button>
+                      <Link key={subItem.label} to={subItem.href || "#"} onClick={() => setIsOpen(false)}>
+                         <div className="p-3 pl-4 text-sm font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors flex items-center gap-2">
+                            {subItem.label}
+                         </div>
+                      </Link>
                    ))}
                  </div>
                )}
@@ -181,15 +252,15 @@ export const LandingHeader = () => {
            ))}
          </div>
 
-         <div className="mt-auto pt-6 border-t border-[hsl(var(--border))] grid grid-cols-2 gap-3">
-            <Link to="/auth/sign-in" className="w-full">
-              <Button variant="outline" className="w-full rounded-xl border-[hsl(var(--border))] font-semibold">
-                  <LogIn size={16} className="mr-2" /> Đăng nhập
+         <div className="mt-auto pt-6 border-t-2 border-black grid grid-cols-2 gap-3">
+            <Link to="/auth/sign-in" className="w-full" onClick={() => setIsOpen(false)}>
+              <Button variant="outline" className="w-full h-12 rounded-xl border-2 border-black font-bold hover:bg-slate-100 text-slate-900 shadow-sm">
+                  <LogIn size={18} className="mr-2" /> Đăng nhập
               </Button>
             </Link>
-            <Link to="/auth/sign-up" className="w-full">
-              <Button variant="default" className="w-full rounded-xl font-bold shadow-md">
-                  <UserPlus size={16} className="mr-2" /> Đăng ký
+            <Link to="/auth/sign-up" className="w-full" onClick={() => setIsOpen(false)}>
+              <Button variant="default" className="w-full h-12 rounded-xl border-2 border-black bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-[3px_3px_0px_black] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_black] transition-all">
+                  <UserPlus size={18} className="mr-2" /> Đăng ký
               </Button>
             </Link>
          </div>
@@ -197,3 +268,10 @@ export const LandingHeader = () => {
     </nav>
   );
 };
+
+// Helper Icon
+const ArrowRightIcon = (props: any) => (
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <path d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+    </svg>
+);
