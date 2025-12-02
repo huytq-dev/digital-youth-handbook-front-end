@@ -71,7 +71,7 @@ export function AuthHeader() {
       {/* Content */}
       <nav className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <div className="flex justify-between items-center h-full">
-          {/* Logo Section: Brand Tuổi Trẻ Online */}
+          {/* Logo Section: Brand Hành Trang Số */}
           <Link to="/" className="flex items-center gap-3 cursor-pointer group">
             <motion.div
               className="flex items-center gap-3"
@@ -96,8 +96,8 @@ export function AuthHeader() {
                   transition={{ duration: 0.3 }}
                 >
                   <AnimatedText>
-                    TUỔI TRẺ{" "}
-                    <span className="text-[hsl(var(--primary))]">ONLINE</span>
+                    HÀNH TRANG{" "}
+                    <span className="text-[hsl(var(--primary))]">SỐ</span>
                   </AnimatedText>
                 </motion.span>
                 <span className="text-[10px] font-bold text-orange-500 tracking-[0.2em] uppercase mt-0.5">

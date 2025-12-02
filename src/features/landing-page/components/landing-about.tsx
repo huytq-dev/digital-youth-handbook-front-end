@@ -83,7 +83,7 @@ export const LandingAbout = () => {
             </AnimatedText>
           </h2>
           <p className="text-lg text-[hsl(var(--muted-foreground))] leading-relaxed">
-            <AnimatedText>Tuổi Trẻ Online không chỉ là trang tin tức, mà là ngôi nhà chung của Gen Z - nơi kết nối những trái tim nhiệt huyết, chia sẻ tri thức và cùng nhau kiến tạo tương lai.</AnimatedText>
+            <AnimatedText>Hành Trang Số không chỉ là trang tin tức, mà là ngôi nhà chung của Gen Z - nơi kết nối những trái tim nhiệt huyết, chia sẻ tri thức và cùng nhau kiến tạo tương lai.</AnimatedText>
           </p>
         </div>
 

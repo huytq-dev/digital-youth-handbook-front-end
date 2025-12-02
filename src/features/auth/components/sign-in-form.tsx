@@ -93,7 +93,7 @@ export function SignInForm() {
         <p className="text-[hsl(var(--muted-foreground))] text-sm font-medium">
           <AnimatedText>
             {t("auth.signIn.subtitle") ||
-              "Chào mừng bạn trở lại Tuổi Trẻ Online"}
+              "Chào mừng bạn trở lại Hành Trang Số"}
           </AnimatedText>
         </p>
       </motion.div>
