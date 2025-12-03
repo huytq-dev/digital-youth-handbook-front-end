@@ -135,10 +135,14 @@ export function SignInForm() {
           <AnimatedText>
             {t("auth.signIn.subtitle") ||
 <<<<<<< HEAD
+<<<<<<< HEAD
               "Chào mừng bạn trở lại Tuổi Trẻ Online"}
 =======
               "Chào mừng bạn trở lại Hành Trang Số"}
 >>>>>>> bd6d5d524b869f34ec4dd3fbf4acc06975bef341
+=======
+              "Chào mừng bạn trở lại Tuổi Trẻ Online"}
+>>>>>>> 2bd665c48a54b88a4dfaa5d7fb1ac1773582eb84
           </AnimatedText>
         </p>
       </motion.div>
