@@ -411,6 +411,21 @@ input::-ms-clear {
   width: 100%;
 }
 
+/* Toast Animation - Bounce in effect */
+@keyframes toast-bounce-in {
+  0% {
+    transform: translateY(100%) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 /* Sonner Toast Custom Styles - Giống như trong hình */
 [data-sonner-toast],
 [data-sonner-toaster] [data-sonner-toast] {
@@ -425,6 +440,7 @@ input::-ms-clear {
   display: flex !important;
   align-items: flex-start !important;
   gap: 12px !important;
+  animation: toast-bounce-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 
 [data-sonner-toast] [data-title],
@@ -449,120 +465,120 @@ input::-ms-clear {
   margin-top: 2px !important;
 }
 
-/* Success Toast - Green */
+/* Success Toast - Green (Hoạt hình, tươi sáng) */
 [data-sonner-toast][data-type="success"] {
-  background: hsl(142 76% 95%) !important;
-  border-color: hsl(142 76% 40%) !important;
-  color: hsl(142 76% 25%) !important;
+  background: #D1FAE5 !important; /* Xanh lá tươi nhẹ */
+  border-color: #10B981 !important; /* Xanh lá đậm */
+  color: #065F46 !important; /* Xanh lá đậm cho text */
 }
 
 [data-sonner-toast][data-type="success"] [data-title] {
-  color: hsl(142 76% 25%) !important;
+  color: #065F46 !important;
 }
 
 [data-sonner-toast][data-type="success"] [data-description] {
-  color: hsl(142 76% 30%) !important;
+  color: #047857 !important;
 }
 
 [data-sonner-toast][data-type="success"] [data-icon],
 [data-sonner-toast][data-type="success"] [data-icon-wrapper] {
-  background: hsl(142 76% 40%) !important;
-  border-radius: 50% !important;
-  width: 24px !important;
-  height: 24px !important;
+  background: #10B981 !important;
+  border-radius: 8px !important; /* Giữ rounded-lg để khớp với component */
+  width: 40px !important;
+  height: 40px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   color: white !important;
   flex-shrink: 0 !important;
-  margin-right: 12px !important;
+  margin-right: 0 !important; /* Đã có gap trong component */
 }
 
-/* Error Toast - Red */
+/* Error Toast - Red (Hoạt hình, tươi sáng) */
 [data-sonner-toast][data-type="error"] {
-  background: hsl(0 84% 96%) !important;
-  border-color: hsl(0 84% 55%) !important;
-  color: hsl(0 84% 30%) !important;
+  background: #FEE2E2 !important; /* Đỏ nhẹ */
+  border-color: #EF4444 !important; /* Đỏ đậm */
+  color: #991B1B !important; /* Đỏ đậm cho text */
 }
 
 [data-sonner-toast][data-type="error"] [data-title] {
-  color: hsl(0 84% 30%) !important;
+  color: #991B1B !important;
 }
 
 [data-sonner-toast][data-type="error"] [data-description] {
-  color: hsl(0 84% 35%) !important;
+  color: #B91C1C !important;
 }
 
 [data-sonner-toast][data-type="error"] [data-icon],
 [data-sonner-toast][data-type="error"] [data-icon-wrapper] {
-  background: hsl(0 84% 55%) !important;
-  border-radius: 50% !important;
-  width: 24px !important;
-  height: 24px !important;
+  background: #EF4444 !important;
+  border-radius: 8px !important;
+  width: 40px !important;
+  height: 40px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   color: white !important;
   flex-shrink: 0 !important;
-  margin-right: 12px !important;
+  margin-right: 0 !important;
 }
 
-/* Info Toast - Blue */
+/* Info Toast - Blue (Hoạt hình, khớp với brand color) */
 [data-sonner-toast][data-type="info"] {
-  background: hsl(217 91% 97%) !important;
-  border-color: hsl(217 91% 55%) !important;
-  color: hsl(217 91% 30%) !important;
+  background: #DBEAFE !important; /* Xanh dương nhẹ */
+  border-color: #2563EB !important; /* Blue-600 - Brand color */
+  color: #1E40AF !important; /* Blue-800 cho text */
 }
 
 [data-sonner-toast][data-type="info"] [data-title] {
-  color: hsl(217 91% 30%) !important;
+  color: #1E40AF !important;
 }
 
 [data-sonner-toast][data-type="info"] [data-description] {
-  color: hsl(217 91% 35%) !important;
+  color: #1E3A8A !important;
 }
 
 [data-sonner-toast][data-type="info"] [data-icon],
 [data-sonner-toast][data-type="info"] [data-icon-wrapper] {
-  background: hsl(217 91% 55%) !important;
-  border-radius: 50% !important;
-  width: 24px !important;
-  height: 24px !important;
+  background: #2563EB !important; /* Blue-600 - Brand color */
+  border-radius: 8px !important;
+  width: 40px !important;
+  height: 40px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   color: white !important;
   flex-shrink: 0 !important;
-  margin-right: 12px !important;
+  margin-right: 0 !important;
 }
 
-/* Warning Toast - Orange/Yellow */
+/* Warning Toast - Yellow (Hoạt hình, vàng chanh tươi) */
 [data-sonner-toast][data-type="warning"] {
-  background: hsl(25 95% 96%) !important;
-  border-color: hsl(25 95% 50%) !important;
-  color: hsl(25 95% 30%) !important;
+  background: #FEF3C7 !important; /* Vàng chanh nhẹ */
+  border-color: #FBBF24 !important; /* Vàng chanh đậm */
+  color: #92400E !important; /* Vàng đậm cho text */
 }
 
 [data-sonner-toast][data-type="warning"] [data-title] {
-  color: hsl(25 95% 30%) !important;
+  color: #92400E !important;
 }
 
 [data-sonner-toast][data-type="warning"] [data-description] {
-  color: hsl(25 95% 35%) !important;
+  color: #B45309 !important;
 }
 
 [data-sonner-toast][data-type="warning"] [data-icon],
 [data-sonner-toast][data-type="warning"] [data-icon-wrapper] {
-  background: hsl(25 95% 50%) !important;
-  border-radius: 50% !important;
-  width: 24px !important;
-  height: 24px !important;
+  background: #FBBF24 !important; /* Vàng chanh */
+  border-radius: 8px !important;
+  width: 40px !important;
+  height: 40px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  color: white !important;
+  color: black !important; /* Text đen trên nền vàng */
   flex-shrink: 0 !important;
-  margin-right: 12px !important;
+  margin-right: 0 !important;
 }
 
 /* Close Button */

@@ -68,7 +68,7 @@ export const TableOfContents = () => {
   };
 
   return (
-    <div className="bg-white border-2 border-black rounded-xl p-5 shadow-[4px_4px_0px_black] sticky top-24">
+    <div className="bg-white border-2 border-black rounded-xl p-5 shadow-[4px_4px_0px_black]">
       <h3 className="font-black text-black uppercase mb-4 flex items-center gap-2 border-b-2 border-dashed border-slate-200 pb-2">
         <List size={20} /> Mục lục
       </h3>

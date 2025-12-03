@@ -15,9 +15,6 @@ const Button = ({ children, className, size, variant, ...props }: any) => (
 const AnimatedText = ({ children }: any) => <span>{children}</span>;
 
 // --- 1. CÁC SVG VẼ TAY CUSTOM ---
-// (Giữ nguyên các SVG cũ: PaperPlaneSVG, DoodleCross, DoodleArrowCurve, DoodleSquiggle, DoodleStarFour, CreativeBadge...)
-
-// ... [Giữ nguyên code phần SVG cũ của bạn ở đây] ...
 
 const PaperPlaneSVG = React.memo(() => (
   <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -32,17 +29,6 @@ const DoodleCross = React.memo(({ className }: { className?: string }) => (
   </svg>
 ));
 
-// const DoodleArrowCurve = React.memo(({ className }: { className?: string }) => (
-//   <svg width="40" height="30" viewBox="0 0 40 30" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className={className}>
-//     <path d="M2 15 C 10 5, 20 25, 35 15" markerEnd="url(#arrowhead-doodle)" />
-//     <defs>
-//       <marker id="arrowhead-doodle" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-//         <polygon points="0 0, 8 3, 0 6" fill="currentColor" />
-//       </marker>
-//     </defs>
-//   </svg>
-// ));
-
 const DoodleSquiggle = React.memo(({ className }: { className?: string }) => (
   <svg width="50" height="10" viewBox="0 0 50 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 3" className={className}>
     <path d="M1 5 C 10 -2, 20 12, 49 5" />
@@ -55,7 +41,6 @@ const DoodleStarFour = React.memo(({ className }: { className?: string }) => (
   </svg>
 ));
 
-// --- [NEW] SVG Lò xo (Spring) ---
 const DoodleSpring = React.memo(({ className }: { className?: string }) => (
   <svg width="40" height="40" viewBox="0 0 50 50" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className={className}>
     <path d="M10 5 Q 30 5, 30 15 T 30 25 T 30 35 T 30 45" />
@@ -85,7 +70,6 @@ const CreativeBadge = React.memo(() => {
 });
 
 // --- 2. CÁC COMPONENT ANIMATION ---
-// (Giữ nguyên FloatingIcon, PaperPlane...)
 
 const PaperPlane = React.memo(() => {
   const shouldReduceMotion = useReducedMotion();
@@ -121,11 +105,12 @@ const FloatingIcon = React.memo(({ children, className, delay = 0, duration = 4,
   );
 });
 
-// --- [NEW] CÁC WIDGET TRANG TRÍ 2 BÊN ---
+// --- [UPDATED] CÁC WIDGET TRANG TRÍ 2 BÊN ---
 
 const MusicPlayerWidget = () => (
   <motion.div
-    className="hidden xl:flex absolute left-8 top-1/3 z-10 flex-col items-center"
+    // SỬA ĐỔI TẠI ĐÂY: z-30, left-2, scale-90
+    className="hidden xl:flex absolute left-2 2xl:left-8 top-1/3 z-30 flex-col items-center scale-90 2xl:scale-100 origin-left"
     initial={{ x: -100, opacity: 0 }}
     animate={{ x: 0, opacity: 1 }}
     transition={{ delay: 0.5, duration: 0.8 }}
@@ -162,7 +147,8 @@ const MusicPlayerWidget = () => (
 
 const CodingWidget = () => (
   <motion.div
-    className="hidden xl:flex absolute right-12 top-1/4 z-10 flex-col items-center"
+    // SỬA ĐỔI TẠI ĐÂY: z-30, right-2, scale-90
+    className="hidden xl:flex absolute right-2 2xl:right-12 top-1/4 z-30 flex-col items-center scale-90 2xl:scale-100 origin-right"
     initial={{ x: 100, opacity: 0 }}
     animate={{ x: 0, opacity: 1 }}
     transition={{ delay: 0.7, duration: 0.8 }}
@@ -203,7 +189,6 @@ const CodingWidget = () => (
 const BackgroundDoodles = React.memo(() => {
   const shouldReduceMotion = useReducedMotion();
 
-  // Đã thêm nhiều icon hơn ở 2 bên
   const doodles = [
     // --- Bên trái ---
     { icon: <span className="font-handwriting text-2xl font-bold text-blue-500 opacity-60">E=mc²</span>, top: "12%", left: "5%", delay: 0 },
@@ -245,12 +230,12 @@ const BackgroundDoodles = React.memo(() => {
 
 export const LandingHero = () => {
   return (
-    <section className="relative overflow-hidden bg-[#fff9f0] py-16 lg:py-24 font-sans text-slate-900 border-b-4 border-black min-h-[600px]">
+    <section className="relative overflow-hidden bg-[#fff9f0] pt-28 pb-16 lg:py-24 font-sans text-slate-900 border-b-4 border-black min-h-[600px]">
       
       {/* 1. LAYER NỀN */}
       <BackgroundDoodles />
 
-      {/* 2. [NEW] WIDGETS TRANG TRÍ 2 BÊN (Chỉ hiện trên màn hình lớn XL trở lên) */}
+      {/* 2. WIDGETS TRANG TRÍ 2 BÊN (Hiện khi màn hình > XL) */}
       <MusicPlayerWidget />
       <CodingWidget />
 
@@ -347,7 +332,8 @@ export const LandingHero = () => {
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Button
                       size="lg"
-                      className="gap-2 bg-blue-600 text-white font-bold border-2 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all"
+                      // Neo-Brutalism: Default shadow 4px, Hover lift 2px + shadow 6px, Active press 4px + no shadow
+                      className="gap-2 bg-blue-600 text-white font-black text-lg uppercase rounded-lg border-2 border-black shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] hover:bg-blue-700 active:translate-y-1 active:translate-x-1 active:shadow-none"
                     >
                       Bắt Đầu Ngay <ArrowRight size={20} strokeWidth={3} />
                     </Button>
@@ -366,7 +352,8 @@ export const LandingHero = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="bg-white text-black font-bold border-2 border-black rounded-lg shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-50 transition-all"
+                  // Neo-Brutalism: Default shadow 4px, Hover lift 2px + shadow 6px, Active press 4px + no shadow
+                  className="bg-white text-black font-black text-lg uppercase rounded-lg border-2 border-black shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] hover:bg-gray-50 active:translate-y-1 active:translate-x-1 active:shadow-none"
                 >
                   Tìm Hiểu Thêm
                 </Button>
@@ -381,7 +368,7 @@ export const LandingHero = () => {
             animate={{ opacity: 1, x: 0, rotate: 0 }}
             transition={{ duration: 0.8 }}
           >
-             {/* Sticker ngôi sao - đẩy xuống một chút để không bị header che */}
+             {/* Sticker ngôi sao */}
             <FloatingIcon className="top-2 -right-4 text-blue-400 z-30" delay={0.5} type="bounce" duration={3}>
               <Star size={56} fill="yellow" strokeWidth={3} className="text-black" />
             </FloatingIcon>

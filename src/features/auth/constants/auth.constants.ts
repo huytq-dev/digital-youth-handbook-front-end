@@ -38,6 +38,42 @@ export const iconVariants = {
   focus: { scale: 1.1, color: "hsl(var(--primary))" },
 };
 
+// [UPDATE] Page Transition Variants - Cartoonish Style với Direction
+// direction = 1: Đi tới (Login -> Signup)
+// direction = -1: Đi lùi (Signup -> Login)
+export const pageTransitionVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? "100%" : "-100%", // Nếu đi tới thì vào từ phải, đi lùi thì vào từ trái
+    opacity: 0,
+    scale: 0.8, // Thêm scale nhẹ để tạo cảm giác "nảy" ra
+    rotate: direction > 0 ? 5 : -5, // Nghiêng nhẹ cho giống hoạt hình
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    rotate: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 300, // Lò xo cứng
+      damping: 25, // Giảm rung chấn nhanh
+      mass: 1,
+    },
+  },
+  exit: (direction: number) => ({
+    zIndex: 0,
+    x: direction < 0 ? "100%" : "-100%", // Logic ngược lại khi thoát
+    opacity: 0,
+    scale: 0.8,
+    rotate: direction < 0 ? 5 : -5,
+    transition: {
+      duration: 0.3,
+      ease: "easeInOut" as const,
+    },
+  }),
+};
+
 // --- STYLING CLASSES ---
 // Sử dụng CSS variables từ global.css
 export const LABEL_CLASSES =
@@ -76,3 +112,4 @@ export const getInputClasses = (hasError: boolean) =>
       "focus:border-[hsl(var(--destructive))] focus:ring-1 focus:ring-[hsl(var(--destructive))]/30",
     ]
   );
+

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/primitives";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { scrollToTop } from "@/components/scroll-to-top";
+import { Link } from "react-router-dom";
 
 // --- Dữ liệu điều hướng ---
 type NavSubItem = { label: string; href?: string; };
@@ -15,13 +16,14 @@ const NAVIGATION: NavItem[] = [
   { label: "Trang chủ", href: "/" },
   {
     label: "Chủ đề học tập",
+    href: "/learning-topics",
     subItems: [
-      { label: "Lập trình & Công nghệ" },
-      { label: "Ngoại ngữ & Du học" },
-      { label: "Marketing & Kinh doanh" },
-      { label: "Thiết kế & Sáng tạo" },
-      { label: "Tài chính cá nhân" },
-      { label: "Kỹ năng mềm & Lãnh đạo" },
+      { label: "Lý tưởng & Hoài bão", href: "/learning-topics/ly-tuong" },
+      { label: "Tư tưởng & Đạo đức", href: "/learning-topics/tu-tuong" },
+      { label: "Văn hóa & Lối sống", href: "/learning-topics/van-hoa" },
+      { label: "Mạng xã hội an toàn", href: "/learning-topics/an-toan-mang" },
+      { label: "Thanh niên tình nguyện", href: "/learning-topics/tinh-nguyen" },
+      { label: "Chuyển đổi số", href: "/learning-topics/chuyen-doi-so" },
     ],
   },
   {
@@ -160,19 +162,27 @@ export const LandingFooter = () => {
           <div className="lg:col-span-5 grid grid-cols-2 md:grid-cols-3 gap-8">
             {FOOTER_SECTIONS.map((section, idx) => (
               <div key={idx} className={cn(idx === 1 ? "hidden md:block" : "")}> 
-                <h4 className="font-black text-slate-900 mb-5 text-sm uppercase tracking-wider border-b-2 border-dashed border-slate-300 pb-2 w-fit">
-                  {section.label}
-                </h4>
+                {section.href ? (
+                  <Link to={section.href}>
+                    <h4 className="font-black text-slate-900 mb-5 text-sm uppercase tracking-wider border-b-2 border-dashed border-slate-300 pb-2 w-fit hover:text-blue-600 transition-colors">
+                      {section.label}
+                    </h4>
+                  </Link>
+                ) : (
+                  <h4 className="font-black text-slate-900 mb-5 text-sm uppercase tracking-wider border-b-2 border-dashed border-slate-300 pb-2 w-fit">
+                    {section.label}
+                  </h4>
+                )}
                 <ul className="space-y-3">
                   {section.subItems?.map((item) => (
                     <li key={item.label}>
-                      <a
-                        href={item.href || "#"}
+                      <Link
+                        to={item.href || "#"}
                         className="text-sm font-bold text-slate-500 hover:text-blue-600 hover:translate-x-1 transition-all inline-block flex items-center gap-1 group"
                       >
                         <span className="w-1.5 h-1.5 bg-slate-300 rounded-full group-hover:bg-blue-600 transition-colors" />
                         {item.label}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>

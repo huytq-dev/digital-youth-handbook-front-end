@@ -2,15 +2,22 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Loader2, CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
+import {
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  ArrowLeft,
+  UserPlus,
+  LogIn,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatedText } from "@/components/animated-text";
 import { useVerifyEmailMutation } from "../auth.slice";
-import { isApiResponseSuccess, getApiErrorMessage } from "@/features/common/common.type";
 import {
-  containerVariants,
-  itemVariants,
-} from "../constants/auth.constants";
+  isApiResponseSuccess,
+  getApiErrorMessage,
+} from "@/features/common/common.type";
+import { containerVariants } from "../constants/auth.constants";
 
 export function VerifyEmailForm() {
   const { t } = useTranslation();
@@ -22,16 +29,16 @@ export function VerifyEmailForm() {
 
   const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
 
-  // Lấy token từ URL query params và tự động verify
   useEffect(() => {
     const tokenFromUrl = searchParams.get("token");
     if (tokenFromUrl) {
-      // Tự động gọi API verify khi có token
       handleVerify(tokenFromUrl);
     } else {
       setIsError(true);
-      setErrorMessage(t("auth.verifyEmail.invalidToken") || "Token không hợp lệ hoặc đã hết hạn");
-      // Không cần toast vì đã có error state hiển thị ở giữa màn hình
+      setErrorMessage(
+        t("auth.verifyEmail.invalidToken") ||
+          "Token không hợp lệ hoặc đã hết hạn"
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, t]);
@@ -42,8 +49,6 @@ export function VerifyEmailForm() {
 
       if (isApiResponseSuccess(response)) {
         setIsVerified(true);
-        // Không cần toast vì đã có thông báo lớn ở giữa màn hình
-        // Redirect về trang đăng nhập sau 3 giây
         setTimeout(() => {
           navigate("/auth/sign-in");
         }, 3000);
@@ -51,7 +56,6 @@ export function VerifyEmailForm() {
         const errorMsg = getApiErrorMessage(response);
         setIsError(true);
         setErrorMessage(errorMsg);
-        // Không cần toast vì đã có error state hiển thị ở giữa màn hình
       }
     } catch (error: unknown) {
       const errorMsg = getApiErrorMessage(
@@ -61,176 +65,163 @@ export function VerifyEmailForm() {
       );
       setIsError(true);
       setErrorMessage(errorMsg);
-      // Không cần toast vì đã có error state hiển thị ở giữa màn hình
     }
   };
 
-  // Loading state
+  // --- 1. LOADING STATE ---
   if (isLoading && !isVerified && !isError) {
     return (
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: "spring", duration: 0.5 }}
-        className="flex flex-col items-center justify-center py-12"
         variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="w-full max-w-lg mx-auto bg-white border-2 border-black rounded-xl shadow-[8px_8px_0px_black] p-10 text-center relative overflow-hidden"
       >
-        <motion.div variants={itemVariants}>
-          <Loader2 className="w-12 h-12 animate-spin text-[hsl(var(--primary))] mb-4" />
-        </motion.div>
-        <motion.p className="text-sm text-[hsl(var(--muted-foreground))]" variants={itemVariants}>
-          <AnimatedText>
-            {t("auth.verifyEmail.loading") || "Đang xác nhận email..."}
-          </AnimatedText>
-        </motion.p>
+        <div className="absolute top-0 left-0 w-full h-2 bg-blue-400 border-b-2 border-black" />
+
+        <div className="flex flex-col items-center justify-center py-8">
+          <div className="w-16 h-16 border-2 border-black bg-blue-100 rounded-xl flex items-center justify-center mb-6 shadow-[4px_4px_0px_black] animate-bounce">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+          </div>
+          <h3 className="text-xl font-black text-black uppercase tracking-tight mb-2">
+            <AnimatedText>
+              {t("auth.verifyEmail.loading") || "Đang xác thực..."}
+            </AnimatedText>
+          </h3>
+          <p className="text-sm font-bold text-slate-500">
+            Vui lòng đợi trong giây lát
+          </p>
+        </div>
       </motion.div>
     );
   }
 
-  // Success state
+  // --- 2. SUCCESS STATE ---
   if (isVerified) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ type: "spring", duration: 0.5 }}
-        className="flex flex-col items-center justify-center py-8"
-        variants={containerVariants}
+        className="w-full max-w-lg mx-auto bg-white border-2 border-black rounded-xl shadow-[8px_8px_0px_black] p-10 text-center relative overflow-hidden"
       >
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: "spring", stiffness: 200, damping: 15 }}
-          variants={itemVariants}
-        >
-          <CheckCircle2 className="w-20 h-20 text-green-500 mb-6 mx-auto drop-shadow-lg" />
-        </motion.div>
-        <motion.h3
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-2xl font-bold text-[hsl(var(--primary))] mb-3 text-center"
-          variants={itemVariants}
-        >
+        {/* Decor Header */}
+        <div className="absolute top-0 left-0 w-full h-2 bg-green-500 border-b-2 border-black" />
+
+        <div className="mb-6 flex justify-center">
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            className="w-20 h-20 bg-green-100 rounded-full border-2 border-black flex items-center justify-center shadow-[4px_4px_0px_black]"
+          >
+            <CheckCircle2 className="w-10 h-10 text-green-600" />
+          </motion.div>
+        </div>
+
+        <h3 className="text-2xl font-black text-black uppercase mb-3">
           <AnimatedText>
-            {t("auth.verifyEmail.successTitle") || "Xác nhận email thành công!"}
+            {t("auth.verifyEmail.successTitle") || "Xác thực thành công!"}
           </AnimatedText>
-        </motion.h3>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="text-sm text-[hsl(var(--muted-foreground))] text-center max-w-sm mx-auto leading-relaxed mb-6"
-          variants={itemVariants}
-        >
+        </h3>
+
+        <p className="text-base font-medium text-slate-600 mb-8 leading-relaxed px-4">
           <AnimatedText>
             {t("auth.verifyEmail.successMessage") ||
-              "Email của bạn đã được xác nhận thành công. Bạn có thể đăng nhập ngay bây giờ."}
+              "Email của bạn đã được xác nhận. Tài khoản đã sẵn sàng sử dụng."}
           </AnimatedText>
-        </motion.p>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="text-sm text-[hsl(var(--muted-foreground))]/70 text-center mb-6"
-          variants={itemVariants}
-        >
+        </p>
+
+        {/* Progress Bar tự chạy */}
+        <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden border border-black mb-2">
+          <motion.div
+            className="h-full bg-green-500"
+            initial={{ width: "0%" }}
+            animate={{ width: "100%" }}
+            transition={{ duration: 3, ease: "linear" }}
+          />
+        </div>
+        <p className="text-xs font-bold text-slate-400 mb-6">
           <AnimatedText>
             {t("auth.verifyEmail.redirectMessage") ||
               "Đang chuyển đến trang đăng nhập..."}
           </AnimatedText>
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          variants={itemVariants}
+        </p>
+
+        <Button
+          onClick={() => navigate("/auth/sign-in")}
+          // Neo-Brutalism: Default shadow 4px, Hover lift 2px + shadow 6px, Active press 4px + no shadow
+          className="w-full h-14 bg-black text-white font-black text-lg uppercase rounded-lg border-2 border-black shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] hover:bg-slate-800 active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center justify-center gap-2"
         >
-          <Button
-            onClick={() => navigate("/auth/sign-in")}
-            className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90"
-          >
-            <AnimatedText>
-              {t("auth.verifyEmail.goToSignIn") || "Đi đến đăng nhập"}
-            </AnimatedText>
-          </Button>
-        </motion.div>
+          <LogIn size={18} />
+          <AnimatedText>
+            {t("auth.verifyEmail.goToSignIn") || "Đăng nhập ngay"}
+          </AnimatedText>
+        </Button>
       </motion.div>
     );
   }
 
-  // Error state
+  // --- 3. ERROR STATE ---
   if (isError) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ type: "spring", duration: 0.5 }}
-        className="flex flex-col items-center justify-center py-8"
-        variants={containerVariants}
+        className="w-full max-w-lg mx-auto bg-white border-2 border-black rounded-xl shadow-[8px_8px_0px_black] p-10 text-center relative overflow-hidden"
       >
-        <motion.div
-          initial={{ scale: 0, rotate: 180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: "spring", stiffness: 200, damping: 15 }}
-          variants={itemVariants}
-        >
-          <XCircle className="w-20 h-20 text-red-500 mb-6 mx-auto drop-shadow-lg" />
-        </motion.div>
-        <motion.h3
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-2xl font-bold text-[hsl(var(--destructive))] mb-3 text-center"
-          variants={itemVariants}
-        >
+        {/* Decor Header (Red) */}
+        <div className="absolute top-0 left-0 w-full h-2 bg-red-500 border-b-2 border-black" />
+
+        <div className="mb-6 flex justify-center">
+          <motion.div
+            initial={{ scale: 0, rotate: 180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            className="w-20 h-20 bg-red-100 rounded-full border-2 border-black flex items-center justify-center shadow-[4px_4px_0px_black]"
+          >
+            <XCircle className="w-10 h-10 text-red-600" />
+          </motion.div>
+        </div>
+
+        <h3 className="text-2xl font-black text-red-600 uppercase mb-3">
           <AnimatedText>
-            {t("auth.verifyEmail.errorTitle") || "Xác nhận email thất bại"}
+            {t("auth.verifyEmail.errorTitle") || "Xác thực thất bại"}
           </AnimatedText>
-        </motion.h3>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="text-sm text-[hsl(var(--muted-foreground))] text-center max-w-sm mx-auto leading-relaxed mb-6"
-          variants={itemVariants}
-        >
-          <AnimatedText>{errorMessage}</AnimatedText>
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="flex flex-col sm:flex-row gap-3"
-          variants={itemVariants}
-        >
-          <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              onClick={() => navigate("/auth/sign-in")}
-              variant="outline"
-              className="w-full sm:w-auto"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              <AnimatedText>
-                {t("auth.verifyEmail.backToSignIn") || "Quay lại đăng nhập"}
-              </AnimatedText>
-            </Button>
-          </motion.div>
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-            <Button
-              onClick={() => navigate("/auth/sign-up")}
-              className="w-full sm:w-auto bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90"
-            >
-              <AnimatedText>
-                {t("auth.verifyEmail.goToSignUp") || "Đăng ký lại"}
-              </AnimatedText>
-            </Button>
-          </motion.div>
-        </motion.div>
+        </h3>
+
+        <div className="bg-red-50 border-2 border-black rounded-lg p-4 mb-8">
+          <p className="text-sm font-bold text-slate-700 leading-snug">
+            <AnimatedText>{errorMessage}</AnimatedText>
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <Button
+            onClick={() => navigate("/auth/sign-in")}
+            // Neo-Brutalism: Default shadow 4px, Hover lift 2px + shadow 6px, Active press 4px + no shadow
+            className="w-full h-14 bg-white text-black font-black text-lg uppercase rounded-lg border-2 border-black shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] hover:bg-slate-50 active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center justify-center gap-2"
+          >
+            <ArrowLeft size={18} />
+            <AnimatedText>
+              {t("auth.verifyEmail.backToSignIn") || "Về trang đăng nhập"}
+            </AnimatedText>
+          </Button>
+
+          <Button
+            onClick={() => navigate("/auth/sign-up")}
+            // Neo-Brutalism: Default shadow 4px, Hover lift 2px + shadow 6px, Active press 4px + no shadow
+            className="w-full h-14 bg-blue-600 text-white font-black text-lg uppercase rounded-lg border-2 border-black shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] hover:bg-blue-700 active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center justify-center gap-2"
+          >
+            <UserPlus size={18} />
+            <AnimatedText>
+              {t("auth.verifyEmail.goToSignUp") || "Đăng ký lại tài khoản"}
+            </AnimatedText>
+          </Button>
+        </div>
       </motion.div>
     );
   }
 
   return null;
 }
-

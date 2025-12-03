@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 // 1. [OPTIMIZATION] Import trực tiếp các component quan trọng (Above the fold)
 // Giúp hiển thị ngay lập tức, tránh loading spinner ở màn hình đầu tiên.
-import { LandingHeader } from "@/features/landing-page/components/landing-header";
+import { UnifiedHeader } from "@/components/layout/unified-header";
 import { LandingHero } from "@/features/landing-page/components/landing-hero";
 
 // 2. [OPTIMIZATION] Lazy load các component nằm bên dưới (Below the fold)
@@ -54,7 +54,7 @@ function LandingPage() {
         "font-sans antialiased selection:bg-[hsl(var(--accent))] selection:text-white"
       )}
     >
-      <LandingHeader />
+      <UnifiedHeader />
 
       <main className="w-full flex-1" role="main">
         <LandingHero />

@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { AuthHeader } from "@/features/auth/components/auth-header";
+import { AnimatedAuthPage } from "@/components/layout/app/auth/animated-auth-page";
 import { cn } from "@/lib/utils";
 
 export function AuthLayout({ children }: { children: ReactNode }) {
@@ -10,10 +11,10 @@ export function AuthLayout({ children }: { children: ReactNode }) {
         "relative min-h-screen w-full",
         "bg-[hsl(var(--background))] text-[hsl(var(--foreground))]", // Sử dụng biến theme chuẩn
         "flex flex-col items-center justify-center", // Căn giữa nội dung
-        "overflow-hidden transition-colors duration-300"
+        "overflow-x-hidden transition-colors duration-300" // [UPDATE] Chỉ ẩn overflow ngang, để dọc scroll được nếu màn hình bé
       )}
     >
-      {/* Auth Header */}
+      {/* Auth Header - Chỉ animate 1 lần khi vào auth layout, không animate lại khi chuyển trang */}
       <div className="absolute top-0 w-full z-20">
          <AuthHeader />
       </div>
@@ -74,8 +75,12 @@ export function AuthLayout({ children }: { children: ReactNode }) {
 
       {/* Content Container */}
       <div className="relative z-10 w-full px-4 py-12 sm:px-6 lg:px-8 flex justify-center">
-        <div className="w-full max-w-md space-y-8">
-          {children}
+        {/* [UPDATE FIX LAYOUT] 
+            1. Tăng max-w-md -> max-w-lg để vừa với form mới (512px).
+            2. XÓA 'overflow-hidden' để shadow và animation không bị cắt cụt.
+        */}
+        <div className="w-full max-w-lg space-y-8">
+          <AnimatedAuthPage>{children}</AnimatedAuthPage>
         </div>
       </div>
     </div>

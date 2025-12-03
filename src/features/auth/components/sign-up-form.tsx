@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, Link } from "react-router-dom";
 import { showToast } from "@/lib/toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, AlertCircle } from "lucide-react";
+import { CheckCircle2, AlertCircle, Loader2, ArrowRight, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatedText } from "@/components/animated-text";
 import { signUpSchema, type SignUpFormData } from "../auth.schema";
@@ -14,39 +14,11 @@ import {
   isApiResponseSuccess,
   getApiErrorMessage,
 } from "@/features/common/common.type";
-import { containerVariants, itemVariants } from "../constants/auth.constants";
-import {
-  TextField,
-  EmailField,
-  PasswordField,
-  SubmitButton,
-  // SocialLoginButtons,
-  // Divider,
-} from "./shared/auth-form-components"; // Cập nhật đường dẫn import nếu cần thiết (ví dụ: ./shared/auth-form-components)
+import { containerVariants } from "../constants/auth.constants";
 
 // Constants
-const REDIRECT_DELAY_MS = 3000; // Delay trước khi chuyển trang
-
-// Password strength thresholds (sync với schema requirement)
+const REDIRECT_DELAY_MS = 3000;
 const PASSWORD_STRENGTH_THRESHOLDS = [6, 8, 10, 12] as const;
-
-// Helper function để log (chỉ trong development)
-const logDev = (message: string, data?: unknown) => {
-  if (import.meta.env.DEV || import.meta.env.MODE === "development") {
-    console.log(
-      `[SignUp] ${message}`,
-      data ? JSON.stringify(data, null, 2) : ""
-    );
-  }
-};
-
-/*
-// Helper function để extract error message từ RTK Query error
-const extractErrorMessage = (
-  error: unknown,
-  t: (key: string) => string
-): string => { ...original implementation... };
-*/
 
 export function SignUpForm() {
   const { t } = useTranslation();
@@ -54,7 +26,6 @@ export function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const [signUp, { isLoading }] = useSignUpMutation();
 
@@ -74,63 +45,57 @@ export function SignUpForm() {
     },
   });
 
+  // [UPDATE] Theo dõi giá trị để control animation
   const passwordValue = watch("password");
+  const termsAccepted = watch("termsAccepted");
 
-  // Tối ưu: Giảm delay và bỏ reset() vì component sẽ unmount
   useEffect(() => {
     if (isSuccess) {
       const timer = setTimeout(() => {
         navigate("/auth/sign-in");
-        // Không cần setIsSuccess(false) và reset() vì component sẽ unmount
       }, REDIRECT_DELAY_MS);
       return () => clearTimeout(timer);
     }
   }, [isSuccess, navigate]);
 
-  // Tối ưu: Sử dụng useCallback để memoize handler
   const onSubmit = useCallback(
     async (data: SignUpFormData) => {
       try {
         const { passwordConfirm, termsAccepted, ...submitData } = data;
-
-        logDev("Submitting sign up request", submitData);
-
         const response = await signUp(submitData).unwrap();
-
-        logDev("Sign up API response", response);
 
         if (isApiResponseSuccess(response)) {
           setIsSuccess(true);
-          // Không cần toast vì đã có success state hiển thị ở giữa màn hình
         } else {
           const errorMessage = getApiErrorMessage(response);
-          showToast.error(t("auth.signUp.errorTitle") || "Đăng ký thất bại", errorMessage);
+          showToast.error(
+            t("auth.signUp.errorTitle") || "Đăng ký thất bại",
+            errorMessage
+          );
         }
       } catch (error: unknown) {
-        logDev("Sign up API error", error);
-
         const errorMessage = getApiErrorMessage(
           error && typeof error === "object" && "data" in error
             ? (error as any).data
             : null
         );
-
-        showToast.error(t("auth.signUp.errorTitle") || "Đăng ký thất bại", errorMessage);
+        showToast.error(
+          t("auth.signUp.errorTitle") || "Đăng ký thất bại",
+          errorMessage
+        );
       }
     },
     [signUp, t]
   );
 
-  // Tối ưu: Password strength indicator sync với schema
-  // Cập nhật màu sắc theo theme
   const getStrengthColor = useCallback((index: number, length: number) => {
     const threshold = PASSWORD_STRENGTH_THRESHOLDS[index];
-    if (threshold === undefined) return "bg-muted"; // gray-200 -> muted
+    if (threshold === undefined) return "bg-gray-200";
     return length >= threshold
-      ? "bg-green-500" // Giữ nguyên màu xanh cho success hoặc dùng biến --accepted
+      ? "bg-green-500"
       : index === 0
-        ? "bg-destructive" // red-500 -> destructive
-        : "bg-muted"; // gray-200 -> muted
+      ? "bg-red-500"
+      : "bg-gray-200";
   }, []);
 
   if (isSuccess) {
@@ -138,264 +103,353 @@ export function SignUpForm() {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: "spring", duration: 0.5 }}
-        className="flex flex-col items-center justify-center py-12"
+        className="w-full max-w-lg mx-auto bg-white border-2 border-black rounded-xl shadow-[8px_8px_0px_black] p-10 text-center"
       >
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{
-            type: "spring",
-            stiffness: 200,
-            damping: 15,
-            delay: 0.2,
-          }}
-        >
-          <CheckCircle2 className="w-20 h-20 text-green-500 mb-6 mx-auto drop-shadow-lg" />
-        </motion.div>
-        <motion.h3
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-2xl font-bold text-[hsl(var(--primary))] mb-3 text-center"
-        >
+        <div className="mb-6 flex justify-center">
+          <CheckCircle2 className="w-24 h-24 text-green-500 drop-shadow-[2px_2px_0px_black]" />
+        </div>
+        <h3 className="text-2xl font-black text-black uppercase mb-4">
           <AnimatedText>
             {t("auth.signUp.successTitle") || "Đăng ký thành công!"}
           </AnimatedText>
-        </motion.h3>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="text-sm text-[hsl(var(--muted-foreground))] text-center max-w-sm mx-auto leading-relaxed"
-        >
+        </h3>
+        <p className="text-base font-medium text-slate-600 mb-6">
           <AnimatedText>
             {t("auth.signUp.successMessage") ||
               "Vui lòng kiểm tra email để xác nhận tài khoản."}
           </AnimatedText>
-        </motion.p>
+        </p>
+        <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden border border-black">
+          <motion.div
+            className="h-full bg-blue-500"
+            initial={{ width: "0%" }}
+            animate={{ width: "100%" }}
+            transition={{ duration: 3, ease: "linear" }}
+          />
+        </div>
+        <p className="text-xs font-bold text-slate-400 mt-2">
+          Đang chuyển hướng...
+        </p>
       </motion.div>
     );
   }
 
   return (
-    <motion.form
-      onSubmit={handleSubmit(onSubmit)}
-      noValidate
-      className="space-y-4"
+    <motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"
+      className="w-full max-w-lg mx-auto"
     >
-      {/* Header - Chỉ hiển thị khi đang nhập liệu */}
-      <motion.div variants={itemVariants} className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-[hsl(var(--primary))] mb-2">
-          <AnimatedText>
-            {t("auth.signUp.title") || "Đăng ký tài khoản"}
-          </AnimatedText>
-        </h1>
-        <p className="text-[hsl(var(--muted-foreground))] text-sm">
-          <AnimatedText>
-            {t("auth.signUp.subtitle") ||
-              "Tham gia cộng đồng học tập và phát triển bản thân"}
-          </AnimatedText>
-        </p>
-      </motion.div>
+      {/* Form Container */}
+      <div className="bg-white border-2 border-black rounded-xl shadow-[8px_8px_0px_black] p-10 relative overflow-hidden">
+        {/* Header Decor */}
+        <div className="absolute top-0 left-0 w-full h-2 bg-blue-400 border-b-2 border-black" />
 
-      {/* Name Field */}
-      <motion.div variants={itemVariants}>
-        <TextField
-          id="signup-name"
-          label={t("auth.signUp.name") || "Họ và Tên"}
-          placeholder={t("auth.signUp.namePlaceholder") || "Nguyễn Văn A"}
-          error={errors.name?.message}
-          register={register("name")}
-          disabled={isLoading}
-          focused={focusedField === "name"}
-          onFocus={() => setFocusedField("name")}
-          onBlur={() => setFocusedField(null)}
-        />
-      </motion.div>
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-black text-black uppercase tracking-tight mb-2">
+            <AnimatedText>
+              {t("auth.signUp.title") || "Đăng ký tài khoản"}
+            </AnimatedText>
+          </h1>
+          <p className="text-sm font-bold text-slate-500">
+            <AnimatedText>
+              {t("auth.signUp.subtitle") ||
+                "Tham gia cộng đồng học tập và phát triển bản thân"}
+            </AnimatedText>
+          </p>
+        </div>
 
-      {/* Email Field */}
-      <motion.div variants={itemVariants}>
-        <EmailField
-          id="signup-email"
-          label={t("auth.signUp.email") || "Email"}
-          placeholder={t("auth.signUp.emailPlaceholder") || "example@email.com"}
-          error={errors.email?.message}
-          register={register("email")}
-          disabled={isLoading}
-          focused={focusedField === "email"}
-          onFocus={() => setFocusedField("email")}
-          onBlur={() => setFocusedField(null)}
-        />
-      </motion.div>
-
-      {/* Password Field */}
-      <motion.div variants={itemVariants}>
-        <PasswordField
-          id="signup-password"
-          label={t("auth.signUp.password") || "Mật khẩu"}
-          placeholder={
-            t("auth.signUp.passwordPlaceholder") || "Tối thiểu 6 ký tự"
-          }
-          error={errors.password?.message}
-          register={register("password")}
-          disabled={isLoading}
-          focused={focusedField === "password"}
-          onFocus={() => setFocusedField("password")}
-          onBlur={() => setFocusedField(null)}
-          showPassword={showPassword}
-          onTogglePassword={() => setShowPassword(!showPassword)}
-        />
-        {/* Password Strength Indicator */}
-        <AnimatePresence>
-          {passwordValue && passwordValue.length > 0 && !errors.password && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="flex gap-1 h-1 mt-2"
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-5"
+          noValidate
+        >
+          {/* Name Field */}
+          <div className="space-y-2">
+            <label
+              className="text-sm font-bold text-slate-700"
+              htmlFor="signup-name"
             >
-              {PASSWORD_STRENGTH_THRESHOLDS.map((_, index) => (
-                <div
-                  key={index}
+              {t("auth.signUp.name") || "Họ và Tên"}
+            </label>
+            <div
+              className={`relative rounded-lg border-2 bg-white transition-all duration-200 ease-out will-change-transform
+                            ${
+                              errors.name
+                                ? "border-red-500 focus-within:shadow-[4px_4px_0px_#ef4444]"
+                                : "border-black focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1"
+                            }
+                        `}
+            >
+              <input
+                id="signup-name"
+                type="text"
+                placeholder={
+                  t("auth.signUp.namePlaceholder") || "Nguyễn Văn A"
+                }
+                className="w-full h-14 px-5 bg-transparent border-none outline-none text-black font-medium placeholder:text-slate-400"
+                disabled={isLoading}
+                {...register("name")}
+              />
+            </div>
+            {errors.name && (
+              <p className="text-xs font-bold text-red-500 mt-1 animate-pulse">
+                {errors.name.message}
+              </p>
+            )}
+          </div>
+
+          {/* Email Field */}
+          <div className="space-y-2">
+            <label
+              className="text-sm font-bold text-slate-700"
+              htmlFor="signup-email"
+            >
+              {t("auth.signUp.email") || "Email"}
+            </label>
+            <div
+              className={`relative rounded-lg border-2 bg-white transition-all duration-200 ease-out will-change-transform
+                            ${
+                              errors.email
+                                ? "border-red-500 focus-within:shadow-[4px_4px_0px_#ef4444]"
+                                : "border-black focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1"
+                            }
+                        `}
+            >
+              <input
+                id="signup-email"
+                type="email"
+                placeholder={
+                  t("auth.signUp.emailPlaceholder") || "example@email.com"
+                }
+                className="w-full h-14 px-5 bg-transparent border-none outline-none text-black font-medium placeholder:text-slate-400"
+                disabled={isLoading}
+                {...register("email")}
+              />
+            </div>
+            {errors.email && (
+              <p className="text-xs font-bold text-red-500 mt-1 animate-pulse">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          {/* Password Field */}
+          <div className="space-y-2">
+            <label
+              className="text-sm font-bold text-slate-700"
+              htmlFor="signup-password"
+            >
+              {t("auth.signUp.password") || "Mật khẩu"}
+            </label>
+            <div
+              className={`relative group rounded-lg border-2 bg-white transition-all duration-200 ease-out will-change-transform
+                            ${
+                              errors.password
+                                ? "border-red-500 focus-within:shadow-[4px_4px_0px_#ef4444]"
+                                : "border-black focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1"
+                            }
+                        `}
+            >
+              <input
+                id="signup-password"
+                type={showPassword ? "text" : "password"}
+                placeholder={
+                  t("auth.signUp.passwordPlaceholder") || "Tối thiểu 6 ký tự"
+                }
+                className="w-full h-14 px-5 pr-14 bg-transparent border-none outline-none text-black font-medium placeholder:text-slate-400"
+                disabled={isLoading}
+                {...register("password")}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-black font-bold text-xs uppercase p-1"
+                tabIndex={-1}
+              >
+                {showPassword ? "Ẩn" : "Hiện"}
+              </button>
+            </div>
+
+            {/* Password Strength Indicator */}
+            <AnimatePresence>
+              {passwordValue &&
+                passwordValue.length > 0 &&
+                !errors.password && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="flex gap-1 h-1.5 mt-2"
+                  >
+                    {PASSWORD_STRENGTH_THRESHOLDS.map((_, index) => (
+                      <div
+                        key={index}
+                        className={cn(
+                          "h-full w-1/4 rounded-full border border-black/10 transition-colors duration-300",
+                          getStrengthColor(index, passwordValue.length)
+                        )}
+                      />
+                    ))}
+                  </motion.div>
+                )}
+            </AnimatePresence>
+
+            {errors.password && (
+              <p className="text-xs font-bold text-red-500 mt-1 animate-pulse">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          {/* Confirm Password Field */}
+          <div className="space-y-2">
+            <label
+              className="text-sm font-bold text-slate-700"
+              htmlFor="signup-password-confirm"
+            >
+              {t("auth.signUp.confirmPassword") || "Xác nhận mật khẩu"}
+            </label>
+            <div
+              className={`relative group rounded-lg border-2 bg-white transition-all duration-200 ease-out will-change-transform
+                            ${
+                              errors.passwordConfirm
+                                ? "border-red-500 focus-within:shadow-[4px_4px_0px_#ef4444]"
+                                : "border-black focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1"
+                            }
+                        `}
+            >
+              <input
+                id="signup-password-confirm"
+                type={showPasswordConfirm ? "text" : "password"}
+                placeholder={
+                  t("auth.signUp.confirmPasswordPlaceholder") ||
+                  "Nhập lại mật khẩu"
+                }
+                className="w-full h-14 px-5 pr-14 bg-transparent border-none outline-none text-black font-medium placeholder:text-slate-400"
+                disabled={isLoading}
+                {...register("passwordConfirm")}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-black font-bold text-xs uppercase p-1"
+                tabIndex={-1}
+              >
+                {showPasswordConfirm ? "Ẩn" : "Hiện"}
+              </button>
+            </div>
+            {errors.passwordConfirm && (
+              <p className="text-xs font-bold text-red-500 mt-1 animate-pulse">
+                {errors.passwordConfirm.message}
+              </p>
+            )}
+          </div>
+
+          {/* Terms Checkbox */}
+          <div className="flex items-start gap-3 pt-2">
+            {/* [UPDATE] Wrapper căn giữa theo chiều dọc */}
+            <div className="relative flex items-center h-5 w-5 mt-0.5">
+              <input
+                id="terms"
+                type="checkbox"
+                className="peer h-5 w-5 appearance-none opacity-0 absolute z-10 cursor-pointer"
+                {...register("termsAccepted")}
+                disabled={isLoading}
+              />
+              {/* [UPDATE] Visual Checkbox dùng biến termsAccepted để switch class
+                  - Unchecked: bg-white, shadow-black
+                  - Checked: bg-blue-600, shadow-none, translate (ép xuống)
+              */}
+              <div
+                className={cn(
+                  "pointer-events-none absolute left-0 top-0 h-5 w-5 rounded border-2 border-black transition-all duration-200 ease-in-out flex items-center justify-center",
+                  termsAccepted
+                    ? "bg-blue-600 shadow-none translate-y-[2px] translate-x-[2px]"
+                    : "bg-white shadow-[2px_2px_0px_black]"
+                )}
+              >
+                <Check
+                  size={14}
+                  strokeWidth={4}
                   className={cn(
-                    "h-full w-1/4 rounded-full transition-colors duration-300",
-                    getStrengthColor(index, passwordValue.length)
+                    "text-white transition-opacity duration-200",
+                    termsAccepted ? "opacity-100" : "opacity-0"
                   )}
                 />
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+              </div>
+            </div>
 
-      {/* Confirm Password Field */}
-      <motion.div variants={itemVariants}>
-        <PasswordField
-          id="signup-password-confirm"
-          label={t("auth.signUp.confirmPassword") || "Xác nhận mật khẩu"}
-          placeholder={
-            t("auth.signUp.confirmPasswordPlaceholder") || "Nhập lại mật khẩu"
-          }
-          error={errors.passwordConfirm?.message}
-          register={register("passwordConfirm")}
-          disabled={isLoading}
-          focused={focusedField === "passwordConfirm"}
-          onFocus={() => setFocusedField("passwordConfirm")}
-          onBlur={() => setFocusedField(null)}
-          showPassword={showPasswordConfirm}
-          onTogglePassword={() => setShowPasswordConfirm(!showPasswordConfirm)}
-        />
-      </motion.div>
-
-      {/* Terms & Conditions Checkbox */}
-      <motion.div
-        className="flex items-start gap-3 pt-2"
-        variants={itemVariants}
-      >
-        <div className="flex items-center pt-0.5">
-          <input
-            id="terms"
-            type="checkbox"
-            className={cn(
-              "h-4 w-4 rounded border-[hsl(var(--input))] transition-all cursor-pointer mt-0.5",
-              errors.termsAccepted
-                ? "border-[hsl(var(--destructive))] text-[hsl(var(--destructive))] focus:ring-[hsl(var(--destructive))]"
-                : "text-[hsl(var(--primary))] focus:ring-[hsl(var(--primary))] border-[hsl(var(--input))] hover:border-[hsl(var(--primary))]", // Sử dụng CSS variables từ global.css
-              "focus:ring-2 focus:ring-offset-0 bg-[hsl(var(--background))]"
-            )}
-            {...register("termsAccepted")}
-            disabled={isLoading}
-          />
-        </div>
-        <div className="flex-1 space-y-1">
-          <label
-            htmlFor="terms"
-            className={cn(
-              "text-sm font-medium leading-relaxed cursor-pointer select-none flex flex-wrap items-center",
-              errors.termsAccepted ? "text-[hsl(var(--destructive))]" : "text-[hsl(var(--muted-foreground))]"
-            )}
-          >
-            <AnimatedText>
-              {t("auth.signUp.agreeTo") || "Tôi đồng ý với "}
-            </AnimatedText>
-            <Link
-              to="/terms"
-              className="hover:underline font-bold text-[hsl(var(--primary))] mx-0.5"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <AnimatedText>
-                {t("auth.signUp.terms") || "Điều khoản dịch vụ"}
-              </AnimatedText>
-            </Link>
-            &nbsp;&
-            <Link
-              to="/privacy"
-              className="hover:underline font-bold text-[hsl(var(--primary))] mx-0.5"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <AnimatedText>
-                {t("auth.signUp.privacy") || "Chính sách bảo mật"}
-              </AnimatedText>
-            </Link>
-          </label>
-          <AnimatePresence>
-            {errors.termsAccepted && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="flex items-center gap-1.5"
+            <div className="text-sm">
+              <label
+                htmlFor="terms"
+                className="font-medium text-slate-700 cursor-pointer select-none"
               >
-                <AlertCircle className="w-3.5 h-3.5 text-[hsl(var(--destructive))] flex-shrink-0" />
-                <p className="text-[11px] font-medium text-[hsl(var(--destructive))]">
-                  {errors.termsAccepted.message}
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </motion.div>
+                {t("auth.signUp.agreeTo") || "Tôi đồng ý với "}
+                <Link
+                  to="/terms"
+                  className="font-bold text-black hover:text-blue-600 hover:underline decoration-2 underline-offset-2"
+                >
+                  {t("auth.signUp.terms") || "Điều khoản dịch vụ"}
+                </Link>
+                {" & "}
+                <Link
+                  to="/privacy"
+                  className="font-bold text-black hover:text-blue-600 hover:underline decoration-2 underline-offset-2"
+                >
+                  {t("auth.signUp.privacy") || "Chính sách bảo mật"}
+                </Link>
+              </label>
+              {errors.termsAccepted && (
+                <div className="flex items-center gap-1.5 mt-1 text-red-500 animate-pulse">
+                  <AlertCircle size={14} />
+                  <span className="text-xs font-bold">
+                    {errors.termsAccepted.message}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
 
-      {/* Submit Button */}
-      <motion.div variants={itemVariants} className="pt-4">
-        <SubmitButton
-          isLoading={isLoading}
-          loadingText={t("auth.signUp.submitting") || "Đang xử lý..."}
-          submitText={t("auth.signUp.submit") || "Đăng ký"}
-        />
-      </motion.div>
-
-      {/* Social Login - Temporarily commented out for testing */}
-      {/* <motion.div variants={itemVariants}>
-        <Divider
-          text={t("auth.signUp.orContinueWith") || "Hoặc tiếp tục với"}
-        />
-      </motion.div>
-
-      <motion.div variants={itemVariants}>
-        <SocialLoginButtons isLoading={isLoading} />
-      </motion.div> */}
-
-      {/* Sign In Link */}
-      <motion.div className="text-center pt-4" variants={itemVariants}>
-        <p className="text-sm text-[hsl(var(--muted-foreground))]">
-          <AnimatedText>
-            {t("auth.signUp.haveAccount") || "Đã có tài khoản?"}
-          </AnimatedText>{" "}
-          <Link
-            to="/auth/sign-in"
-            className="animated-underline text-[hsl(var(--primary))] font-bold hover:text-[hsl(var(--primary))]/80 transition-colors duration-200"
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isLoading}
+            // Neo-Brutalism: Default shadow 4px, Hover lift 2px + shadow 6px, Active press 4px + no shadow
+            className="w-full h-14 mt-6 bg-blue-600 text-white font-black text-lg uppercase rounded-lg border-2 border-black shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] hover:bg-blue-700 active:translate-y-1 active:translate-x-1 active:shadow-none disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            <AnimatedText>
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin" size={24} />
+                {t("auth.signUp.submitting") || "Đang xử lý..."}
+              </>
+            ) : (
+              <>
+                {t("auth.signUp.submit") || "Đăng ký"}
+                <ArrowRight size={24} strokeWidth={3} />
+              </>
+            )}
+          </button>
+        </form>
+
+        {/* Footer Link */}
+        <div className="mt-8 text-center pt-6 border-t-2 border-dashed border-slate-200">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+            <span className="text-base font-bold text-slate-600">
+              {t("auth.signUp.haveAccount") || "Đã có tài khoản?"}
+            </span>
+
+            <Link
+              to="/auth/sign-in"
+              // Neo-Brutalism: Default shadow 3px, Hover lift 1.5px + shadow 4.5px, Active press 3px + no shadow
+              className="inline-block px-4 py-2 bg-yellow-400 text-black font-black text-sm uppercase rounded-lg border-2 border-black shadow-[3px_3px_0px_black] transition-all hover:-translate-y-[1.5px] hover:-translate-x-[1.5px] hover:shadow-[4.5px_4.5px_0px_black] hover:bg-yellow-300 active:translate-y-[3px] active:translate-x-[3px] active:shadow-none"
+            >
               {t("auth.signUp.signInLink") || "Đăng nhập"}
-            </AnimatedText>
-          </Link>
-        </p>
-      </motion.div>
-    </motion.form>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 }

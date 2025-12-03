@@ -13,12 +13,12 @@ const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 export const signInSchema = z.object({
   email: z
     .string()
-    .min(1, "Email is required")
-    .email("Email is not a valid email format"),
+    .min(1, "Email là bắt buộc")
+    .email("Email không đúng định dạng"),
   password: z
     .string()
-    .min(1, "Password is required")
-    .min(6, "Password must be at least 6 characters"),
+    .min(1, "Mật khẩu là bắt buộc")
+    .min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
 });
 
 export type SignInFormData = z.infer<typeof signInSchema>;
@@ -27,22 +27,22 @@ export type SignInFormData = z.infer<typeof signInSchema>;
 // Backend: name (Required), email (Required, Valid email), password (Required, Min 6 chars)
 export const signUpSchema = z
   .object({
-    name: z.string().min(1, "Name is required"),
+    name: z.string().min(1, "Họ và tên là bắt buộc"),
     email: z
       .string()
-      .min(1, "Email is required")
-      .email("Email is not a valid email format"),
+      .min(1, "Email là bắt buộc")
+      .email("Email không đúng định dạng"),
     password: z
       .string()
-      .min(1, "Password is required")
-      .min(6, "Password must be at least 6 characters"),
-    passwordConfirm: z.string().min(1, "Password confirmation is required"),
+      .min(1, "Mật khẩu là bắt buộc")
+      .min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+    passwordConfirm: z.string().min(1, "Xác nhận mật khẩu là bắt buộc"),
     termsAccepted: z.boolean().refine((val) => val === true, {
-      message: "You must accept the terms and conditions",
+      message: "Bạn phải đồng ý với điều khoản dịch vụ",
     }),
   })
   .refine((data) => data.password === data.passwordConfirm, {
-    message: "Passwords do not match",
+    message: "Mật khẩu không khớp",
     path: ["passwordConfirm"],
   });
 
@@ -53,8 +53,8 @@ export type SignUpFormData = z.infer<typeof signUpSchema>;
 export const signOutSchema = z.object({
   userId: z
     .string()
-    .min(1, "UserId is required")
-    .regex(uuidRegex, "UserId has an invalid format"),
+    .min(1, "UserId là bắt buộc")
+    .regex(uuidRegex, "UserId không đúng định dạng"),
 });
 
 export type SignOutFormData = z.infer<typeof signOutSchema>;
@@ -64,12 +64,12 @@ export type SignOutFormData = z.infer<typeof signOutSchema>;
 export const refreshTokenSchema = z.object({
   userId: z
     .string()
-    .min(1, "UserId is required")
-    .regex(uuidRegex, "UserId has an invalid format"),
+    .min(1, "UserId là bắt buộc")
+    .regex(uuidRegex, "UserId không đúng định dạng"),
   refreshToken: z
     .string()
-    .min(1, "RefreshToken is required")
-    .min(10, "RefreshToken must be at least 10 characters"),
+    .min(1, "RefreshToken là bắt buộc")
+    .min(10, "RefreshToken phải có ít nhất 10 ký tự"),
 });
 
 export type RefreshTokenFormData = z.infer<typeof refreshTokenSchema>;
@@ -77,12 +77,12 @@ export type RefreshTokenFormData = z.infer<typeof refreshTokenSchema>;
 // Social Login Schema
 // Backend: accessToken (Required), provider (Required, enum: 1=Google, 2=Facebook)
 export const socialSignInSchema = z.object({
-  accessToken: z.string().min(1, "AccessToken is required"),
+  accessToken: z.string().min(1, "AccessToken là bắt buộc"),
   provider: z.union([
     z.literal(SocialProvider.Google),
     z.literal(SocialProvider.Facebook),
   ], {
-    message: "Provider has an invalid format",
+    message: "Nhà cung cấp không đúng định dạng",
   }),
 });
 
@@ -93,20 +93,20 @@ export type SocialSignInFormData = z.infer<typeof socialSignInSchema>;
 export const sendVerificationEmailSchema = z.object({
   Email: z
     .string()
-    .min(1, "Email is required")
-    .email("Email is not a valid email format"),
+    .min(1, "Email là bắt buộc")
+    .email("Email không đúng định dạng"),
   EmailType: z.union([
     z.literal(EmailType.Verification),
     z.literal(EmailType.ForgotPassword),
     z.literal(EmailType.Notification),
   ], {
-    message: "EmailType has an invalid format",
+    message: "Loại email không đúng định dạng",
   }),
   Action: z.union([
     z.literal(EmailAction.Send),
     z.literal(EmailAction.Resend),
   ], {
-    message: "Action has an invalid format",
+    message: "Hành động không đúng định dạng",
   }),
 });
 
@@ -117,7 +117,7 @@ export type SendVerificationEmailFormData = z.infer<
 // Verify Email Schema
 // Backend: token (Required)
 export const verifyEmailSchema = z.object({
-  token: z.string().min(1, "Token is required"),
+  token: z.string().min(1, "Token là bắt buộc"),
 });
 
 export type VerifyEmailFormData = z.infer<typeof verifyEmailSchema>;
@@ -127,8 +127,8 @@ export type VerifyEmailFormData = z.infer<typeof verifyEmailSchema>;
 export const forgotPasswordSchema = z.object({
   email: z
     .string()
-    .min(1, "Email is required")
-    .email("Email is not a valid email format"),
+    .min(1, "Email là bắt buộc")
+    .email("Email không đúng định dạng"),
 });
 
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
@@ -137,15 +137,15 @@ export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 // Backend: token (Required), newPassword (Required, Min 6 chars), confirmPassword (Required, Must match newPassword)
 export const resetPasswordSchema = z
   .object({
-    token: z.string().min(1, "Token is required"),
+    token: z.string().min(1, "Token là bắt buộc"),
     newPassword: z
       .string()
-      .min(1, "NewPassword is required")
-      .min(6, "NewPassword must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "ConfirmPassword is required"),
+      .min(1, "Mật khẩu mới là bắt buộc")
+      .min(6, "Mật khẩu mới phải có ít nhất 6 ký tự"),
+    confirmPassword: z.string().min(1, "Xác nhận mật khẩu là bắt buộc"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "ConfirmPassword must match NewPassword",
+    message: "Xác nhận mật khẩu phải khớp với mật khẩu mới",
     path: ["confirmPassword"],
   });
 

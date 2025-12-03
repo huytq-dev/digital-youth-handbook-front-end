@@ -1,119 +1,76 @@
 import { Link } from "react-router-dom";
-import { Star } from "lucide-react";
+import { Star, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatedText } from "@/components/animated-text";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
-const ANIMATION_DURATION = 0.2;
+// Helper Icon cho nút Trợ giúp (hoặc dùng HelpCircle có sẵn)
+const HelpIcon = ({ className }: { className?: string }) => (
+  <HelpCircle className={className} />
+);
+
+const AUTH_HEADER_ANIMATED_KEY = "auth-header-animated";
 
 export function AuthHeader() {
+  // Sử dụng sessionStorage để track xem header đã animate trong session này chưa
+  // Đảm bảo header chỉ animate 1 lần khi vào auth layout, không animate lại khi chuyển trang
+  const shouldAnimate = useState(() => {
+    if (typeof window === "undefined") return true;
+    const hasAnimated = sessionStorage.getItem(AUTH_HEADER_ANIMATED_KEY);
+    if (!hasAnimated) {
+      sessionStorage.setItem(AUTH_HEADER_ANIMATED_KEY, "true");
+      return true;
+    }
+    return false;
+  })[0];
+
   return (
     <motion.header
       className={cn(
         "sticky top-0 z-50",
-        "border-b border-white/50",
-        "overflow-hidden"
+        "h-20", // Chiều cao cố định
+        "bg-[#fff9f0]", // Nền màu kem sáng
+        "border-b-2 border-black", // Viền đen dày
       )}
-      initial={false}
-      animate={{
-        height: "5rem", // h-20
-      }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      initial={shouldAnimate ? { y: -100, opacity: 0 } : false}
+      animate={{ y: 0, opacity: 1 }}
+      transition={shouldAnimate ? { type: "spring", stiffness: 200, damping: 20 } : { duration: 0 }}
     >
-      {/* Background Blobs */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
-        <motion.div
-          className="absolute top-[-20%] left-[-10%] w-[400px] h-[400px] bg-blue-400/20 rounded-full mix-blend-multiply filter blur-[80px]"
-          animate={{
-            x: [0, 80, 0],
-            y: [0, 40, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 7,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute top-[10%] right-[-10%] w-[350px] h-[350px] bg-orange-300/25 rounded-full mix-blend-multiply filter blur-[80px]"
-          animate={{
-            x: [0, -80, 0],
-            y: [0, -40, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-        />
-      </div>
-
-      {/* Noise Texture */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-
-      {/* Glass Overlay */}
-      <motion.div
-        className="absolute inset-0 w-full h-full border-b border-white/50"
-        initial={false}
-        animate={{
-          backgroundColor: "rgba(255, 255, 255, 0.5)",
-          backdropFilter: "blur(8px)",
-          boxShadow:
-            "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-        }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-      />
-
-      {/* Content */}
       <nav className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <div className="flex justify-between items-center h-full">
-          {/* Logo Section: Brand Hành Trang Số */}
-          <Link to="/" className="flex items-center gap-3 cursor-pointer group">
-            <motion.div
-              className="flex items-center gap-3"
-              whileHover={{ opacity: 0.8 }}
-              transition={{ duration: ANIMATION_DURATION }}
-            >
-              {/* Icon Container */}
-              <motion.div
-                initial={false}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className="bg-[hsl(var(--primary))] w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30"
-              >
-                <Star size={20} fill="currentColor" />
-              </motion.div>
-
-              {/* Text Brand */}
-              <div className="flex flex-col">
-                <motion.span
-                  className="font-extrabold text-xl leading-none text-[hsl(var(--foreground))]"
-                  initial={false}
-                  transition={{ duration: 0.3 }}
-                >
-                  <AnimatedText>
-                    HÀNH TRANG{" "}
-                    <span className="text-[hsl(var(--primary))]">SỐ</span>
-                  </AnimatedText>
-                </motion.span>
-                <span className="text-[10px] font-bold text-orange-500 tracking-[0.2em] uppercase mt-0.5">
-                  <AnimatedText>Khát Vọng</AnimatedText>
-                </span>
+          
+          {/* Logo Section: Giống hệt LandingHeader */}
+          <Link to="/" className="flex items-center gap-3 cursor-pointer group select-none relative z-10">
+            <div className="relative">
+              {/* Logo Box phong cách Neo-brutalism */}
+              <div className="bg-blue-600 w-11 h-11 rounded-lg border-2 border-black flex items-center justify-center text-white shadow-[3px_3px_0px_black] group-hover:translate-x-0.5 group-hover:translate-y-0.5 group-hover:shadow-none transition-all">
+                <Star fill="currentColor" size={22} className="group-hover:rotate-180 transition-transform duration-500" />
               </div>
-            </motion.div>
+              {/* Chấm đỏ trang trí */}
+              <div className="absolute -top-1 -right-1 bg-red-500 w-3 h-3 rounded-full border-2 border-black" />
+            </div>
+            
+            <div className="flex flex-col">
+              <span className="font-black text-xl leading-none text-slate-900 tracking-tight">
+                HÀNH TRANG <span className="text-blue-600">SỐ</span>
+              </span>
+              <span className="text-[10px] font-black text-white bg-orange-500 px-1 py-0.5 border border-black rounded-sm tracking-widest uppercase mt-1 w-fit rotate-[-2deg] group-hover:rotate-0 transition-transform">
+                <AnimatedText>Khát Vọng</AnimatedText>
+              </span>
+            </div>
           </Link>
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-3">
-            {/* Tạm ẩn LanguageToggle để tránh lỗi import */}
             <Button
               variant="ghost"
-              className="text-[hsl(var(--foreground))] hover:text-[hsl(var(--primary))] hover:bg-transparent hidden sm:flex"
+              className={cn(
+                  "font-bold text-black border-2 border-transparent hover:border-black hover:bg-yellow-300 hover:shadow-[3px_3px_0px_black] transition-all active:translate-y-1 active:shadow-none hidden sm:flex items-center gap-2 rounded-xl px-4",
+              )}
             >
+              <HelpIcon className="h-5 w-5" />
               <AnimatedText>Trợ giúp</AnimatedText>
             </Button>
           </div>

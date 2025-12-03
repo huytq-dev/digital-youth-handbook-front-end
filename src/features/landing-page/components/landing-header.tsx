@@ -113,7 +113,7 @@ const NavLinkBtn = ({ item }: { item: NavItem }) => {
                             <ChevronDown 
                                 size={14} 
                                 strokeWidth={3} 
-                className={cn(
+                                className={cn(
                   "transition-transform duration-200",
                   isHovered ? "rotate-180" : ""
                 )}
@@ -187,7 +187,6 @@ export const LandingHeader = () => {
           ? "bg-[#fff9f0]/95 backdrop-blur-md py-2 border-b-4 border-black shadow-sm"
           : "bg-[#fff9f0] py-4 border-b-4 border-black/10"
       )}
-      // Đã xóa thuộc tính style chứa backgroundImage ở đây
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14">
@@ -226,23 +225,24 @@ export const LandingHeader = () => {
           {/* Right Side: Auth Buttons */}
           <div className="hidden lg:flex items-center gap-4">
              <Link to="/auth/sign-in">
-                <motion.button
-                    whileHover={{ y: -2, boxShadow: "2px 2px 0px 0px black" }}
-                    whileTap={{ y: 0, boxShadow: "0px 0px 0px 0px black" }}
-                    className="h-11 px-6 rounded-lg font-bold border-2 border-black bg-white text-slate-900 shadow-[1px_1px_0px_black] transition-all flex items-center justify-center"
+                {/* [UPDATE] Thêm hiệu ứng Hover Lift:
+                    - hover:-translate-y-0.5 (Nổi lên 2px)
+                    - hover:shadow-[6px_6px_0px_black] (Bóng to ra để khớp với độ cao mới)
+                */}
+                <button
+                    className="h-11 px-6 rounded-lg font-bold border-2 border-black bg-white text-slate-900 shadow-[4px_4px_0px_black] transition-all hover:bg-slate-50 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center justify-center"
                 >
                     Đăng nhập
-                </motion.button>
+                </button>
              </Link>
              
              <Link to="/auth/sign-up">
-                <motion.button
-                    whileHover={{ y: -2, boxShadow: "4px 4px 0px 0px black" }}
-                    whileTap={{ y: 0, boxShadow: "0px 0px 0px 0px black" }}
-                    className="h-11 px-6 bg-blue-600 text-white font-bold border-2 border-black rounded-lg shadow-[2px_2px_0px_black] transition-all flex items-center gap-2 justify-center"
+                {/* [UPDATE] Thêm hiệu ứng Hover Lift tương tự */}
+                <button
+                    className="h-11 px-6 bg-blue-600 text-white font-bold border-2 border-black rounded-lg shadow-[4px_4px_0px_black] transition-all hover:bg-blue-700 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center gap-2 justify-center"
                 >
                     Đăng ký <ArrowRightIcon className="w-4 h-4" />
-                </motion.button>
+                </button>
              </Link>
           </div>
 
@@ -312,9 +312,10 @@ export const LandingHeader = () => {
             className="w-full"
             onClick={() => setIsOpen(false)}
           >
+            {/* [UPDATE] Mobile Button Hover Lift */}
             <Button
               variant="outline"
-              className="w-full h-12 rounded-xl border-2 border-black font-bold hover:bg-slate-100 text-slate-900 shadow-sm"
+              className="w-full h-12 rounded-xl border-2 border-black font-bold bg-white text-slate-900 shadow-[4px_4px_0px_black] transition-all hover:bg-slate-50 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none"
             >
                   <LogIn size={18} className="mr-2" /> Đăng nhập
               </Button>
@@ -324,9 +325,10 @@ export const LandingHeader = () => {
             className="w-full"
             onClick={() => setIsOpen(false)}
           >
+            {/* [UPDATE] Mobile Button Hover Lift */}
             <Button
               variant="default"
-              className="w-full h-12 rounded-xl border-2 border-black bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-[3px_3px_0px_black] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_black] transition-all"
+              className="w-full h-12 rounded-xl border-2 border-black bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none"
             >
                   <UserPlus size={18} className="mr-2" /> Đăng ký
               </Button>

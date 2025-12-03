@@ -12,7 +12,7 @@ export const LEARNING_TOPICS: LearningTopic[] = [
     content: {
       summary:
         "Chủ đề tập trung làm rõ thế nào là lý tưởng cách mạng của thanh niên Việt Nam thời kỳ mới, vì sao thanh niên cần có hoài bão lớn, và cách biến lý tưởng thành những hành động, việc làm cụ thể trong học tập, lao động và tham gia các hoạt động xã hội.",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      videoUrl: "https://www.youtube.com/embed/PXZc5sJq9KU",
     },
     infographicUrl: "/images/learning-topics/ly-tuong-hoai-bao.jpg",
     infographicUrls: [
@@ -65,7 +65,7 @@ export const LEARNING_TOPICS: LearningTopic[] = [
     content: {
       summary:
         "Chủ đề phân tích các phẩm chất đạo đức cách mạng như: yêu nước, cần – kiệm – liêm – chính, chí công vô tư; phong cách sống giản dị, gần gũi; phong cách làm việc khoa học, dân chủ, tôn trọng nhân dân. Qua đó giúp thanh niên soi chiếu và tự điều chỉnh bản thân.",
-      // Không bắt buộc phải có video
+      videoUrl: "https://www.youtube.com/embed/xn7vF_1r4yg",
     },
     infographicUrl: "/images/learning-topics/hoc-tap-lam-theo-bac.jpg",
     infographicUrls: [
@@ -106,7 +106,7 @@ export const LEARNING_TOPICS: LearningTopic[] = [
     content: {
       summary:
         "Chủ đề nhấn mạnh ý nghĩa của môi trường học đường lành mạnh, nói không với bạo lực, nói xấu, kỳ thị. Thanh niên được định hướng xây dựng lối sống đẹp qua những việc làm cụ thể như: giữ gìn vệ sinh, đúng giờ, trung thực trong thi cử, sống chan hòa, tôn trọng sự khác biệt.",
-      videoUrl: "https://www.youtube.com/embed/oHg5SJYRHA0",
+      videoUrl: "https://www.youtube.com/embed/5X8v6aYQc8w",
     },
     infographicUrl: "/images/learning-topics/van-hoa-hoc-duong.jpg",
     infographicUrls: [
@@ -145,8 +145,8 @@ export const LEARNING_TOPICS: LearningTopic[] = [
     ],
     content: {
       summary:
-        "Chủ đề cung cấp các kiến thức cơ bản về an toàn thông tin, dấu vết số, cách nhận diện tin giả, lừa đảo trực tuyến. Đồng thời hướng dẫn thanh niên xây dựng “dấu ấn số” tích cực, biết chọn lọc nội dung, không chia sẻ thông tin chưa kiểm chứng.",
-      videoUrl: "https://www.youtube.com/embed/EE-xtCF3T94",
+        "Chủ đề cung cấp các kiến thức cơ bản về an toàn thông tin, dấu vết số, cách nhận diện tin giả, lừa đảo trực tuyến. Đồng thời hướng dẫn thanh niên xây dựng \"dấu ấn số\" tích cực, biết chọn lọc nội dung, không chia sẻ thông tin chưa kiểm chứng.",
+      videoUrl: "https://www.youtube.com/embed/qNBNzL1RM0A",
     },
     infographicUrl: "/images/learning-topics/mang-xa-hoi-an-toan.jpg",
     infographicUrls: [
@@ -187,6 +187,7 @@ export const LEARNING_TOPICS: LearningTopic[] = [
     content: {
       summary:
         "Chủ đề giới thiệu các mô hình tình nguyện thiết thực như: tiếp sức mùa thi, mùa hè xanh, hiến máu nhân đạo, hỗ trợ vùng khó khăn, bảo vệ môi trường... Qua đó giúp thanh niên thấy được niềm vui khi cho đi và trách nhiệm với quê hương, đất nước.",
+      videoUrl: "https://www.youtube.com/embed/XUqHVyZf9Mk",
     },
     infographicUrl: "/images/learning-topics/thanh-nien-tinh-nguyen.jpg",
     infographicUrls: [
@@ -227,7 +228,7 @@ export const LEARNING_TOPICS: LearningTopic[] = [
     content: {
       summary:
         "Chủ đề giúp thanh niên hiểu chuyển đổi số không chỉ là công nghệ, mà còn là thay đổi cách nghĩ, cách làm. Mỗi bạn trẻ là một công dân số cần chủ động học kỹ năng mới, sử dụng dịch vụ công trực tuyến, thanh toán điện tử, lưu trữ tài liệu số và bảo mật thông tin cá nhân.",
-      videoUrl: "https://www.youtube.com/embed/3GwjfUFyY6M",
+      videoUrl: "https://www.youtube.com/embed/bXaYhp-DLF8",
     },
     infographicUrl: "/images/learning-topics/chuyen-doi-so.jpg",
     infographicUrls: [
