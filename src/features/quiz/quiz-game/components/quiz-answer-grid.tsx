@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { CheckCircle2, XCircle, ArrowRight } from "lucide-react";
 
 interface QuizAnswerGridProps {
@@ -39,45 +39,6 @@ const answerButtonVariants = {
       type: "spring" as const,
       stiffness: 400,
       damping: 15,
-    },
-  },
-};
-
-// Animation cho nút khi đúng
-const correctVariants = {
-  animate: {
-    scale: [1, 1.1, 1],
-    backgroundColor: "#4ade80", // green-400
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-};
-
-// Animation cho nút khi sai (wiggle effect mạnh hơn)
-const wrongVariants = {
-  animate: {
-    x: [-8, 8, -8, 8, -5, 5, -3, 3, 0],
-    rotate: [-3, 3, -3, 3, 0],
-    backgroundColor: "#ef4444", // red-500
-    scale: [1, 1.05, 1],
-    transition: {
-      duration: 0.6,
-      ease: "easeOut",
-    },
-  },
-};
-
-// Animation cho nút selected (chưa submit)
-const selectedVariants = {
-  animate: {
-    backgroundColor: "#818cf8", // indigo-400
-    scale: 1.02,
-    transition: {
-      type: "spring" as const,
-      stiffness: 300,
-      damping: 20,
     },
   },
 };

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import type { QuizDetail, QuizQuestion, QuizAnswer } from "@/features/quiz/quiz.type";
+import type { QuizDetail, QuizAnswer } from "@/features/quiz/quiz.type";
 import { QuizGameHeader } from "./quiz-game-header";
 import { QuizQuestionCard } from "./quiz-question-card";
 import { QuizAnswerGrid } from "./quiz-answer-grid";
@@ -19,7 +19,7 @@ export const QuizGamePage = ({ quiz }: QuizGamePageProps) => {
   const [answers, setAnswers] = useState<QuizAnswer[]>([]);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(quiz.durationMinutes * 60); // Total seconds
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused] = useState(false);
 
   const currentQuestion = quiz.questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / quiz.totalQuestions) * 100;

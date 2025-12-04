@@ -13,7 +13,6 @@ import {
   Frown,
   Meh,
   Crown,
-  ArrowLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { QuizAnswer, QuizQuestion } from "@/features/quiz/quiz.type";
@@ -172,11 +171,6 @@ export const QuizResultPage = ({
 
   const handleGoHome = () => {
     navigate("/quizzes");
-  };
-
-  // Get question details for review
-  const getQuestionDetail = (questionId: string) => {
-    return questions.find((q) => q.id === questionId);
   };
 
   const getAnswerForQuestion = (questionId: string) => {
