@@ -58,7 +58,7 @@ const NAVIGATION: NavItem[] = [
       { label: "Câu chuyện truyền cảm hứng" },
     ],
   },
-  { label: "Thi hay", href: "/thi-hay" },
+  { label: "Thi hay", href: "/quizzes" },
 ];
 
 // --- Sub-components ---

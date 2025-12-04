@@ -4,7 +4,7 @@ import { baseQueryWithToast } from './baseQueryWithToast';
 export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithToast,
-  tagTypes: ['Auth', 'Common'],
+  tagTypes: ['Auth', 'Common', 'Quiz', 'Quizzes'],
   keepUnusedDataFor: 60,
   endpoints: () => ({}),
 });
