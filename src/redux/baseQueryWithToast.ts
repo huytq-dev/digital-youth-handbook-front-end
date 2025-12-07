@@ -24,11 +24,32 @@ const mutex = new Mutex();
 const baseQuery = fetchBaseQuery({
   baseUrl: baseUrl,
   credentials: 'include', // Bắt buộc để gửi/nhận HttpOnly cookies
-  prepareHeaders: (headers) => {
+  prepareHeaders: (headers, { endpoint }) => {
     const token = authService.getAccessToken();
+    
+    // Debug: Log token status
+    if (endpoint === 'users/profile') {
+      console.log('🔑 [prepareHeaders] Token check for profile update:');
+      console.log('  - Token exists:', !!token);
+      console.log('  - Token value:', token ? `${token.substring(0, 20)}...` : 'null');
+    }
+    
     if (token) {
       headers.set('authorization', `Bearer ${token}`);
+      
+      // Debug: Log header để xác nhận
+      if (endpoint === 'users/profile') {
+        console.log('  ✅ Authorization header SET:', `Bearer ${token.substring(0, 20)}...`);
+        console.log('  📤 Header sẽ được gửi trong request');
+      }
+    } else {
+      // Debug: Warn if no token
+      if (endpoint === 'users/profile') {
+        console.warn('  ⚠️ No access token found in localStorage!');
+        console.warn('  ❌ Authorization header KHÔNG được set');
+      }
     }
+    
     return headers;
   },
 });

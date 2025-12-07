@@ -164,7 +164,8 @@ export type ResetPasswordResponseModel =
 // ==========================================
 
 // Gender type (match với backend Domain model)
-export type GenderType = 0 | 1 | 2; // 0=Nam, 1=Nữ, 2=Khác
+// Backend enum: Male = 1, Female = 2, Other = 3
+export type GenderType = 1 | 2 | 3; // 1=Nam, 2=Nữ, 3=Khác
 
 // GET /api/auth/me
 // Option 2 (Recommended): Bao gồm đầy đủ thông tin cho Header và Profile page
@@ -181,7 +182,7 @@ export interface GetCurrentUserResponseDataModel {
   roleName: RoleName;             // Cho authorization checks
   
   // Optional - cho Profile page (pre-fill form)
-  gender?: GenderType | null;     // 0=Nam, 1=Nữ, 2=Khác
+  gender?: GenderType | null;     // 1=Nam, 2=Nữ, 3=Khác
   dob?: string | null;            // ISO 8601 date string (YYYY-MM-DDTHH:mm:ssZ)
   address?: string | null;
 }
