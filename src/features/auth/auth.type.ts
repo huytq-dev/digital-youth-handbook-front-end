@@ -47,7 +47,8 @@ export interface SignInRequestModel {
 export interface SignInResponseDataModel {
   accessToken: string; // required
   expiresIn: number; // required (seconds)
-  refreshToken?: string | null; // optional
+  refreshToken: string | null; // Always null - Backend set vào HttpOnly Cookie, không trả về trong JSON
+  user: GetCurrentUserResponseDataModel; // User profile data from backend
 }
 
 export type SignInResponseModel = ApiResponse<SignInResponseDataModel>;
@@ -67,7 +68,8 @@ export type SignUpResponseModel = ApiResponse<SignUpResponseDataModel>;
 
 // POST /api/auth/logout
 export interface SignOutRequestModel {
-  userId: string; // required (Guid)
+  userId: string; // required (Guid) - Chỉ cần userId để Backend xóa session trong Redis
+  // refreshToken không cần gửi - Backend sẽ đọc từ HttpOnly Cookie và tự xóa
 }
 
 export interface SignOutResponseDataModel {
@@ -77,9 +79,10 @@ export interface SignOutResponseDataModel {
 export type SignOutResponseModel = ApiResponse<SignOutResponseDataModel>;
 
 // POST /api/auth/refresh-token
+// Request body is empty - refresh token is read from HttpOnly cookie
+// Expired access token must be sent in Authorization header
 export interface RefreshTokenRequestModel {
-  userId: string; // required (Guid)
-  refreshToken: string; // required
+  // Empty - no body needed, refresh token comes from cookie
 }
 
 export type RefreshTokenResponseModel = SignInResponseModel;
@@ -155,6 +158,36 @@ export interface ResetPasswordResponseDataModel {
 
 export type ResetPasswordResponseModel =
   ApiResponse<ResetPasswordResponseDataModel>;
+
+// ==========================================
+// 7️⃣ Get Current User
+// ==========================================
+
+// Gender type (match với backend Domain model)
+export type GenderType = 0 | 1 | 2; // 0=Nam, 1=Nữ, 2=Khác
+
+// GET /api/auth/me
+// Option 2 (Recommended): Bao gồm đầy đủ thông tin cho Header và Profile page
+// Tránh waterfall requests - tất cả data cần thiết đã có sẵn
+export interface GetCurrentUserResponseDataModel {
+  // Bắt buộc
+  id: string;                     // GUID - match với backend response "id"
+  name: string;                   // Cho avatar initials & hiển thị
+  email: string;                  // Cho hiển thị
+  
+  // Optional nhưng recommended - cho Header & Profile
+  picture?: string | null;        // URL ảnh avatar hoặc null - cho Header avatar
+  isVerified: boolean;            // Cho verified badge
+  roleName: RoleName;             // Cho authorization checks
+  
+  // Optional - cho Profile page (pre-fill form)
+  gender?: GenderType | null;     // 0=Nam, 1=Nữ, 2=Khác
+  dob?: string | null;            // ISO 8601 date string (YYYY-MM-DDTHH:mm:ssZ)
+  address?: string | null;
+}
+
+export type GetCurrentUserResponseModel =
+  ApiResponse<GetCurrentUserResponseDataModel>;
 
 // ==========================================
 // Other Models

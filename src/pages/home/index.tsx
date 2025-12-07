@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { cn } from "@/lib/utils";
-import { HomeHeader } from "@/features/home/components/home-header";
+import { UnifiedHeader } from "@/components/layout/unified-header";
 import { LandingHero } from "@/features/landing-page/components/landing-hero";
 
 const LandingIntroduction = lazy(() =>
@@ -48,7 +48,7 @@ function HomePage() {
         "font-sans antialiased selection:bg-[hsl(var(--accent))] selection:text-white"
       )}
     >
-      <HomeHeader />
+      <UnifiedHeader />
 
       <main className="w-full flex-1" role="main">
         <LandingHero />

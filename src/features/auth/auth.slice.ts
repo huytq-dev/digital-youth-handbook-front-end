@@ -1,139 +1,81 @@
-import { baseApi } from '@/redux/baseApi';
-import type {
-  SignInRequestModel,
-  SignInResponseModel,
-  SignUpRequestModel,
-  SignUpResponseModel,
-  SignOutRequestModel,
-  SignOutResponseModel,
-  RefreshTokenRequestModel,
-  RefreshTokenResponseModel,
-  SocialSignInRequestModel,
-  SocialSignInResponseModel,
-  SendVerificationEmailRequestModel,
-  SendVerificationEmailResponseModel,
-  VerifyEmailRequestModel,
-  VerifyEmailResponseModel,
-  ForgotPasswordRequestModel,
-  ForgotPasswordResponseModel,
-  ResetPasswordRequestModel,
-  ResetPasswordResponseModel,
-} from './auth.type';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { authStorage } from './auth.storage';
+import type { UserDomainModel } from '@/features/common/common.type';
+import type { SignInResponseDataModel } from './auth.type';
 
-export const authApi = baseApi.injectEndpoints({
-  endpoints: (builder) => ({
-    // POST /api/auth/login
-    signIn: builder.mutation<SignInResponseModel, SignInRequestModel>({
-      query: (body) => ({
-        url: 'auth/login',
-        method: 'POST',
-        body,
-      }),
-    }),
+// Định nghĩa kiểu dữ liệu cho State
+interface AuthState {
+  user: UserDomainModel | null;
+  token: string | null;
+  isAuthenticated: boolean;
+}
 
-    // POST /api/auth/register
-    signUp: builder.mutation<SignUpResponseModel, SignUpRequestModel>({
-      query: (body) => ({
-        url: 'auth/register',
-        method: 'POST',
-        body,
-      }),
-    }),
+// 1. KHỞI TẠO STATE TỪ STORAGE (Hydration)
+// Bước này giúp Redux "nhớ" được trạng thái đăng nhập sau khi F5
+const initialState: AuthState = {
+  token: authStorage.getAccessToken(),
+  user: authStorage.getUser(),
+  isAuthenticated: authStorage.isAuthenticated(),
+};
 
-    // POST /api/auth/logout
-    signOut: builder.mutation<SignOutResponseModel, SignOutRequestModel>({
-      query: (body) => ({
-        url: 'auth/logout',
-        method: 'POST',
-        body,
-      }),
-    }),
+export const authSlice = createSlice({
+  name: 'auth',
+  initialState,
+  reducers: {
+    // Action 1: Dùng khi Login thành công
+    // Nhận SignInResponseDataModel (đã extract từ ApiResponse)
+    setCredentials: (state, action: PayloadAction<{ data: SignInResponseDataModel; user?: UserDomainModel }>) => {
+      const { data, user } = action.payload;
 
-    // POST /api/auth/refresh-token
-    refreshToken: builder.mutation<
-      RefreshTokenResponseModel,
-      RefreshTokenRequestModel
-    >({
-      query: (body) => ({
-        url: 'auth/refresh-token',
-        method: 'POST',
-        body,
-      }),
-    }),
+      if (!data?.accessToken) return;
 
-    // POST /api/auth/social-login
-    // Nhận AccessToken (có thể là ID token, access token, hoặc authorization code)
-    // và Provider (Google = 1, Facebook = 2)
-    socialSignIn: builder.mutation<
-      SocialSignInResponseModel,
-      SocialSignInRequestModel
-    >({
-      query: (body) => ({
-        url: 'auth/social-login',
-        method: 'POST',
-        body,
-      }),
-    }),
+      // A. Cập nhật vào Redux (RAM - Update UI ngay lập tức)
+      state.token = data.accessToken;
+      state.user = user || null; // User có thể được fetch sau
+      state.isAuthenticated = true;
 
-    // POST /api/auth/email/verification/send
-    sendVerificationEmail: builder.mutation<
-      SendVerificationEmailResponseModel,
-      SendVerificationEmailRequestModel
-    >({
-      query: (body) => ({
-        url: 'auth/email/verification/send',
-        method: 'POST',
-        body,
-      }),
-    }),
+      // B. Lưu xuống Storage (Ổ cứng - Để dành cho lần F5 sau)
+      authStorage.saveAuthData(data, user);
+    },
 
-    // POST /api/auth/email/verification/confirm
-    verifyEmail: builder.mutation<
-      VerifyEmailResponseModel,
-      VerifyEmailRequestModel
-    >({
-      query: (body) => ({
-        url: 'auth/email/verification/confirm',
-        method: 'POST',
-        body,
-      }),
-    }),
+    // Action 2: Set user sau khi fetch từ API /auth/me
+    setUser: (state, action: PayloadAction<UserDomainModel>) => {
+      state.user = action.payload;
+      state.isAuthenticated = true;
+      // Đồng bộ xuống Storage
+      authStorage.setUser(action.payload);
+    },
 
-    // POST /api/auth/password/forgot
-    forgotPassword: builder.mutation<
-      ForgotPasswordResponseModel,
-      ForgotPasswordRequestModel
-    >({
-      query: (body) => ({
-        url: 'auth/password/forgot',
-        method: 'POST',
-        body,
-      }),
-    }),
+    // Action 3: Dùng khi Logout (chủ động hoặc hết hạn token)
+    logout: (state) => {
+      // A. Xóa Redux
+      state.user = null;
+      state.token = null;
+      state.isAuthenticated = false;
 
-    // POST /api/auth/password/reset
-    resetPassword: builder.mutation<
-      ResetPasswordResponseModel,
-      ResetPasswordRequestModel
-    >({
-      query: (body) => ({
-        url: 'auth/password/reset',
-        method: 'POST',
-        body,
-      }),
-    }),
-  }),
+      // B. Xóa Storage
+      authStorage.clearAuthData();
+    },
+
+    // Action 4: Cập nhật thông tin User (Ví dụ: Đổi tên, đổi avatar mà không cần login lại)
+    updateUserProfile: (state, action: PayloadAction<Partial<UserDomainModel>>) => {
+      if (state.user) {
+        // A. Merge thông tin mới vào Redux
+        state.user = { ...state.user, ...action.payload };
+
+        // B. Đồng bộ lại User mới xuống Storage
+        authStorage.setUser(state.user);
+      }
+    },
+  },
 });
 
-export const {
-  useSignInMutation,
-  useSignUpMutation,
-  useSignOutMutation,
-  useRefreshTokenMutation,
-  useSocialSignInMutation,
-  useSendVerificationEmailMutation,
-  useVerifyEmailMutation,
-  useForgotPasswordMutation,
-  useResetPasswordMutation,
-} = authApi;
+export const { setCredentials, setUser, logout, updateUserProfile } = authSlice.actions;
+
+// Selectors (Giúp lấy dữ liệu nhanh ở component)
+export const selectCurrentUser = (state: { auth: AuthState }) => state.auth.user;
+export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.isAuthenticated;
+export const selectAuthToken = (state: { auth: AuthState }) => state.auth.token;
+
+export default authSlice.reducer;
 

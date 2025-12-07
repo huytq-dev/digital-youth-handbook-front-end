@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { showToast } from '@/lib/toast';
 import { useGoogleLogin } from '@react-oauth/google';
 import { socialLoginService } from '@/features/auth/services/social-login.service';
-import { useSocialSignInMutation } from '@/features/auth/auth.slice';
+import { useSocialSignInMutation } from '@/features/auth/auth.api';
 import { SocialProvider } from '@/features/auth/auth.type';
 import { isApiResponseSuccess, getApiErrorMessage } from '@/features/common/common.type';
-import { authService } from '@/features/auth/auth.service';
+import { authService } from '@/features/auth/auth.storage';
 import { useLoading } from '@/contexts/loading-context';
 
 interface UseSocialLoginOptions {

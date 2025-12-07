@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatedText } from "@/components/animated-text";
-import { useVerifyEmailMutation } from "../auth.slice";
+import { useVerifyEmailMutation } from "../auth.api";
 import {
   isApiResponseSuccess,
   getApiErrorMessage,

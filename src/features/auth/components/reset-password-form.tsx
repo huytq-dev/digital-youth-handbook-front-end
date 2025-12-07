@@ -11,7 +11,7 @@ import {
   resetPasswordSchema,
   type ResetPasswordFormData,
 } from "../auth.schema";
-import { useResetPasswordMutation } from "../auth.slice";
+import { useResetPasswordMutation } from "../auth.api";
 import {
   isApiResponseSuccess,
   getApiErrorMessage,

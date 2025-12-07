@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/primitives";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { authService } from "@/features/auth/auth.service";
+import { authService } from "@/features/auth/auth.storage";
 
 type NavSubItem = { label: string; href?: string };
 type NavItem = { label: string; href?: string; subItems?: NavSubItem[] };
