@@ -124,6 +124,19 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
   const initials = useMemo(() => getInitials(user.name), [user.name]);
   const hasAvatar = useMemo(() => avatar || user.picture, [avatar, user.picture]);
 
+  // Tính initials từ tên (ví dụ: "Huy Quang" → "HQ")
+  const getInitials = (name: string): string => {
+    if (!name) return "U";
+    const words = name.trim().split(" ");
+    if (words.length === 1) {
+      return words[0].charAt(0).toUpperCase();
+    }
+    return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+  };
+
+  const initials = getInitials(user.name);
+  const hasAvatar = avatar || user.picture;
+
   const handleAvatarClick = () => {
     avatarInputRef.current?.click();
   };
