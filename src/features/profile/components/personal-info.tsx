@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Save, Camera, User, Mail, Calendar, MapPin, Loader2 } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -73,6 +73,16 @@ interface PersonalInfoProps {
   onSubmit?: (data: Partial<UserProfile>) => void;
 }
 
+// Helper function: Tính initials từ tên (ví dụ: "Huy Quang" → "HQ")
+const getInitials = (name: string): string => {
+  if (!name) return "U";
+  const words = name.trim().split(" ");
+  if (words.length === 1) {
+    return words[0].charAt(0).toUpperCase();
+  }
+  return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+};
+
 export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
   const dispatch = useDispatch();
   const [avatar, setAvatar] = React.useState<string | undefined>(user.picture);
@@ -110,18 +120,9 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
     }
   }, [user, reset]);
 
-  // Tính initials từ tên (ví dụ: "Huy Quang" → "HQ")
-  const getInitials = (name: string): string => {
-    if (!name) return "U";
-    const words = name.trim().split(" ");
-    if (words.length === 1) {
-      return words[0].charAt(0).toUpperCase();
-    }
-    return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
-  };
-
-  const initials = getInitials(user.name);
-  const hasAvatar = avatar || user.picture;
+  // Tính initials và hasAvatar với useMemo để tránh re-compute không cần thiết
+  const initials = useMemo(() => getInitials(user.name), [user.name]);
+  const hasAvatar = useMemo(() => avatar || user.picture, [avatar, user.picture]);
 
   const handleAvatarClick = () => {
     avatarInputRef.current?.click();
