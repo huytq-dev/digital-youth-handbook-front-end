@@ -1,49 +1,69 @@
 import * as React from "react";
-import { Save, Camera, User, Mail, Calendar, MapPin } from "lucide-react";
+import { useEffect } from "react";
+import { Save, Camera, User, Mail, Calendar, MapPin, Loader2 } from "lucide-react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useDispatch } from "react-redux";
 import { AnimatedText } from "@/components/animated-text";
 import { Button, Input, Card, CardContent } from "@/components/ui/primitives";
 import { Label } from "@/components/ui/label";
-import type { UserProfile, GenderType } from "@/features/profile/profile.type";
+import type { UserProfile, GenderType, UpdateUserProfileRequest } from "@/features/profile/profile.type";
+import { parseDateForInput } from "@/lib/utils";
+import { useUpdateUserProfileMutation } from "@/features/profile/profile.api";
+import { updateUserProfileSchema, type UpdateUserProfileFormData } from "@/features/profile/profile.schema";
+import { isApiResponseSuccess, getApiErrorMessage } from "@/features/common/common.type";
+import { showToast } from "@/lib/toast";
+import { updateUserProfile } from "@/features/auth/auth.slice";
+import { authService } from "@/features/auth/auth.storage";
+import type { UserDomainModel } from "@/features/common/common.type";
 
 interface GenderDropdownProps {
-  value?: GenderType;
+  value?: GenderType | null;
   onChange?: (value: GenderType | undefined) => void;
+  error?: string;
 }
 
+// Backend enum: Male = 1, Female = 2, Other = 3
 const GENDER_OPTIONS: { label: string; value: GenderType }[] = [
-  { label: "Nam", value: 0 },
-  { label: "Nữ", value: 1 },
-  { label: "Khác", value: 2 },
+  { label: "Nam", value: 1 },
+  { label: "Nữ", value: 2 },
+  { label: "Khác", value: 3 },
 ];
 
 const GenderDropdown: React.ComponentType<GenderDropdownProps> = ({
   value,
   onChange,
+  error,
 }) => {
   return (
-    <div className="relative">
-      <select
-        id="profile-gender"
-        defaultValue={value !== undefined ? String(value as GenderType) : ""}
-        onChange={(e) => {
-          const v = e.target.value;
-          onChange?.(v === "" ? undefined : (Number(v) as GenderType));
-        }}
-        className="flex h-11 w-full appearance-none rounded-lg border-2 border-black bg-white px-3 py-2 text-sm font-medium outline-none transition-all focus:shadow-[4px_4px_0px_black] focus:-translate-y-1 focus:-translate-x-1"
-      >
-        <option value="">Chọn giới tính</option>
-        {GENDER_OPTIONS.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-      {/* Custom Arrow */}
-      <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path d="M2 4L6 8L10 4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+    <div>
+      <div className="relative">
+        <select
+          id="profile-gender"
+          value={value !== undefined && value !== null ? String(value as GenderType) : ""}
+          onChange={(e) => {
+            const v = e.target.value;
+            onChange?.(v === "" ? undefined : (Number(v) as GenderType));
+          }}
+          className={`flex h-11 w-full appearance-none rounded-lg border-2 ${error ? 'border-red-500' : 'border-black'} bg-white px-3 py-2 text-sm font-medium outline-none transition-all focus:shadow-[4px_4px_0px_black] focus:-translate-y-1 focus:-translate-x-1`}
+        >
+          <option value="">Chọn giới tính</option>
+          {GENDER_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        {/* Custom Arrow */}
+        <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 4L6 8L10 4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
       </div>
+      {error && (
+        <p className="text-xs text-red-500 mt-1">{error}</p>
+      )}
     </div>
   );
 };
@@ -54,8 +74,41 @@ interface PersonalInfoProps {
 }
 
 export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
+  const dispatch = useDispatch();
   const [avatar, setAvatar] = React.useState<string | undefined>(user.picture);
   const avatarInputRef = React.useRef<HTMLInputElement | null>(null);
+  const [updateProfile, { isLoading }] = useUpdateUserProfileMutation();
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<UpdateUserProfileFormData>({
+    resolver: zodResolver(updateUserProfileSchema),
+    defaultValues: {
+      name: user.name || null,
+      dob: parseDateForInput(user.dob) || null,
+      gender: user.gender ?? null,
+      address: user.address || null,
+      pictureUrl: user.picture || null,
+    },
+  });
+
+  // Reset form khi props `user` thay đổi
+  useEffect(() => {
+    reset({
+      name: user.name || null,
+      dob: parseDateForInput(user.dob) || null,
+      gender: user.gender ?? null,
+      address: user.address || null,
+      pictureUrl: user.picture || null,
+    });
+    if (user.picture) {
+      setAvatar(user.picture);
+    }
+  }, [user, reset]);
 
   // Tính initials từ tên (ví dụ: "Huy Quang" → "HQ")
   const getInitials = (name: string): string => {
@@ -77,8 +130,108 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !file.type.startsWith("image/")) return;
+    
+    // Tạo blob URL để preview ngay lập tức
     const url = URL.createObjectURL(file);
     setAvatar(url);
+    
+    // TODO: Cần implement API upload file riêng (multipart/form-data)
+    // Sau khi upload thành công, lấy URL từ server và set vào form field pictureUrl
+  };
+
+  const onSubmitForm = async (data: UpdateUserProfileFormData) => {
+    // Debug: Kiểm tra token trước khi submit
+    const token = authService.getAccessToken();
+    console.log('🔑 Token check before submit:');
+    console.log('  - Token exists:', !!token);
+    console.log('  - Token value:', token ? `${token.substring(0, 20)}...` : 'null');
+    console.log('  - Is authenticated:', authService.isAuthenticated());
+    
+    try {
+      // Chỉ gửi các fields có giá trị (không gửi null/undefined/empty)
+      const requestData: UpdateUserProfileRequest = {};
+
+      if (data.name?.trim()) {
+        requestData.name = data.name.trim();
+      }
+
+      // Input type="date" trả về YYYY-MM-DD, nhưng backend cần ISO 8601 format
+      if (data.dob?.trim()) {
+        const date = new Date(data.dob + 'T00:00:00');
+        if (!isNaN(date.getTime())) {
+          requestData.dob = date.toISOString();
+        }
+      }
+
+      if (data.gender !== undefined && data.gender !== null) {
+        requestData.gender = data.gender;
+      }
+
+      if (data.address?.trim()) {
+        requestData.address = data.address.trim();
+      }
+
+      // pictureUrl chỉ có giá trị nếu đã upload file và có URL từ server
+      if (data.pictureUrl?.trim() && !data.pictureUrl.startsWith('blob:')) {
+        requestData.pictureUrl = data.pictureUrl.trim();
+      }
+
+      // Kiểm tra xem có ít nhất một field được gửi không
+      if (Object.keys(requestData).length === 0) {
+        showToast.error(
+          "Không có thay đổi",
+          "Vui lòng thay đổi ít nhất một trường thông tin"
+        );
+        return;
+      }
+
+      const response = await updateProfile(requestData).unwrap();
+
+      if (isApiResponseSuccess(response)) {
+        const responseData = response.data || response.Data;
+        if (responseData) {
+          // Cập nhật Redux auth state
+          const updatedUser: Partial<UserDomainModel> = {
+            name: responseData.name,
+            picture: responseData.picture || null,
+            gender: responseData.gender ?? null,
+            dob: responseData.dob || null,
+            address: responseData.address || null,
+          };
+          dispatch(updateUserProfile(updatedUser));
+
+          // Cập nhật avatar nếu có
+          if (responseData.picture) {
+            setAvatar(responseData.picture);
+          }
+
+          showToast.success(
+            "Cập nhật thành công",
+            "Thông tin cá nhân đã được cập nhật"
+          );
+
+          // Gọi callback nếu có
+          const profileData: Partial<UserProfile> = {
+            name: responseData.name,
+            picture: responseData.picture ?? undefined,
+            gender: responseData.gender ?? undefined,
+            dob: responseData.dob ?? undefined,
+            address: responseData.address ?? undefined,
+          };
+          onSubmit?.(profileData);
+        }
+      } else {
+        const errorMessage = getApiErrorMessage(response);
+        showToast.error("Cập nhật thất bại", errorMessage);
+      }
+    } catch (error: unknown) {
+      const errorMessage = getApiErrorMessage(
+        error && typeof error === "object" && "data" in error
+          ? (error as any).data
+          : null
+      );
+      showToast.error("Cập nhật thất bại", errorMessage);
+    }
   };
 
   return (
@@ -167,22 +320,39 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
         {/* Form Inputs */}
         <form
           className="grid grid-cols-1 gap-6 md:grid-cols-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit?.({});
-          }}
+          onSubmit={handleSubmit(
+            onSubmitForm,
+            (errors) => {
+              // Callback khi validation fail
+              const firstError = Object.values(errors)[0];
+              if (firstError?.message) {
+                showToast.error(
+                  "Lỗi xác thực",
+                  firstError.message
+                );
+              } else {
+                showToast.error(
+                  "Lỗi xác thực",
+                  "Vui lòng kiểm tra lại thông tin đã nhập"
+                );
+              }
+            }
+          )}
         >
           <div className="space-y-2">
             <Label htmlFor="profile-name" className="font-bold text-slate-700">Họ và tên</Label>
             {/* Wrapper để đảm bảo animation đồng bộ */}
-            <div className="relative rounded-lg border-2 border-black bg-white transition-all duration-200 ease-out will-change-transform focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1">
+            <div className={`relative rounded-lg border-2 ${errors.name ? 'border-red-500' : 'border-black'} bg-white transition-all duration-200 ease-out will-change-transform focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1`}>
               <input
                 id="profile-name"
                 type="text"
-                defaultValue={user.name}
+                {...register("name")}
                 className="h-11 w-full border-0 bg-transparent px-3 text-sm font-medium text-slate-900 outline-none placeholder:text-slate-400"
               />
             </div>
+            {errors.name && (
+              <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -203,46 +373,72 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
           <div className="space-y-2 group">
             <Label htmlFor="profile-dob" className="font-bold text-slate-700">Ngày sinh</Label>
             {/* Khung bao bọc (Wrapper) chịu trách nhiệm cho hiệu ứng */}
-            <div className="relative flex items-center rounded-lg border-2 border-black bg-white px-3 transition-all focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1">
+            <div className={`relative flex items-center rounded-lg border-2 ${errors.dob ? 'border-red-500' : 'border-black'} bg-white px-3 transition-all focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1`}>
               {/* Icon di chuyển cùng khung */}
               <Calendar className="text-slate-400 shrink-0 mr-2" size={16} />
               <input
                 id="profile-dob"
                 type="date"
-                defaultValue={user.dob?.split("T")[0]}
+                {...register("dob")}
                 className="h-11 w-full border-0 bg-transparent p-0 text-sm font-medium text-slate-900 outline-none focus-visible:ring-0"
               />
             </div>
+            {errors.dob && (
+              <p className="text-xs text-red-500 mt-1">{errors.dob.message}</p>
+            )}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="profile-gender" className="font-bold text-slate-700">Giới tính</Label>
-            <GenderDropdown value={user.gender} />
+            <Controller
+              name="gender"
+              control={control}
+              render={({ field }) => (
+                <GenderDropdown
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={errors.gender?.message}
+                />
+              )}
+            />
           </div>
 
           <div className="md:col-span-2 space-y-2 group">
             <Label htmlFor="profile-address" className="font-bold text-slate-700">Địa chỉ</Label>
             {/* Khung bao bọc (Wrapper) chịu trách nhiệm cho hiệu ứng */}
-            <div className="relative flex items-start rounded-lg border-2 border-black bg-white px-3 py-2 transition-all focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1">
+            <div className={`relative flex items-start rounded-lg border-2 ${errors.address ? 'border-red-500' : 'border-black'} bg-white px-3 py-2 transition-all focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1`}>
               {/* Icon căn lên trên cùng */}
               <MapPin className="text-slate-400 shrink-0 mr-2 mt-1" size={16} />
               <textarea
                 id="profile-address"
                 rows={3}
-                defaultValue={user.address}
+                {...register("address")}
                 // Textarea trong suốt, không viền
                 className="flex min-h-[80px] w-full resize-none border-0 bg-transparent p-0 text-sm placeholder:text-muted-foreground outline-none focus-visible:ring-0"
               />
             </div>
+            {errors.address && (
+              <p className="text-xs text-red-500 mt-1">{errors.address.message}</p>
+            )}
           </div>
 
           <div className="md:col-span-2 flex justify-end pt-4 border-t-2 border-dashed border-slate-200">
             <Button
               type="submit"
-              className="h-11 rounded-lg border-2 border-black bg-blue-600 px-8 text-sm font-bold text-white shadow-[4px_4px_0px_black] hover:bg-blue-700 hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[4px] active:translate-x-[4px] transition-all"
+              disabled={isLoading}
+              className="h-11 rounded-lg border-2 border-black bg-blue-600 px-8 text-sm font-bold text-white shadow-[4px_4px_0px_black] hover:bg-blue-700 hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[4px] active:translate-x-[4px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Save className="mr-2 h-4 w-4" />
-              <AnimatedText>Lưu Thay Đổi</AnimatedText>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <AnimatedText>Đang lưu...</AnimatedText>
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  <AnimatedText>Lưu Thay Đổi</AnimatedText>
+                </>
+              )}
             </Button>
           </div>
         </form>

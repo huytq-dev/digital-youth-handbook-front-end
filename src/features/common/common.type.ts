@@ -199,7 +199,8 @@ export interface ApiResponse<T = unknown> {
   export type RoleName = 'ADMIN' | 'USER' | 'DRIVER';
   
   // Gender type (re-export từ auth.type.ts để dùng chung)
-  export type GenderType = 0 | 1 | 2; // 0=Nam, 1=Nữ, 2=Khác
+  // Backend enum: Male = 1, Female = 2, Other = 3
+  export type GenderType = 1 | 2 | 3; // 1=Nam, 2=Nữ, 3=Khác
   
   /**
    * UserDomainModel - Model chính cho user trong app
