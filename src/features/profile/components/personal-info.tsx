@@ -57,6 +57,19 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
   const [avatar, setAvatar] = React.useState<string | undefined>(user.picture);
   const avatarInputRef = React.useRef<HTMLInputElement | null>(null);
 
+  // Tính initials từ tên (ví dụ: "Huy Quang" → "HQ")
+  const getInitials = (name: string): string => {
+    if (!name) return "U";
+    const words = name.trim().split(" ");
+    if (words.length === 1) {
+      return words[0].charAt(0).toUpperCase();
+    }
+    return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+  };
+
+  const initials = getInitials(user.name);
+  const hasAvatar = avatar || user.picture;
+
   const handleAvatarClick = () => {
     avatarInputRef.current?.click();
   };
@@ -113,12 +126,18 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
         {/* Avatar Section */}
         <div className="flex items-center gap-6">
           <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
-            <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-black bg-gray-100 shadow-[4px_4px_0px_black] transition-transform group-hover:translate-y-1 group-hover:translate-x-1 group-hover:shadow-none">
-              <img
-                src={avatar ?? user.picture ?? "https://i.pravatar.cc/150"}
-                alt={user.name}
-                className="h-full w-full object-cover"
-              />
+            <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-black bg-blue-600 shadow-[4px_4px_0px_black] transition-transform group-hover:translate-y-1 group-hover:translate-x-1 group-hover:shadow-none flex items-center justify-center">
+              {hasAvatar ? (
+                <img
+                  src={avatar ?? user.picture}
+                  alt={user.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span className="text-2xl font-black text-white">
+                  {initials}
+                </span>
+              )}
             </div>
             <button
               type="button"

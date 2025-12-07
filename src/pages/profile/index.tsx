@@ -1,57 +1,41 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { User, History, ShieldAlert, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/primitives";
 import { AnimatedText } from "@/components/animated-text";
-import { ProfileHeader } from "@/features/profile/components/profile-header";
+import { UnifiedHeader } from "@/components/layout/unified-header";
 import { PersonalInfo } from "@/features/profile/components/personal-info";
 import { QuizHistory } from "@/features/profile/components/quiz-history";
 import { DangerZone } from "@/features/profile/components/danger-zone";
-import type { GenderType, UserProfile } from "@/features/profile/profile.type";
+import type { UserProfile } from "@/features/profile/profile.type";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/features/auth/auth.slice";
 import { cn } from "@/lib/utils";
-
-// Mock Data
-const MOCK_USER: UserProfile = {
-  id: "1",
-  name: "Thanh niên Việt Nam",
-  email: "digital.youth@example.com",
-  picture: "https://i.pravatar.cc/200?img=32",
-  gender: 0 as GenderType,
-  dob: "2001-01-01T00:00:00",
-  address: "Quận 1, TP. Hồ Chí Minh",
-  isVerified: true,
-  roles: [
-    { id: "1", roleName: "Student" },
-    { id: "2", roleName: "Member" },
-  ],
-  quizAttempts: [
-    {
-      id: "101",
-      quizTitle: "Kiến thức Đoàn - Hội cơ bản",
-      score: 9.0,
-      completedAt: "2025-11-20T00:00:00",
-      isPassed: true,
-    },
-    {
-      id: "102",
-      quizTitle: "Kỹ năng số an toàn",
-      score: 7.5,
-      completedAt: "2025-11-10T00:00:00",
-      isPassed: true,
-    },
-    {
-      id: "103",
-      quizTitle: "Lịch sử phong trào thanh niên",
-      score: 6.0,
-      completedAt: "2025-10-28T00:00:00",
-      isPassed: false,
-    },
-  ],
-};
 
 type TabKey = "info" | "history" | "security";
 
 function ProfilePage() {
   const [activeTab, setActiveTab] = useState<TabKey>("info");
+  const user = useSelector(selectCurrentUser);
+
+  // Map UserDomainModel từ Redux sang UserProfile
+  const userProfile: UserProfile | null = useMemo(() => {
+    if (!user) return null;
+    
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      picture: user.picture ?? undefined,
+      gender: user.gender ?? undefined,
+      dob: user.dob ?? undefined,
+      address: user.address ?? undefined,
+      isVerified: user.isVerified,
+      roles: [
+        { id: user.id, roleName: user.roleName } // Map roleName thành roles array
+      ],
+      quizAttempts: [], // Quiz attempts sẽ được fetch riêng sau
+    };
+  }, [user]);
 
   const tabs: { key: TabKey; label: string; icon: React.ComponentType<any> }[] = [
     { key: "info", label: "Thông tin cá nhân", icon: User },
@@ -59,9 +43,23 @@ function ProfilePage() {
     { key: "security", label: "Bảo mật tài khoản", icon: ShieldAlert },
   ];
 
+  // Nếu chưa có user, hiển thị loading hoặc redirect
+  if (!userProfile) {
+    return (
+      <div className="min-h-screen bg-[#fff9f0] pb-20 pt-20 font-sans text-slate-900">
+        <UnifiedHeader />
+        <div className="mx-auto mt-8 sm:mt-10 lg:mt-12 max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <p className="text-lg font-bold text-slate-600">Đang tải thông tin...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#fff9f0] pb-20 pt-20 font-sans text-slate-900">
-      <ProfileHeader />
+      <UnifiedHeader />
       
       <div className="mx-auto mt-8 sm:mt-10 lg:mt-12 max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Page Title */}
@@ -120,13 +118,13 @@ function ProfilePage() {
           <div className="space-y-6 min-h-[500px]">
             {activeTab === "info" && (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <PersonalInfo user={MOCK_USER} />
+                    <PersonalInfo user={userProfile} />
                 </div>
             )}
 
             {activeTab === "history" && (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <QuizHistory attempts={MOCK_USER.quizAttempts} />
+                    <QuizHistory attempts={userProfile.quizAttempts} />
                 </div>
             )}
 

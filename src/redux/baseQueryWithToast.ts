@@ -1,17 +1,29 @@
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { Mutex } from 'async-mutex';
 import { baseUrl } from '@/config';
-import { authService } from '@/features/auth/auth.service';
+import { authService } from '@/features/auth/auth.storage';
 import type { ApiResponse } from '@/features/common/common.type';
+import { isApiResponseSuccess } from '@/features/common/common.type';
 import { ResponseType } from '@/features/common/response-types';
 import { showToast } from '@/lib/toast';
+import type { SignInResponseDataModel } from '@/features/auth/auth.type';
+
+/**
+ * Mutex để khóa tiến trình refresh token
+ * Đảm bảo chỉ 1 request refresh chạy tại 1 thời điểm, tránh race condition
+ */
+const mutex = new Mutex();
 
 /**
  * Custom baseQuery với auto toast notification
  * Tự động bắt và hiển thị message từ backend API response
+ * 
+ * QUAN TRỌNG: credentials: 'include' để gửi/nhận HttpOnly cookies
  */
 const baseQuery = fetchBaseQuery({
   baseUrl: baseUrl,
+  credentials: 'include', // Bắt buộc để gửi/nhận HttpOnly cookies
   prepareHeaders: (headers) => {
     const token = authService.getAccessToken();
     if (token) {
@@ -39,6 +51,45 @@ function extractMessage(response: ApiResponse<unknown>): {
     message: detail,
     errors: Object.keys(errors).length > 0 ? errors : undefined,
   };
+}
+
+/**
+ * Helper function để normalize headers từ FetchArgs
+ * Chuyển đổi headers từ các kiểu khác nhau thành Record<string, string>
+ */
+function normalizeHeaders(headers?: Headers | string[][] | Record<string, string | undefined>): Record<string, string> {
+  if (!headers) {
+    return {};
+  }
+
+  // Nếu là Headers object (Web API Headers)
+  if (headers instanceof Headers) {
+    const result: Record<string, string> = {};
+    headers.forEach((value, key) => {
+      result[key] = value;
+    });
+    return result;
+  }
+
+  // Nếu là array of arrays [["key", "value"], ...]
+  if (Array.isArray(headers)) {
+    const result: Record<string, string> = {};
+    headers.forEach(([key, value]) => {
+      if (key && value) {
+        result[key] = value;
+      }
+    });
+    return result;
+  }
+
+  // Nếu là Record<string, string | undefined>
+  const result: Record<string, string> = {};
+  Object.entries(headers).forEach(([key, value]) => {
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  });
+  return result;
 }
 
 /**
@@ -137,7 +188,7 @@ function showResponseToast(
 }
 
 /**
- * BaseQuery với auto toast notification
+ * BaseQuery với auto toast notification và auto-refresh token
  * 
  * MẶC ĐỊNH: Auto toast bị DISABLE để ưu tiên hiển thị lỗi từ code native (components)
  * 
@@ -156,17 +207,155 @@ function showResponseToast(
  * Components nên tự handle errors bằng cách:
  * - Dùng getApiErrorMessage() từ @/features/common/common.type
  * - Dùng showToast từ @/lib/toast
+ * 
+ * AUTO-REFRESH TOKEN:
+ * - Khi gặp lỗi 401, tự động gọi /auth/refresh-token
+ * - Refresh token được đọc từ HttpOnly cookie (credentials: 'include')
+ * - Access token cũ (dù đã hết hạn) vẫn được gửi trong Authorization header
+ * - Sau khi refresh thành công, retry request ban đầu với token mới
+ * - Sử dụng Mutex để tránh race condition: chỉ 1 request refresh chạy tại 1 thời điểm
  */
 export const baseQueryWithToast: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  const result = await baseQuery(args, api, extraOptions);
+  // Gọi API ban đầu
+  let result = await baseQuery(args, api, extraOptions);
 
   // Check meta option để enable auto toast (mặc định là disabled)
   const fetchArgs = typeof args === 'string' ? { url: args } : args;
   const enableToast = (fetchArgs as any)?.meta?.enableToast === true;
+
+  // AUTO-REFRESH TOKEN: Handle 401 Unauthorized errors
+  if (result.error && typeof result.error.status === 'number' && result.error.status === 401) {
+    const originalRequest = fetchArgs as FetchArgs;
+    
+    // Danh sách các auth endpoints không cần auto-refresh token
+    // Vì khi login/signup, user chưa có token hợp lệ, 401 là lỗi bình thường
+    const authEndpointsWithoutRefresh = [
+      'auth/login',
+      'auth/register',
+      'auth/sign-in',
+      'auth/sign-up',
+      'auth/forgot-password',
+      'auth/reset-password',
+      'auth/verify-email',
+      'auth/refresh-token', // Refresh token endpoint cũng không cần refresh lại
+    ];
+    
+    // Kiểm tra xem request có phải là auth endpoint không cần refresh không
+    const isAuthEndpoint = typeof originalRequest === 'object' && 
+      originalRequest.url && 
+      authEndpointsWithoutRefresh.some(endpoint => originalRequest.url?.includes(endpoint));
+    
+    if (isAuthEndpoint) {
+      // Đối với auth endpoints, không cần refresh token
+      // Chỉ redirect về login nếu là refresh-token request (token đã hết hạn hoàn toàn)
+      if (typeof originalRequest === 'object' && originalRequest.url === 'auth/refresh-token') {
+        authService.clearAuthData();
+        if (typeof window !== 'undefined') {
+          window.location.href = '/auth/sign-in';
+        }
+      }
+      // Với các auth endpoints khác (login, signup), chỉ return error, không refresh
+      return result;
+    }
+
+    // Phân nhánh logic: Kiểm tra mutex trước khi quyết định refresh hay chỉ retry
+    if (!mutex.isLocked()) {
+      // TRƯỜNG HỢP 1: Chưa có ai refresh -> Mình lock và làm refresh
+      const release = await mutex.acquire();
+      
+      try {
+        // Call refresh token endpoint
+        // Note: Empty body - refresh token comes from HttpOnly cookie
+        // Expired access token is automatically sent in Authorization header via prepareHeaders
+        const refreshResult = await baseQuery(
+          {
+            url: 'auth/refresh-token',
+            method: 'POST',
+            body: {}, // Empty body - refresh token is in cookie
+          },
+          api,
+          extraOptions
+        );
+
+        if (refreshResult.data) {
+          const refreshResponse = refreshResult.data as ApiResponse<SignInResponseDataModel>;
+          
+          // Check if refresh was successful
+          if (isApiResponseSuccess(refreshResponse)) {
+            const { accessToken, expiresIn } = refreshResponse.data || refreshResponse.Data || {};
+            
+            if (accessToken) {
+              // Save new access token
+              authService.setAccessToken(accessToken);
+              if (expiresIn) {
+                authService.setTokenExpiry(expiresIn);
+              }
+
+              // Retry original request with new token
+              // Normalize và merge headers với authorization mới
+              const normalizedHeaders = typeof originalRequest === 'object' && originalRequest.headers
+                ? normalizeHeaders(originalRequest.headers)
+                : {};
+
+              const retryRequest: FetchArgs = {
+                ...originalRequest,
+                headers: {
+                  ...normalizedHeaders,
+                  authorization: `Bearer ${accessToken}`,
+                },
+              };
+
+              result = await baseQuery(retryRequest, api, extraOptions);
+              // Sau khi refresh thành công và retry, return luôn kết quả
+              return result;
+            }
+          }
+        }
+
+        // Nếu refresh thất bại -> Logout
+        authService.clearAuthData();
+        if (typeof window !== 'undefined') {
+          window.location.href = '/auth/sign-in';
+        }
+        return result;
+      } catch (refreshError) {
+        // Refresh failed - clear auth and redirect
+        console.error('Token refresh failed:', refreshError);
+        authService.clearAuthData();
+        if (typeof window !== 'undefined') {
+          window.location.href = '/auth/sign-in';
+        }
+        return result;
+      } finally {
+        // Mở khóa mutex dù thành công hay thất bại
+        release();
+      }
+    } else {
+      // TRƯỜNG HỢP 2: Đang có người khác refresh -> Đợi họ xong rồi chỉ retry
+      await mutex.waitForUnlock();
+      
+      // Sau khi đợi xong, token đã được refresh bởi request khác
+      // Chỉ cần retry request ban đầu với token mới từ localStorage
+      const currentToken = authService.getAccessToken();
+      const normalizedHeaders = typeof originalRequest === 'object' && originalRequest.headers
+        ? normalizeHeaders(originalRequest.headers)
+        : {};
+
+      const retryRequest: FetchArgs = {
+        ...originalRequest,
+        headers: {
+          ...normalizedHeaders,
+          authorization: currentToken ? `Bearer ${currentToken}` : undefined,
+        },
+      };
+
+      result = await baseQuery(retryRequest, api, extraOptions);
+    }
+  }
 
   // Handle response - chỉ show toast nếu được enable
   if (result.data && enableToast) {

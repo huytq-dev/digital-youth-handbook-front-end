@@ -11,7 +11,7 @@ import {
   forgotPasswordSchema,
   type ForgotPasswordFormData,
 } from "../auth.schema";
-import { useForgotPasswordMutation } from "../auth.slice";
+import { useForgotPasswordMutation } from "../auth.api";
 import {
   isApiResponseSuccess,
   getApiErrorMessage,

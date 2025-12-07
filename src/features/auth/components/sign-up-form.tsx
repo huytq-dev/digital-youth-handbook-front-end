@@ -9,7 +9,7 @@ import { CheckCircle2, AlertCircle, Loader2, ArrowRight, Check } from "lucide-re
 import { cn } from "@/lib/utils";
 import { AnimatedText } from "@/components/animated-text";
 import { signUpSchema, type SignUpFormData } from "../auth.schema";
-import { useSignUpMutation } from "../auth.slice";
+import { useSignUpMutation } from "../auth.api";
 import {
   isApiResponseSuccess,
   getApiErrorMessage,

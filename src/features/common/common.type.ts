@@ -198,12 +198,27 @@ export interface ApiResponse<T = unknown> {
   
   export type RoleName = 'ADMIN' | 'USER' | 'DRIVER';
   
+  // Gender type (re-export từ auth.type.ts để dùng chung)
+  export type GenderType = 0 | 1 | 2; // 0=Nam, 1=Nữ, 2=Khác
+  
+  /**
+   * UserDomainModel - Model chính cho user trong app
+   * Option 2 (Recommended): Bao gồm đầy đủ thông tin cho Header và Profile page
+   * Match với GetCurrentUserResponseDataModel từ API /api/auth/me
+   */
   export interface UserDomainModel {
-    userId: string;
+    // Bắt buộc
+    id: string;  // Match với backend response "id"
     name: string;
     email: string;
-    roleId: string;
-    roleName: RoleName;
-    createdAt?: string;
-    updatedAt?: string;
+    
+    // Optional nhưng recommended
+    picture?: string | null;        // URL ảnh avatar - cho Header
+    isVerified: boolean;            // Cho verified badge
+    roleName: RoleName;             // Cho authorization
+    
+    // Optional - cho Profile page
+    gender?: GenderType | null;
+    dob?: string | null;            // ISO 8601 date string
+    address?: string | null;
   }

@@ -2,22 +2,25 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { showToast } from "@/lib/toast";
 import { motion } from "framer-motion";
 import { AnimatedText } from "@/components/animated-text";
 import { signInSchema, type SignInFormData } from "@/features/auth/auth.schema";
-import { useSignInMutation } from "@/features/auth/auth.slice";
+import { useSignInMutation } from "@/features/auth/auth.api";
 import {
   isApiResponseSuccess,
   getApiErrorMessage,
 } from "@/features/common/common.type";
-import { authService } from "@/features/auth/auth.service";
 import { containerVariants } from "@/features/auth/constants/auth.constants";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setCredentials } from "@/features/auth/auth.slice";
 import { Loader2, ArrowRight } from "lucide-react";
 
 export function SignInForm() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -41,14 +44,20 @@ export function SignInForm() {
 
       if (isApiResponseSuccess(response)) {
         const responseData = response.data || response.Data;
-        if (responseData) {
-          authService.saveAuthData(responseData);
-          // Dispatch event to update header
-          window.dispatchEvent(new Event("auth-state-changed"));
+        if (responseData?.accessToken && responseData?.user) {
+          // 1. Save credentials to Redux and Storage (user đã có trong response)
+          dispatch(setCredentials({ 
+            data: responseData,  // responseData đã có đầy đủ: accessToken, expiresIn, refreshToken, user
+            user: responseData.user  // User đã có sẵn trong response
+          }));
+
+          // 3. Show success message
           showToast.success(
             t("auth.signIn.successTitle") || "Đăng nhập thành công!",
             t("auth.signIn.successMessage") || "Chào mừng bạn trở lại!"
           );
+
+          // 4. Redirect to home
           navigate("/");
         }
       } else {

@@ -1,12 +1,25 @@
 import type { ReactNode } from "react";
 import { memo, useCallback, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Menu, ChevronDown, Star, User, LogOut, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  Menu,
+  ChevronDown,
+  Star,
+  User,
+  LogOut,
+  X,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/primitives";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { authService } from "@/features/auth/auth.service";
-import { useSignOutMutation } from "@/features/auth/auth.slice";
+import { useSignOutMutation } from "@/features/auth/auth.api";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  logout,
+  selectCurrentUser,
+  selectIsAuthenticated,
+} from "@/features/auth/auth.slice";
 import type { UserDomainModel } from "@/features/common/common.type";
 import { useIsMobile, useReducedMotion } from "@/hooks/use-reduced-motion";
 
@@ -58,25 +71,19 @@ interface SheetOverlayProps {
 
 const SheetOverlay = memo(({ isOpen, onClose, children }: SheetOverlayProps) => (
   <>
-    {/* 1. Backdrop (Lớp nền đen mờ): Tăng z-index lên 9998 */}
     {isOpen && (
       <div
         className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
       />
     )}
-    
-    {/* 2. Menu Sheet: Tăng z-index lên 9999 (cao nhất) và dùng h-[100dvh] */}
     <div
       className={cn(
         "fixed inset-y-0 right-0 z-[9999] h-[100dvh] w-full sm:w-[400px] bg-[#fff9f0] border-l-4 border-black shadow-[-10px_0px_20px_rgba(0,0,0,0.2)] transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col",
         isOpen ? "translate-x-0" : "translate-x-full"
       )}
     >
-      {/* Decoration Line */}
       <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-yellow-400 to-red-500 z-10" />
-      
-      {/* Content Container */}
       <div className="flex h-full flex-col overflow-hidden px-6 py-6 relative z-0">
         {children}
       </div>
@@ -156,14 +163,24 @@ const NavLinkBtn = memo(({ item }: { item: NavItem }) => {
 });
 NavLinkBtn.displayName = "NavLinkBtn";
 
-interface UserAvatarButtonProps {
+// --- MỚI: Component UserProfileDropdown ---
+interface UserProfileDropdownProps {
   user: UserDomainModel;
-  isOpen: boolean;
-  onToggle: () => void;
+  onSignOut: () => void;
 }
 
-const UserAvatarButton = memo(
-  ({ user, isOpen, onToggle }: UserAvatarButtonProps) => {
+const UserProfileDropdown = memo(
+  ({ user, onSignOut }: UserProfileDropdownProps) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    // Xử lý click outside để đóng menu
+    useEffect(() => {
+      if (!isOpen) return;
+      const handleClickOutside = () => setIsOpen(false);
+      setTimeout(() => window.addEventListener("click", handleClickOutside), 0);
+      return () => window.removeEventListener("click", handleClickOutside);
+    }, [isOpen]);
+
     const initials =
       user.name
         ?.split(" ")
@@ -172,125 +189,142 @@ const UserAvatarButton = memo(
         .toUpperCase()
         .slice(0, 2) || "U";
 
+    // --- FIX: Lấy tên gọi (từ cuối) để hiển thị cho gọn ---
+    // Ví dụ: "Trần Quang Huy" -> "Huy"
+    const displayName = user.name?.trim().split(" ").pop() || user.name;
+
     return (
       <div className="relative">
+        {/* Trigger Button */}
         <button
-          onClick={onToggle}
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen((prev) => !prev);
+          }}
           className={cn(
-            "h-11 w-11 rounded-lg border-2 border-black bg-blue-600 text-white font-black text-sm shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] hover:bg-blue-700 active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center justify-center",
-            isOpen && "bg-blue-700"
+            "flex items-center gap-2 rounded-full border-2 border-black bg-white pl-1 pr-3 py-1 shadow-[3px_3px_0px_black] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[1px_1px_0px_black] transition-all",
+            isOpen &&
+              "translate-y-[2px] translate-x-[2px] shadow-[1px_1px_0px_black] bg-blue-50"
           )}
         >
-          {initials}
+          {/* Avatar Circle */}
+          <div className="h-8 w-8 overflow-hidden rounded-full border border-black bg-gray-200 flex items-center justify-center text-xs font-bold">
+            {user.picture ? (
+              <img
+                src={user.picture}
+                alt="User avatar"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <span>{initials}</span>
+            )}
+          </div>
+
+          {/* Text Info - Đã sửa logic hiển thị tên */}
+          <div className="hidden flex-col text-left sm:flex">
+            <span className="text-[10px] font-bold text-slate-500 uppercase leading-none">
+              Xin chào
+            </span>
+            <span 
+              className="text-sm font-black text-slate-900 leading-none max-w-[120px] truncate"
+              title={user.name} // Hover vào sẽ hiện full tên
+            >
+              {displayName} 
+            </span>
+          </div>
+
+          {/* Chevron Icon */}
+          <ChevronDown
+            size={16}
+            strokeWidth={3}
+            className={cn(
+              "ml-1 text-slate-900 transition-transform duration-200",
+              isOpen ? "rotate-180" : "rotate-0"
+            )}
+          />
         </button>
-      </div>
-    );
-  }
-);
-UserAvatarButton.displayName = "UserAvatarButton";
 
-interface UserDropdownMenuProps {
-  user: UserDomainModel;
-  isOpen: boolean;
-  onClose: () => void;
-  onSignOut: () => void;
-}
-
-const UserDropdownMenu = memo(
-  ({ user, isOpen, onClose, onSignOut }: UserDropdownMenuProps) => {
-    const navigate = useNavigate();
-
-    return (
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <div className="fixed inset-0 z-40" onClick={onClose} />
+        {/* Dropdown Menu */}
+        <AnimatePresence>
+          {isOpen && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="absolute right-0 top-full mt-2 w-56 bg-white border-2 border-black shadow-[6px_6px_0px_black] rounded-xl overflow-hidden z-50"
+              className="absolute right-0 top-full mt-2 w-64 overflow-hidden rounded-xl border-2 border-black bg-white shadow-[4px_4px_0px_black] z-50"
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="px-4 py-3 border-b-2 border-black bg-blue-50">
-                <p className="font-black text-sm text-slate-900">{user.name}</p>
-                <p className="text-xs font-bold text-slate-600 truncate">
+              {/* Header màu vàng */}
+              <div className="border-b-2 border-black bg-yellow-300 px-4 py-2.5">
+                <p className="text-[10px] font-bold text-slate-800 uppercase tracking-wider">
+                  Tài khoản của bạn
+                </p>
+                <p 
+                  className="text-xs font-black text-slate-900 truncate" 
+                  title={user.email}
+                >
                   {user.email}
                 </p>
               </div>
 
-              <div className="p-2">
-                <button
-                  onClick={() => {
-                    navigate("/profile");
-                    onClose();
-                  }}
-                  className="w-full px-4 py-3 rounded-lg font-bold text-sm text-left hover:bg-blue-50 hover:text-blue-700 transition-colors flex items-center gap-3 border-2 border-transparent hover:border-black/10"
+              {/* Menu Items */}
+              <div className="flex flex-col p-1.5 gap-1">
+                <Link
+                  to="/profile"
+                  onClick={() => setIsOpen(false)}
+                  className="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-left font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700 border-2 border-transparent hover:border-black/10 transition-all text-sm"
                 >
-                  <User size={18} />
+                  <User size={16} strokeWidth={2.5} />
                   Trang cá nhân
-                </button>
+                </Link>
+
                 <button
-                  onClick={() => {
-                    onSignOut();
-                    onClose();
-                  }}
-                  className="w-full px-4 py-3 rounded-lg font-bold text-sm text-left hover:bg-red-50 hover:text-red-700 transition-colors flex items-center gap-3 border-2 border-transparent hover:border-black/10 mt-1"
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-left font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-700 border-2 border-transparent hover:border-black/10 transition-all text-sm"
                 >
-                  <LogOut size={18} />
+                  <Sparkles size={16} strokeWidth={2.5} />
+                  Kế hoạch đã lưu
+                </button>
+
+                <div className="my-1 border-t-2 border-dashed border-slate-200" />
+
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-left font-bold text-red-600 hover:bg-red-50 hover:text-red-700 border-2 border-transparent hover:border-red-200 transition-all text-sm"
+                  onClick={() => {
+                    setIsOpen(false);
+                    onSignOut();
+                  }}
+                >
+                  <LogOut size={16} strokeWidth={2.5} />
                   Đăng xuất
                 </button>
               </div>
             </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </div>
     );
   }
 );
-UserDropdownMenu.displayName = "UserDropdownMenu";
+UserProfileDropdown.displayName = "UserProfileDropdown";
 
 // --- MAIN COMPONENT ---
 
 export const UnifiedHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<UserDomainModel | null>(null);
-  const [isAvatarOpen, setIsAvatarOpen] = useState(false);
-  const navigate = useNavigate();
   const [signOut] = useSignOutMutation();
+  const dispatch = useDispatch();
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useIsMobile();
 
-  useEffect(() => {
-    const checkAuth = () => {
-      const authenticated = authService.isAuthenticated();
-      setIsAuthenticated(authenticated);
-      if (authenticated) {
-        setUser(authService.getUser());
-      } else {
-        setUser(null);
-      }
-    };
-    checkAuth();
-    const handleStorageChange = (e: StorageEvent) => {
-      if (
-        e.key === "access_token" ||
-        e.key === "user" ||
-        e.key === "token_expiry"
-      ) {
-        checkAuth();
-      }
-    };
-    const handleAuthChange = () => checkAuth();
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("auth-state-changed", handleAuthChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("auth-state-changed", handleAuthChange);
-    };
-  }, []);
+  // Use Redux state
+  const user = useSelector(selectCurrentUser);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   useEffect(() => {
     if (isOpen) {
@@ -310,24 +344,15 @@ export const UnifiedHeader = () => {
 
   const handleSignOut = useCallback(async () => {
     try {
-      if (user?.userId) {
-        await signOut({ userId: user.userId }).unwrap();
+      if (user?.id) {
+        await signOut({ userId: user.id }).unwrap();
       }
-      authService.clearAuthData();
-      setIsAuthenticated(false);
-      setUser(null);
-      setIsAvatarOpen(false);
-      navigate("/");
-      window.dispatchEvent(new Event("auth-state-changed"));
-    } catch {
-      authService.clearAuthData();
-      setIsAuthenticated(false);
-      setUser(null);
-      setIsAvatarOpen(false);
-      navigate("/");
-      window.dispatchEvent(new Event("auth-state-changed"));
+    } catch (error) {
+      console.error("Logout API error:", error);
+    } finally {
+      dispatch(logout());
     }
-  }, [navigate, signOut, user?.userId]);
+  }, [signOut, user?.id, dispatch]);
 
   return (
     <nav
@@ -352,7 +377,9 @@ export const UnifiedHeader = () => {
                   size={22}
                   className={cn(
                     "transition-transform duration-500",
-                    shouldReduceMotion || isMobile ? "" : "group-hover:rotate-180"
+                    shouldReduceMotion || isMobile
+                      ? ""
+                      : "group-hover:rotate-180"
                   )}
                 />
               </div>
@@ -391,19 +418,7 @@ export const UnifiedHeader = () => {
                 </Link>
               </>
             ) : user ? (
-              <div className="relative">
-                <UserAvatarButton
-                  user={user}
-                  isOpen={isAvatarOpen}
-                  onToggle={() => setIsAvatarOpen((prev) => !prev)}
-                />
-                <UserDropdownMenu
-                  user={user}
-                  isOpen={isAvatarOpen}
-                  onClose={() => setIsAvatarOpen(false)}
-                  onSignOut={handleSignOut}
-                />
-              </div>
+              <UserProfileDropdown user={user} onSignOut={handleSignOut} />
             ) : null}
           </div>
 
@@ -421,15 +436,10 @@ export const UnifiedHeader = () => {
         </div>
       </div>
 
-      {/* ------------------------------------------------ */}
-      {/* MOBILE SHEET CONTENT - Đã style lại theo yêu cầu */}
-      {/* ------------------------------------------------ */}
+      {/* MOBILE SHEET CONTENT */}
       <SheetOverlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        
-        {/* HEADER: Chấm cam + MENU + Đường kẻ đứt nét */}
         <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-black border-dashed">
           <div className="flex items-center gap-3">
-            {/* Chấm tròn cam */}
             <div className="w-5 h-5 bg-orange-500 rounded-full border-2 border-black shadow-[1px_1px_0px_black]" />
             <span className="font-black text-2xl tracking-tight text-slate-900">
               MENU
@@ -445,16 +455,13 @@ export const UnifiedHeader = () => {
           </Button>
         </div>
 
-        {/* NAVIGATION LIST */}
         <div className="flex-1 overflow-y-auto flex flex-col gap-4 pr-1 pb-4 custom-scrollbar">
           {NAVIGATION.map((item) => (
             <div
               key={item.label}
-              // Khung bao ngoài: Trắng, viền đen, bo góc, shadow nhẹ
               className="border-2 border-black rounded-xl bg-white shadow-[3px_3px_0px_rgba(0,0,0,0.1)] overflow-hidden"
             >
               {item.subItems ? (
-                // --- TRƯỜNG HỢP CÓ SUBMENU (VD: Chủ đề học tập) ---
                 <>
                   <div className="px-5 py-4 bg-white border-b border-black/10">
                     <span className="font-bold text-lg text-slate-900 block">
@@ -469,7 +476,6 @@ export const UnifiedHeader = () => {
                         onClick={() => setIsOpen(false)}
                         className="group flex items-center gap-3 text-slate-600 font-semibold text-[15px] hover:text-blue-600 transition-colors"
                       >
-                        {/* Bullet point màu xanh */}
                         <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 group-hover:scale-125 transition-transform" />
                         {subItem.label}
                       </Link>
@@ -477,7 +483,6 @@ export const UnifiedHeader = () => {
                   </div>
                 </>
               ) : (
-                // --- TRƯỜNG HỢP LINK ĐƠN (VD: Trang chủ) ---
                 <Link
                   to={item.href || "#"}
                   onClick={() => setIsOpen(false)}
@@ -490,7 +495,6 @@ export const UnifiedHeader = () => {
           ))}
         </div>
 
-        {/* FOOTER: Auth Buttons (Nằm dưới cùng, có đường kẻ đặc) */}
         <div className="mt-auto pt-6 border-t-2 border-black">
           {!isAuthenticated ? (
             <div className="grid grid-cols-2 gap-3">
@@ -514,29 +518,43 @@ export const UnifiedHeader = () => {
               </Link>
             </div>
           ) : user ? (
-            // User Logged In View (Mobile)
             <div className="space-y-3">
               <div className="px-4 py-3 bg-blue-50 border-2 border-black rounded-xl flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-blue-600 border-2 border-black flex items-center justify-center text-white font-black">
-                  {user.name?.charAt(0)}
+                <div className="w-10 h-10 rounded-lg bg-blue-600 border-2 border-black flex items-center justify-center text-white font-black overflow-hidden">
+                  {user.picture ? (
+                    <img
+                      src={user.picture}
+                      alt={user.name}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <span>{user.name?.charAt(0)?.toUpperCase() || "U"}</span>
+                  )}
                 </div>
                 <div className="overflow-hidden">
-                   <p className="font-black text-sm text-slate-900 truncate">{user.name}</p>
-                   <p className="text-xs font-bold text-slate-600 truncate">{user.email}</p>
+                  <p className="font-black text-sm text-slate-900 truncate" title={user.name}>
+                    {user.name}
+                  </p>
+                  <p className="text-xs font-bold text-slate-600 truncate" title={user.email}>
+                    {user.email}
+                  </p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <Link to="/profile" onClick={() => setIsOpen(false)}>
-                   <button className="w-full h-11 rounded-lg border-2 border-black bg-white font-bold text-sm shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[2px] transition-all">
-                      Cá nhân
-                   </button>
+                  <button className="w-full h-11 rounded-lg border-2 border-black bg-white font-bold text-sm shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[2px] transition-all">
+                    Cá nhân
+                  </button>
                 </Link>
-                 <button 
-                    onClick={() => { handleSignOut(); setIsOpen(false); }}
-                    className="w-full h-11 rounded-lg border-2 border-black bg-red-100 text-red-700 font-bold text-sm shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[2px] transition-all"
-                 >
-                    Đăng xuất
-                 </button>
+                <button
+                  onClick={() => {
+                    handleSignOut();
+                    setIsOpen(false);
+                  }}
+                  className="w-full h-11 rounded-lg border-2 border-black bg-red-100 text-red-700 font-bold text-sm shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[2px] transition-all"
+                >
+                  Đăng xuất
+                </button>
               </div>
             </div>
           ) : null}

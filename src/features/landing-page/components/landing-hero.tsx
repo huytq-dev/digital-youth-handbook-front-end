@@ -316,7 +316,7 @@ export const LandingHero = () => {
                 trong{" "}
                 <span className="relative whitespace-nowrap px-2 mx-1 inline-block transform hover:rotate-1 transition-transform cursor-default">
                    <span className="absolute inset-0 skew-y-1 bg-orange-200 border border-black rounded-sm" />
-                   <span className="relative text-orange-900">Kỷ Nguyên Mới</span>
+                   <span className="relative text-orange-900">Trong Thời Kì Mới</span>
                    <Zap className="absolute -right-5 top-0 text-black fill-yellow-400 rotate-12" size={24} />
                 </span>
               </AnimatedText>
