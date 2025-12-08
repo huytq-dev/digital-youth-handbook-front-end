@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Save, Camera, User, Mail, Calendar, MapPin, Loader2 } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,7 @@ import { showToast } from "@/lib/toast";
 import { updateUserProfile } from "@/features/auth/auth.slice";
 import { authService } from "@/features/auth/auth.storage";
 import type { UserDomainModel } from "@/features/common/common.type";
+import { AvatarUploadModal } from "./avatar-upload-modal";
 
 interface GenderDropdownProps {
   value?: GenderType | null;
@@ -85,8 +86,8 @@ const getInitials = (name: string): string => {
 
 export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
   const dispatch = useDispatch();
-  const [avatar, setAvatar] = React.useState<string | undefined>(user.picture);
-  const avatarInputRef = React.useRef<HTMLInputElement | null>(null);
+  const [avatar, setAvatar] = useState<string | undefined>(user.picture);
+  const [isUploadModalOpen, setUploadModalOpen] = useState(false);
   const [updateProfile, { isLoading }] = useUpdateUserProfileMutation();
 
   const {
@@ -94,6 +95,7 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<UpdateUserProfileFormData>({
     resolver: zodResolver(updateUserProfileSchema),
@@ -124,41 +126,49 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
   const initials = useMemo(() => getInitials(user.name), [user.name]);
   const hasAvatar = useMemo(() => avatar || user.picture, [avatar, user.picture]);
 
+  // Handle click vào avatar -> Mở modal
   const handleAvatarClick = () => {
-    avatarInputRef.current?.click();
+    setUploadModalOpen(true);
   };
 
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file || !file.type.startsWith("image/")) return;
+  // Callback khi upload xong từ modal -> TỰ ĐỘNG LƯU
+  const handleAvatarUploaded = async (uploadedUrl: string) => {
+    // 1. Cập nhật UI ngay lập tức
+    setAvatar(uploadedUrl);
+    setValue("pictureUrl", uploadedUrl, { shouldDirty: true });
     
-    // Tạo blob URL để preview ngay lập tức
-    const url = URL.createObjectURL(file);
-    setAvatar(url);
-    
-    // TODO: Cần implement API upload file riêng (multipart/form-data)
-    // Sau khi upload thành công, lấy URL từ server và set vào form field pictureUrl
+    // 2. Gọi API cập nhật Profile ngay lập tức (Auto-save)
+    try {
+      const response = await updateProfile({ pictureUrl: uploadedUrl }).unwrap();
+
+      if (isApiResponseSuccess(response)) {
+        // Cập nhật Redux Store
+        dispatch(updateUserProfile({ picture: uploadedUrl }));
+        showToast.success("Đã cập nhật ảnh đại diện", "Ảnh mới đã được lưu vào hồ sơ.");
+      }
+    } catch (error) {
+      console.error("Auto-save avatar failed", error);
+      // Nếu lưu thất bại, có thể revert avatar về cũ (tùy chọn) hoặc thông báo lỗi
+      showToast.error("Lỗi lưu ảnh", "Đã tải ảnh lên nhưng chưa lưu được vào hồ sơ.");
+    }
   };
 
   const onSubmitForm = async (data: UpdateUserProfileFormData) => {
     // Debug: Kiểm tra token trước khi submit
     const token = authService.getAccessToken();
-    console.log('🔑 Token check before submit:');
-    console.log('  - Token exists:', !!token);
-    console.log('  - Token value:', token ? `${token.substring(0, 20)}...` : 'null');
-    console.log('  - Is authenticated:', authService.isAuthenticated());
+    console.log('🔑 Token check before submit:', !!token);
     
     try {
-      // Chỉ gửi các fields có giá trị (không gửi null/undefined/empty)
+      // Chỉ gửi các fields có giá trị
       const requestData: UpdateUserProfileRequest = {};
 
       if (data.name?.trim()) {
         requestData.name = data.name.trim();
       }
 
-      // Input type="date" trả về YYYY-MM-DD, nhưng backend cần ISO 8601 format
+      // Input type="date" trả về YYYY-MM-DD
       if (data.dob?.trim()) {
-        // Thêm 'Z' để báo hiệu đây là UTC, tránh lệch múi giờ khi convert
+        // FIX: Thêm 'Z' để định nghĩa UTC, tránh lệch ngày do múi giờ
         const date = new Date(data.dob + 'T00:00:00Z');
         if (!isNaN(date.getTime())) {
           requestData.dob = date.toISOString();
@@ -173,8 +183,8 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
         requestData.address = data.address.trim();
       }
 
-      // pictureUrl chỉ có giá trị nếu đã upload file và có URL từ server
-      if (data.pictureUrl?.trim() && !data.pictureUrl.startsWith('blob:')) {
+      // pictureUrl đã được xử lý tự động, nhưng vẫn để đây phòng khi submit cả form
+      if (data.pictureUrl?.trim()) {
         requestData.pictureUrl = data.pictureUrl.trim();
       }
 
@@ -202,7 +212,6 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
           };
           dispatch(updateUserProfile(updatedUser));
 
-          // Cập nhật avatar nếu có
           if (responseData.picture) {
             setAvatar(responseData.picture);
           }
@@ -212,7 +221,7 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
             "Thông tin cá nhân đã được cập nhật"
           );
 
-          // Gọi callback nếu có
+          // Gọi callback props nếu có
           const profileData: Partial<UserProfile> = {
             name: responseData.name,
             picture: responseData.picture ?? undefined,
@@ -310,13 +319,6 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
               {user.email}
             </span>
           </div>
-          <input
-            ref={avatarInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleAvatarChange}
-          />
         </div>
 
         {/* Form Inputs */}
@@ -325,25 +327,17 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
           onSubmit={handleSubmit(
             onSubmitForm,
             (errors) => {
-              // Callback khi validation fail
               const firstError = Object.values(errors)[0];
               if (firstError?.message) {
-                showToast.error(
-                  "Lỗi xác thực",
-                  firstError.message
-                );
+                showToast.error("Lỗi xác thực", firstError.message);
               } else {
-                showToast.error(
-                  "Lỗi xác thực",
-                  "Vui lòng kiểm tra lại thông tin đã nhập"
-                );
+                showToast.error("Lỗi xác thực", "Vui lòng kiểm tra lại thông tin đã nhập");
               }
             }
           )}
         >
           <div className="space-y-2">
             <Label htmlFor="profile-name" className="font-bold text-slate-700">Họ và tên</Label>
-            {/* Wrapper để đảm bảo animation đồng bộ */}
             <div className={`relative rounded-lg border-2 ${errors.name ? 'border-red-500' : 'border-black'} bg-white transition-all duration-200 ease-out will-change-transform focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1`}>
               <input
                 id="profile-name"
@@ -374,9 +368,7 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
 
           <div className="space-y-2 group">
             <Label htmlFor="profile-dob" className="font-bold text-slate-700">Ngày sinh</Label>
-            {/* Khung bao bọc (Wrapper) chịu trách nhiệm cho hiệu ứng */}
             <div className={`relative flex items-center rounded-lg border-2 ${errors.dob ? 'border-red-500' : 'border-black'} bg-white px-3 transition-all focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1`}>
-              {/* Icon di chuyển cùng khung */}
               <Calendar className="text-slate-400 shrink-0 mr-2" size={16} />
               <input
                 id="profile-dob"
@@ -407,15 +399,12 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
 
           <div className="md:col-span-2 space-y-2 group">
             <Label htmlFor="profile-address" className="font-bold text-slate-700">Địa chỉ</Label>
-            {/* Khung bao bọc (Wrapper) chịu trách nhiệm cho hiệu ứng */}
             <div className={`relative flex items-start rounded-lg border-2 ${errors.address ? 'border-red-500' : 'border-black'} bg-white px-3 py-2 transition-all focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1`}>
-              {/* Icon căn lên trên cùng */}
               <MapPin className="text-slate-400 shrink-0 mr-2 mt-1" size={16} />
               <textarea
                 id="profile-address"
                 rows={3}
                 {...register("address")}
-                // Textarea trong suốt, không viền
                 className="flex min-h-[80px] w-full resize-none border-0 bg-transparent p-0 text-sm placeholder:text-muted-foreground outline-none focus-visible:ring-0"
               />
             </div>
@@ -446,6 +435,14 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
         </form>
       </CardContent>
     </Card>
+    
+    <AvatarUploadModal
+      open={isUploadModalOpen}
+      onClose={() => setUploadModalOpen(false)}
+      onUploaded={handleAvatarUploaded}
+      currentAvatar={avatar ?? user.picture}
+      userName={user.name}
+    />
     </>
   );
 };
