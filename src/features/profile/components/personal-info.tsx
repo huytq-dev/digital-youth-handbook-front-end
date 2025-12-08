@@ -158,7 +158,8 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
 
       // Input type="date" trả về YYYY-MM-DD, nhưng backend cần ISO 8601 format
       if (data.dob?.trim()) {
-        const date = new Date(data.dob + 'T00:00:00');
+        // Thêm 'Z' để báo hiệu đây là UTC, tránh lệch múi giờ khi convert
+        const date = new Date(data.dob + 'T00:00:00Z');
         if (!isNaN(date.getTime())) {
           requestData.dob = date.toISOString();
         }
