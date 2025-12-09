@@ -1,144 +1,169 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import type { QuizDetail, QuizAnswer } from "@/features/quiz/quiz.type";
-import { QuizGameHeader } from "./quiz-game-header";
-import { QuizQuestionCard } from "./quiz-question-card";
-import { QuizAnswerGrid } from "./quiz-answer-grid";
+import { useAppDispatch } from "@/redux/hooks";
+import { selectAnswer, submitAttempt } from "@/features/quiz/quiz.slice";
+import type { CurrentAttempt } from "@/features/quiz/quiz.slice";
+import { useSubmitQuizMutation } from "@/features/quiz/quiz.api";
+import { isApiResponseSuccess } from "@/features/common/common.type";
 
 interface QuizGamePageProps {
-  quiz: QuizDetail;
+  currentAttempt: CurrentAttempt;
 }
 
-export const QuizGamePage = ({ quiz }: QuizGamePageProps) => {
+export const QuizGamePage = ({ currentAttempt }: QuizGamePageProps) => {
   const navigate = useNavigate();
-  
+  const dispatch = useAppDispatch();
+  const [submitQuiz] = useSubmitQuizMutation();
+
   // State management
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = useState(currentAttempt.timeLimitMinutes * 60);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [answers, setAnswers] = useState<QuizAnswer[]>([]);
-  const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(quiz.durationMinutes * 60); // Total seconds
-  const [isPaused] = useState(false);
 
-  const currentQuestion = quiz.questions[currentQuestionIndex];
-  const progress = ((currentQuestionIndex + 1) / quiz.totalQuestions) * 100;
-  const isLastQuestion = currentQuestionIndex === quiz.questions.length - 1;
+  const currentQuestion = currentAttempt.questions[currentQuestionIndex];
+  const progress = ((currentQuestionIndex + 1) / currentAttempt.questions.length) * 100;
+  const isLastQuestion = currentQuestionIndex === currentAttempt.questions.length - 1;
 
   // Timer effect
   useEffect(() => {
     if (timeLeft <= 0) {
-      handleTimeUp();
+      handleFinish();
       return;
     }
-
-    if (isPaused || isSubmitted) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, isPaused, isSubmitted]);
+  }, [timeLeft]);
 
-  const handleTimeUp = () => {
-    // Auto submit wrong answer when time runs out
-    if (!isSubmitted && selectedAnswer === null) {
-      handleAnswerSubmit(null);
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleSelectOption = (optionId: string) => {
+    if (!isSubmitted) {
+      setSelectedOptionId(optionId);
+      // Save to Redux
+      dispatch(selectAnswer({
+        questionId: currentQuestion.id,
+        selectedOptionId: optionId,
+      }));
     }
   };
-
-  const handleAnswerSelect = (optionIndex: number) => {
-    if (isSubmitted) return;
-    setSelectedAnswer(optionIndex);
-  };
-
-  const handleAnswerSubmit = useCallback((optionIndex: number | null) => {
-    if (isSubmitted) return;
-    
-    const selected = optionIndex ?? selectedAnswer;
-    if (selected === null) return;
-
-    setIsSubmitted(true);
-
-    const isCorrect = selected === currentQuestion.correctOptionIndex;
-    const newScore = isCorrect ? score + 1 : score;
-
-    // Save answer
-    const answer: QuizAnswer = {
-      questionId: currentQuestion.id,
-      selectedOptionIndex: selected,
-      isCorrect,
-    };
-    
-    const newAnswers = [...answers, answer];
-    setAnswers(newAnswers);
-    setScore(newScore);
-
-    // Không có giới hạn mạng - người chơi có thể trả lời sai bao nhiêu lần cũng được
-  }, [isSubmitted, selectedAnswer, currentQuestion, score, answers, quiz, timeLeft, navigate]);
 
   const handleNextQuestion = () => {
-    if (!isSubmitted) return;
-
     if (isLastQuestion) {
-      // Navigate to result page
-      navigate(`/quizzes/${quiz.id}/result`, {
-        state: {
-          answers,
-          score,
-          totalQuestions: quiz.totalQuestions,
-          timeSpent: quiz.durationMinutes * 60 - timeLeft,
-        },
-      });
-      return;
+      handleFinish();
+    } else {
+      setCurrentQuestionIndex((prev) => prev + 1);
+      setSelectedOptionId(null);
+      setIsSubmitted(false);
     }
-
-    // Move to next question
-    setCurrentQuestionIndex((prev) => prev + 1);
-    setSelectedAnswer(null);
-    setIsSubmitted(false);
   };
 
+  const handleFinish = async () => {
+    try {
+      // Submit quiz to backend
+      const response = await submitQuiz({
+        attemptId: currentAttempt.attemptId,
+        answers: currentAttempt.answers,
+      }).unwrap();
+
+      if (isApiResponseSuccess(response) && response.data) {
+        const result = response.data;
+        // Save result to Redux
+        dispatch(submitAttempt({
+          attemptId: result.attemptId,
+          totalScore: result.totalScore,
+          isPassed: result.isPassed,
+          totalQuestions: currentAttempt.questions.length,
+          answeredQuestions: currentAttempt.answers.length,
+          completedAt: new Date(),
+        }));
+
+        // Navigate to result page
+        navigate(`/quizzes/${currentAttempt.quizId}/result`);
+      }
+    } catch (error) {
+      console.error("Error submitting quiz:", error);
+      alert("Có lỗi khi nộp bài. Vui lòng thử lại.");
+    }
+  };
+
+  if (!currentQuestion) {
+    return <div className="min-h-screen flex items-center justify-center">Không có câu hỏi</div>;
+  }
 
   return (
-    <main
-      className="min-h-screen bg-[#fff9f0] font-sans text-slate-900 selection:bg-yellow-400 selection:text-black"
-      style={{
-        backgroundImage: "radial-gradient(#cbd5e1 2px, transparent 2px)",
-        backgroundSize: "32px 32px",
-      }}
-    >
-      <div className="mx-auto max-w-5xl px-4 py-6">
-        {/* Header: Progress, Timer */}
-        <QuizGameHeader
-          progress={progress}
-          currentQuestion={currentQuestionIndex + 1}
-          totalQuestions={quiz.totalQuestions}
-          timeLeft={timeLeft}
-        />
+    <main className="min-h-screen bg-[#fff9f0] pb-24 pt-32 font-sans text-slate-900">
+      <div className="mx-auto max-w-4xl px-4">
+        {/* Header */}
+        <div className="mb-8 flex items-center justify-between rounded-lg border-2 border-black bg-white p-4 shadow-[4px_4px_0px_black]">
+          <div>
+            <p className="text-sm font-bold text-slate-600">
+              Câu {currentQuestionIndex + 1}/{currentAttempt.questions.length}
+            </p>
+            <div className="mt-2 h-2 w-64 overflow-hidden rounded-full bg-slate-200">
+              <div
+                className="h-full bg-blue-600 transition-all"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+          <div className="text-2xl font-black text-red-600">
+            {formatTime(timeLeft)}
+          </div>
+        </div>
 
-        {/* Question Card */}
-        <QuizQuestionCard
-          question={currentQuestion}
-          questionNumber={currentQuestionIndex + 1}
-          isSubmitted={isSubmitted}
-          key={currentQuestion.id} // Key để trigger animation khi đổi câu
-        />
+        {/* Question */}
+        <div className="mb-8 rounded-2xl border-2 border-black bg-white p-8 shadow-[4px_4px_0px_black]">
+          <h2 className="mb-6 text-2xl font-black text-slate-900">
+            {currentQuestion.content}
+          </h2>
 
-        {/* Answer Grid */}
-        <QuizAnswerGrid
-          options={currentQuestion.options}
-          correctAnswerIndex={currentQuestion.correctOptionIndex}
-          selectedAnswer={selectedAnswer}
-          isSubmitted={isSubmitted}
-          onAnswerSelect={handleAnswerSelect}
-          onAnswerSubmit={handleAnswerSubmit}
-          onNextQuestion={handleNextQuestion}
-          isLastQuestion={isLastQuestion}
-        />
+          {/* Options */}
+          <div className="space-y-3">
+            {currentQuestion.options.map((option, index) => (
+              <button
+                key={option.id}
+                onClick={() => handleSelectOption(option.id)}
+                className={`w-full rounded-lg border-2 border-black p-4 text-left font-bold transition-all ${
+                  selectedOptionId === option.id
+                    ? "bg-blue-400 text-black shadow-[4px_4px_0px_black]"
+                    : "bg-white text-slate-900 hover:bg-slate-50"
+                }`}
+              >
+                <span className="mr-3 font-black text-lg">
+                  {String.fromCharCode(65 + index)}.
+                </span>
+                {option.content}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="flex gap-4">
+          <button
+            onClick={() => navigate("/quizzes")}
+            className="rounded-lg border-2 border-black bg-white px-6 py-3 font-black text-black shadow-[4px_4px_0px_black] transition-all hover:bg-slate-50"
+          >
+            Thoát
+          </button>
+          <button
+            onClick={handleNextQuestion}
+            disabled={!selectedOptionId}
+            className="flex-1 rounded-lg border-2 border-black bg-yellow-400 px-6 py-3 font-black text-black shadow-[4px_4px_0px_black] transition-all disabled:opacity-50"
+          >
+            {isLastQuestion ? "Hoàn thành" : "Tiếp theo"}
+          </button>
+        </div>
       </div>
     </main>
   );
 };
-

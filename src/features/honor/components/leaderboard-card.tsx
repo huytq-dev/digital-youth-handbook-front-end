@@ -1,0 +1,158 @@
+import { cn } from "@/lib/utils";
+import { Trophy, Flame, Clock } from "lucide-react";
+import type { LeaderboardItem } from "../honor.type";
+
+interface LeaderboardCardProps {
+  item: LeaderboardItem;
+  isCompact?: boolean; // Thêm prop này để xác định giao diện nhỏ gọn
+}
+
+export const LeaderboardCard = ({ item, isCompact = false }: LeaderboardCardProps) => {
+  // Logic màu sắc cho Top 3
+  const getRankColor = (rank: number) => {
+    if (rank === 1) return "bg-yellow-400 border-yellow-600 shadow-[4px_4px_0px_rgba(180,83,9,0.3)]";
+    if (rank === 2) return "bg-slate-300 border-slate-600 shadow-[4px_4px_0px_rgba(71,85,105,0.3)]";
+    if (rank === 3) return "bg-orange-300 border-orange-600 shadow-[4px_4px_0px_rgba(180,83,9,0.3)]";
+    return "bg-white border-black shadow-[2px_2px_0px_black]"; // Style mặc định cho rank thấp
+  };
+
+  const getRankIcon = (rank: number) => {
+    if (rank === 1) return "🥇";
+    if (rank === 2) return "🥈";
+    if (rank === 3) return "🥉";
+    return `#${rank}`;
+  };
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}m ${secs}s`;
+  };
+
+  // --- COMPACT VIEW (Cho Rank 4 trở đi) ---
+  if (isCompact) {
+    return (
+      <div className={cn(
+        "flex items-center gap-3 p-3 rounded-xl border-2 border-black bg-white transition-all duration-200",
+        "hover:shadow-[3px_3px_0px_black] hover:-translate-y-0.5"
+      )}>
+        {/* Rank Number Small */}
+        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-100 border border-black flex items-center justify-center font-black text-sm text-slate-700">
+          {item.rank}
+        </div>
+
+        {/* Avatar Small */}
+        <div className="w-8 h-8 rounded-full border border-black bg-blue-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+           {item.userPicture ? (
+            <img src={item.userPicture} alt={item.userName} className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-xs font-bold">{item.userName.charAt(0).toUpperCase()}</span>
+          )}
+        </div>
+
+        {/* Name */}
+        <div className="flex-1 min-w-0">
+          <p className="font-bold text-sm text-black truncate">{item.userName}</p>
+        </div>
+
+        {/* Stats Compact */}
+        <div className="flex flex-col items-end gap-0.5">
+          <div className="flex items-center gap-1">
+            <Flame size={12} className="text-orange-600" />
+            <span className="font-black text-sm">{item.totalScore.toFixed(1)}</span>
+          </div>
+           <div className="flex items-center gap-1 text-slate-500">
+            <Clock size={10} />
+            <span className="text-[10px] font-bold">{formatTime(item.durationSeconds)}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // --- FULL VIEW (Cho Top 3) ---
+  const bgColorClass = getRankColor(item.rank);
+
+  return (
+    <div
+      className={cn(
+        "relative border-3 rounded-2xl p-4 md:p-6 transition-all duration-200 h-full flex flex-col justify-center", // Thêm h-full để đều nhau trong grid
+        "hover:shadow-[6px_6px_0px_black] hover:-translate-y-1",
+        bgColorClass
+      )}
+    >
+      <div className="flex items-center gap-4">
+        {/* Rank Badge */}
+        <div
+          className={cn(
+            "flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-xl border-2 border-black flex items-center justify-center",
+            "font-black text-2xl md:text-3xl",
+            item.rank === 1
+              ? "bg-gradient-to-br from-yellow-300 to-yellow-500 text-white shadow-[3px_3px_0px_black]"
+              : item.rank === 2
+              ? "bg-gradient-to-br from-slate-300 to-slate-400 text-slate-900 shadow-[3px_3px_0px_black]"
+              : "bg-gradient-to-br from-orange-300 to-orange-500 text-white shadow-[3px_3px_0px_black]"
+          )}
+        >
+          {getRankIcon(item.rank)}
+        </div>
+
+        {/* User Info & Stats Wrapper */}
+        <div className="flex-1 min-w-0 flex flex-col justify-between h-full">
+           {/* User Info */}
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-black bg-blue-500 flex items-center justify-center text-white font-black overflow-hidden flex-shrink-0">
+                {item.userPicture ? (
+                  <img src={item.userPicture} alt={item.userName} className="w-full h-full object-cover" />
+                ) : (
+                  <span>{item.userName.charAt(0).toUpperCase()}</span>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-black text-base md:text-lg text-black truncate">
+                  {item.userName}
+                </p>
+                <p className="text-xs font-bold text-black/60">
+                  {new Date(item.completedAt).toLocaleDateString("vi-VN")}
+                </p>
+              </div>
+            </div>
+
+            {/* Stats Separator */}
+            <div className="h-0.5 w-full bg-black/10 my-2"></div>
+
+            {/* Stats Row */}
+            <div className="flex justify-between items-center">
+               <div className="flex flex-col">
+                  <span className="text-[10px] uppercase font-bold text-black/60">Điểm số</span>
+                  <div className="flex items-center gap-1">
+                    <Flame size={16} className="text-red-600" fill="currentColor" />
+                    <span className="font-black text-xl">{item.totalScore.toFixed(1)}</span>
+                  </div>
+               </div>
+               <div className="flex flex-col items-end">
+                  <span className="text-[10px] uppercase font-bold text-black/60">Thời gian</span>
+                  <div className="flex items-center gap-1">
+                    <Clock size={14} className="text-blue-700" />
+                    <span className="font-bold text-sm">{formatTime(item.durationSeconds)}</span>
+                  </div>
+               </div>
+            </div>
+        </div>
+      </div>
+
+      {/* Top Trophy Icon Decoration */}
+      <div className="absolute -top-3 -right-3 rotate-12">
+          <Trophy
+            size={24}
+            className={cn(
+              "drop-shadow-sm",
+              item.rank === 1 ? "text-yellow-500 fill-yellow-300" :
+              item.rank === 2 ? "text-slate-400 fill-slate-200" : "text-orange-500 fill-orange-300"
+            )}
+            strokeWidth={2} 
+          />
+      </div>
+    </div>
+  );
+};

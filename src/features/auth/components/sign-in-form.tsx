@@ -16,6 +16,7 @@ import { containerVariants } from "@/features/auth/constants/auth.constants";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCredentials } from "@/features/auth/auth.slice";
+import { mapBackendUserToUserDomainModel } from "@/features/auth/auth.storage";
 import { Loader2, ArrowRight } from "lucide-react";
 
 export function SignInForm() {
@@ -45,10 +46,13 @@ export function SignInForm() {
       if (isApiResponseSuccess(response)) {
         const responseData = response.data || response.Data;
         if (responseData?.accessToken && responseData?.user) {
-          // 1. Save credentials to Redux and Storage (user đã có trong response)
+          // Map backend user response to UserDomainModel (handle pictureUrl -> picture)
+          const mappedUser = mapBackendUserToUserDomainModel(responseData.user);
+
+          // 1. Save credentials to Redux and Storage
           dispatch(setCredentials({ 
             data: responseData,  // responseData đã có đầy đủ: accessToken, expiresIn, refreshToken, user
-            user: responseData.user  // User đã có sẵn trong response
+            user: mappedUser  // User với pictureUrl đã được mapped sang picture
           }));
 
           // 3. Show success message

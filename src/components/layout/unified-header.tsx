@@ -50,14 +50,7 @@ const NAVIGATION: NavItem[] = [
       { label: "Template mẫu" },
     ],
   },
-  {
-    label: "Vinh danh",
-    subItems: [
-      { label: "Gương mặt tiêu biểu" },
-      { label: "Bảng vàng thành tích" },
-      { label: "Câu chuyện truyền cảm hứng" },
-    ],
-  },
+  { label: "Vinh danh", href: "/honor" },
   { label: "Thi hay", href: "/quizzes" },
 ];
 

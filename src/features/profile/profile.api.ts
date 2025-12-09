@@ -1,46 +1,86 @@
-import { baseApi } from '@/redux/baseApi';
-import type {
-  UpdateUserProfileRequest,
-  UpdateUserProfileResponseModel,
-} from './profile.type';
-import type { ApiResponse } from '@/features/common/common.type';
+import { baseApi } from "@/redux/baseApi";
+import type { ApiResponse } from "@/features/common/common.type";
+
+// ==========================================
+// Request Types
+// ==========================================
+
+export interface UpdateUserProfileRequest {
+  name?: string;
+  dob?: string; // ISO 8601: YYYY-MM-DD
+  address?: string;
+  gender?: number;
+}
+
+// ==========================================
+// Response Types
+// ==========================================
+
+export interface UserProfileResponse {
+  id: string;
+  name: string;
+  email: string;
+  picture?: string | null;
+  isVerified: boolean;
+  gender?: number | null;
+  dob?: string | null;
+  address?: string | null;
+  roleName: string;
+}
+
+export interface AvatarUploadResponse {
+  url: string;
+}
+
+// ==========================================
+// RTK Query API Endpoints
+// ==========================================
 
 /**
- * Profile API - RTK Query API endpoints for user profile
+ * Profile API - RTK Query API endpoints for user profile management
  */
 export const profileApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // PATCH /api/users/profile
+    // GET /api/users/profile - Lấy thông tin cá nhân user
+    getUserProfile: builder.query<ApiResponse<UserProfileResponse>, void>({
+      query: () => ({
+        url: `users/profile`,
+        method: "GET",
+      }),
+      providesTags: ["Auth"],
+    }),
+
+    // PATCH /api/users/profile - Cập nhật thông tin cá nhân
     updateUserProfile: builder.mutation<
-      UpdateUserProfileResponseModel,
+      ApiResponse<UserProfileResponse>,
       UpdateUserProfileRequest
     >({
-      query: (body) => ({
-        url: 'users/profile',
-        method: 'PATCH',
-        body,
+      query: (data) => ({
+        url: `users/profile`,
+        method: "PATCH",
+        body: data,
       }),
-      // Khi update thành công thì mới refresh user data
-      invalidatesTags: ['Auth'],
+      invalidatesTags: ["Auth"],
     }),
-    
-    // POST /api/users/avatar
-    uploadAvatar: builder.mutation<ApiResponse<string>, File>({
-      query: (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
 
-        return {
-          url: 'users/avatar',
-          method: 'POST',
+    // POST /api/users/avatar - Upload avatar
+    uploadAvatar: builder.mutation<ApiResponse<AvatarUploadResponse>, FormData>(
+      {
+        query: (formData) => ({
+          url: `users/avatar`,
+          method: "POST",
           body: formData,
-        };
-      },
-    }),
+        }),
+        invalidatesTags: ["Auth"],
+      }
+    ),
   }),
 });
 
+// Export hooks
 export const {
+  useGetUserProfileQuery,
+  useLazyGetUserProfileQuery,
   useUpdateUserProfileMutation,
   useUploadAvatarMutation,
 } = profileApi;

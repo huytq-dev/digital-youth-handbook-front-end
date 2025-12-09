@@ -39,4 +39,7 @@ export const ROUTE_PATH = {
   
     // Profile
     PROFILE: "/profile",
+
+    // Honor (Vinh danh)
+    HONOR: "/honor",
   } as const;

@@ -139,7 +139,7 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
     
     // 2. Gọi API cập nhật Profile ngay lập tức (Auto-save)
     try {
-      const response = await updateProfile({ pictureUrl: uploadedUrl }).unwrap();
+      const response = await updateProfile({}).unwrap();
 
       if (isApiResponseSuccess(response)) {
         // Cập nhật Redux Store
@@ -197,7 +197,14 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
         return;
       }
 
-      const response = await updateProfile(requestData).unwrap();
+      const updateData = {
+        name: requestData.name || undefined,
+        dob: requestData.dob || undefined,
+        address: requestData.address || undefined,
+        gender: requestData.gender || undefined,
+      };
+
+      const response = await updateProfile(updateData).unwrap();
 
       if (isApiResponseSuccess(response)) {
         const responseData = response.data || response.Data;
@@ -206,7 +213,7 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
           const updatedUser: Partial<UserDomainModel> = {
             name: responseData.name,
             picture: responseData.picture || null,
-            gender: responseData.gender ?? null,
+            gender: responseData.gender as any ?? null,
             dob: responseData.dob || null,
             address: responseData.address || null,
           };
@@ -225,7 +232,7 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
           const profileData: Partial<UserProfile> = {
             name: responseData.name,
             picture: responseData.picture ?? undefined,
-            gender: responseData.gender ?? undefined,
+            gender: (responseData.gender as any) ?? undefined,
             dob: responseData.dob ?? undefined,
             address: responseData.address ?? undefined,
           };
