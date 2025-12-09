@@ -1,4 +1,4 @@
-import type { SignInResponseDataModel } from "./auth.type";
+import type { SignInResponseDataModel, GetCurrentUserResponseDataModel } from "./auth.type";
 import type { UserDomainModel } from "@/features/common/common.type";
 
 // Constants Keys
@@ -6,6 +6,25 @@ const ACCESS_TOKEN_KEY = "access_token";
 const USER_KEY = "user";
 const TOKEN_EXPIRY_KEY = "token_expiry";
 // Note: RefreshToken được lưu trong HttpOnly Cookie bởi Backend, Frontend không cần lưu
+
+/**
+ * Mapping function: Convert backend response (GetCurrentUserResponseDataModel) 
+ * to UserDomainModel, handling field name mismatches (pictureUrl -> picture)
+ */
+export const mapBackendUserToUserDomainModel = (backendUser: GetCurrentUserResponseDataModel): UserDomainModel => {
+  return {
+    id: backendUser.id,
+    name: backendUser.name,
+    email: backendUser.email,
+    // Backend returns 'pictureUrl', but UserDomainModel expects 'picture'
+    picture: (backendUser as any).pictureUrl || backendUser.picture || null,
+    isVerified: backendUser.isVerified,
+    roleName: backendUser.roleName,
+    gender: backendUser.gender,
+    dob: backendUser.dob,
+    address: backendUser.address,
+  };
+};
 
 /**
  * Auth Storage
@@ -61,6 +80,10 @@ export const authStorage = {
     }
     if (user) {
       authStorage.setUser(user);
+    } else if (data.user) {
+      // If user not provided but available in data, map it from backend response
+      const mappedUser = mapBackendUserToUserDomainModel(data.user);
+      authStorage.setUser(mappedUser);
     }
   },
 

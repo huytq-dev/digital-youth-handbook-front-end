@@ -1,16 +1,19 @@
 import { useParams, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { UnifiedHeader } from "@/components/layout/unified-header";
-import { useGetQuizByIdQuery } from "@/features/quiz/quiz.service";
+import { useGetQuizByIdQuery } from "@/features/quiz/quiz.api";
+import { isApiResponseSuccess } from "@/features/common/common.type";
 import { QuizIntroPage } from "@/features/quiz/quiz-intro/components/quiz-intro-page";
 
 // Trang chi tiết quiz trước khi bắt đầu làm bài
 const QuizIntroPageWrapper = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
-  const { data: quiz, isLoading, error } = useGetQuizByIdQuery(id || "", {
+  const { data: apiResponse, isLoading, error } = useGetQuizByIdQuery(id || "", {
     skip: !id,
   });
+
+  const quiz = apiResponse && isApiResponseSuccess(apiResponse) ? apiResponse.data : null;
 
   if (isLoading) {
     return (

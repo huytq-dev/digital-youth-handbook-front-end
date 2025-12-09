@@ -42,8 +42,6 @@ const cardVariants = {
 const QuizCard = ({
   id,
   title,
-  thumbnail,
-  category,
   difficulty,
   durationMinutes,
   totalQuestions,
@@ -61,22 +59,6 @@ const QuizCard = ({
           boxShadow: "4px 4px 0px black",
         }}
       >
-        
-        {/* --- Image Section --- */}
-        <div className="relative h-48 w-full overflow-hidden border-b-2 border-black bg-slate-100">
-          <img
-            src={thumbnail}
-            alt={title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-          />
-          {/* Category Tag: Style lại thành thẻ trắng viền đen cho nổi trên nền ảnh */}
-          <div className="absolute left-3 top-3">
-            <span className="inline-block rounded-md border-2 border-black bg-white px-2 py-1 text-[10px] font-black uppercase tracking-wider text-black shadow-[2px_2px_0px_black]">
-              {category}
-            </span>
-          </div>
-        </div>
-
         {/* --- Content Section --- */}
         <div className="flex flex-1 flex-col p-5">
           

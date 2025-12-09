@@ -17,6 +17,9 @@ const QuizResultPage = lazy(() => import("@/pages/quiz/result"));
 // Profile
 const ProfilePage = lazy(() => import("@/pages/profile"));
 
+// Honor
+const HonorPage = lazy(() => import("@/pages/honor"));
+
 // Auth
 const SignInPage = lazy(() => import("@/pages/auth/sign-in"));
 const SignUpPage = lazy(() => import("@/pages/auth/sign-up"));
@@ -61,6 +64,9 @@ export const protectedRoutes = {
 
       // Profile
       { path: ROUTE_PATH.PROFILE, component: ProfilePage },
+
+      // Honor
+      { path: ROUTE_PATH.HONOR, component: HonorPage },
     ],
   },
 };

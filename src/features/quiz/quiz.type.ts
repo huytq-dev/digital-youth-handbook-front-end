@@ -3,12 +3,14 @@ export type QuizDifficulty = "Easy" | "Medium" | "Hard";
 export interface QuizSummary {
   id: string;
   title: string;
-  thumbnail: string;
+  description?: string | null;
   category: string;
   difficulty: QuizDifficulty;
   durationMinutes: number;
+  timeLimitMinutes?: number;
   totalQuestions: number;
   plays: number;
+  createdAt?: string;  // ISO 8601 DateTime
 }
 
 export interface QuizQuestion {
@@ -29,16 +31,26 @@ export interface QuizLeaderboardEntry {
 }
 
 export interface QuizDetail extends QuizSummary {
-  description?: string;
-  authorName?: string;
-  questions: QuizQuestion[];
+  // Optional fields - có thể có từ backend nếu cần
+  questions?: QuizQuestion[];
   highScore?: number;
-  maxLives?: number; // Số mạng (nếu có)
-  passingScore?: number; // Điểm tối thiểu để qua (ví dụ: 70%)
-  leaderboard?: QuizLeaderboardEntry[]; // Top scores
+  authorName?: string;
+  leaderboard?: QuizLeaderboardEntry[];
+  maxLives?: number;
+  passingScore?: number;
 }
 
 export type QuizStatus = "idle" | "in-progress" | "completed";
+
+// Dữ liệu kết quả quiz từ backend
+export interface QuizResultData {
+  attemptId: string;
+  totalScore: number;
+  isPassed: boolean;
+  totalQuestions: number;
+  answeredQuestions: number;
+  completedAt: Date;
+}
 
 export interface QuizAnswer {
   questionId: string;
@@ -55,5 +67,3 @@ export interface QuizSessionState {
   answers: QuizAnswer[];
   score: number;
 }
-
-

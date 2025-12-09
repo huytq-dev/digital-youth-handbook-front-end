@@ -106,8 +106,10 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
     }
     setStatus("uploading");
     try {
-      const res = await uploadAvatar(file).unwrap();
-      const uploadedUrl = res.data || (res as any).Data;
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await uploadAvatar(formData).unwrap();
+      const uploadedUrl = res.data?.url || res.data || (res as any).Data;
       if (uploadedUrl) {
         setStatus("success");
         setTempUrl(uploadedUrl);
