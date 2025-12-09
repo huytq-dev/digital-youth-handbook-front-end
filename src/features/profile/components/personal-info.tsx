@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { useEffect, useMemo, useState } from "react";
 import { Save, Camera, User, Mail, Calendar, MapPin, Loader2 } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,7 +16,6 @@ import { showToast } from "@/lib/toast";
 import { updateUserProfile } from "@/features/auth/auth.slice";
 import { authService } from "@/features/auth/auth.storage";
 import type { UserDomainModel } from "@/features/common/common.type";
-import { AvatarUploadModal } from "./avatar-upload-modal";
 import { AvatarUploadModal } from "./avatar-upload-modal";
 
 interface GenderDropdownProps {
@@ -90,8 +88,6 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
   const dispatch = useDispatch();
   const [avatar, setAvatar] = useState<string | undefined>(user.picture);
   const [isUploadModalOpen, setUploadModalOpen] = useState(false);
-  const [avatar, setAvatar] = useState<string | undefined>(user.picture);
-  const [isUploadModalOpen, setUploadModalOpen] = useState(false);
   const [updateProfile, { isLoading }] = useUpdateUserProfileMutation();
 
   const {
@@ -99,7 +95,6 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
     handleSubmit,
     control,
     reset,
-    setValue,
     setValue,
     formState: { errors },
   } = useForm<UpdateUserProfileFormData>({
@@ -132,17 +127,10 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
   const hasAvatar = useMemo(() => avatar || user.picture, [avatar, user.picture]);
 
   // Handle click vào avatar -> Mở modal
-  // Handle click vào avatar -> Mở modal
   const handleAvatarClick = () => {
-    setUploadModalOpen(true);
     setUploadModalOpen(true);
   };
 
-  // Callback khi upload xong từ modal -> TỰ ĐỘNG LƯU
-  const handleAvatarUploaded = async (uploadedUrl: string) => {
-    // 1. Cập nhật UI ngay lập tức
-    setAvatar(uploadedUrl);
-    setValue("pictureUrl", uploadedUrl, { shouldDirty: true });
   // Callback khi upload xong từ modal -> TỰ ĐỘNG LƯU
   const handleAvatarUploaded = async (uploadedUrl: string) => {
     // 1. Cập nhật UI ngay lập tức
@@ -169,10 +157,8 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
     // Debug: Kiểm tra token trước khi submit
     const token = authService.getAccessToken();
     console.log('🔑 Token check before submit:', !!token);
-    console.log('🔑 Token check before submit:', !!token);
     
     try {
-      // Chỉ gửi các fields có giá trị
       // Chỉ gửi các fields có giá trị
       const requestData: UpdateUserProfileRequest = {};
 
@@ -181,9 +167,7 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
       }
 
       // Input type="date" trả về YYYY-MM-DD
-      // Input type="date" trả về YYYY-MM-DD
       if (data.dob?.trim()) {
-        // FIX: Thêm 'Z' để định nghĩa UTC, tránh lệch ngày do múi giờ
         // FIX: Thêm 'Z' để định nghĩa UTC, tránh lệch ngày do múi giờ
         const date = new Date(data.dob + 'T00:00:00Z');
         if (!isNaN(date.getTime())) {
@@ -199,8 +183,6 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
         requestData.address = data.address.trim();
       }
 
-      // pictureUrl đã được xử lý tự động, nhưng vẫn để đây phòng khi submit cả form
-      if (data.pictureUrl?.trim()) {
       // pictureUrl đã được xử lý tự động, nhưng vẫn để đây phòng khi submit cả form
       if (data.pictureUrl?.trim()) {
         requestData.pictureUrl = data.pictureUrl.trim();
@@ -246,7 +228,6 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
             "Thông tin cá nhân đã được cập nhật"
           );
 
-          // Gọi callback props nếu có
           // Gọi callback props nếu có
           const profileData: Partial<UserProfile> = {
             name: responseData.name,
@@ -356,9 +337,7 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
               const firstError = Object.values(errors)[0];
               if (firstError?.message) {
                 showToast.error("Lỗi xác thực", firstError.message);
-                showToast.error("Lỗi xác thực", firstError.message);
               } else {
-                showToast.error("Lỗi xác thực", "Vui lòng kiểm tra lại thông tin đã nhập");
                 showToast.error("Lỗi xác thực", "Vui lòng kiểm tra lại thông tin đã nhập");
               }
             }
@@ -463,14 +442,6 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
         </form>
       </CardContent>
     </Card>
-    
-    <AvatarUploadModal
-      open={isUploadModalOpen}
-      onClose={() => setUploadModalOpen(false)}
-      onUploaded={handleAvatarUploaded}
-      currentAvatar={avatar ?? user.picture}
-      userName={user.name}
-    />
     
     <AvatarUploadModal
       open={isUploadModalOpen}
