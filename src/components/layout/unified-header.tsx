@@ -256,9 +256,9 @@ const UserProfileDropdown = memo(
                 </p>
                 <p 
                   className="text-xs font-black text-slate-900 truncate" 
-                  title={user.email}
+                  title={user.username}
                 >
-                  {user.email}
+                  {user.username}
                 </p>
               </div>
 
@@ -528,8 +528,8 @@ export const UnifiedHeader = () => {
                   <p className="font-black text-sm text-slate-900 truncate" title={user.name}>
                     {user.name}
                   </p>
-                  <p className="text-xs font-bold text-slate-600 truncate" title={user.email}>
-                    {user.email}
+                  <p className="text-xs font-bold text-slate-600 truncate" title={user.username}>
+                    {user.username}
                   </p>
                 </div>
               </div>

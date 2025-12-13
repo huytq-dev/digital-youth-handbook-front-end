@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Save, Camera, User, Mail, Calendar, MapPin, Loader2 } from "lucide-react";
+import { Save, Camera, User, Calendar, MapPin, Loader2 } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
@@ -323,7 +323,7 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
               {user.name}
             </span>
             <span className="text-sm font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-black w-fit">
-              {user.email}
+              {user.username}
             </span>
           </div>
         </div>
@@ -359,17 +359,17 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="profile-email" className="font-bold text-slate-700 flex items-center gap-1">
-                Email <span className="text-[10px] text-red-500 font-normal">(Không thể thay đổi)</span>
+            <Label htmlFor="profile-username" className="font-bold text-slate-700 flex items-center gap-1">
+                Username <span className="text-[10px] text-red-500 font-normal">(Không thể thay đổi)</span>
             </Label>
             <div className="relative">
                 <Input
-                  id="profile-email"
-                  value={user.email}
+                  id="profile-username"
+                  value={user.username || ""}
                   readOnly
                   className="h-11 cursor-not-allowed rounded-lg border-2 border-black bg-gray-100 text-gray-500 pl-10"
                 />
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
             </div>
           </div>
 

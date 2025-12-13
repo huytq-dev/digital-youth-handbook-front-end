@@ -12,10 +12,11 @@ const TOKEN_EXPIRY_KEY = "token_expiry";
  * to UserDomainModel, handling field name mismatches (pictureUrl -> picture)
  */
 export const mapBackendUserToUserDomainModel = (backendUser: GetCurrentUserResponseDataModel): UserDomainModel => {
-  return {
+  const mappedUser: UserDomainModel = {
     id: backendUser.id,
     name: backendUser.name,
     email: backendUser.email,
+    username: backendUser.username,
     // Backend returns 'pictureUrl', but UserDomainModel expects 'picture'
     picture: (backendUser as any).pictureUrl || backendUser.picture || null,
     isVerified: backendUser.isVerified,
@@ -24,6 +25,8 @@ export const mapBackendUserToUserDomainModel = (backendUser: GetCurrentUserRespo
     dob: backendUser.dob,
     address: backendUser.address,
   };
+  console.log('🔄 [MAPPING] Backend user mapped to UserDomainModel:', { id: mappedUser.id, name: mappedUser.name, username: mappedUser.username, email: mappedUser.email });
+  return mappedUser;
 };
 
 /**
@@ -43,6 +46,7 @@ export const authStorage = {
 
   // --- User Operations ---
   setUser: (user: UserDomainModel): void => {
+    console.log('💾 [AUTH STORAGE] Saving user to localStorage:', { id: user.id, name: user.name, username: user.username, email: user.email });
     localStorage.setItem(USER_KEY, JSON.stringify(user));
   },
 
@@ -50,7 +54,9 @@ export const authStorage = {
     const userStr = localStorage.getItem(USER_KEY);
     if (!userStr) return null;
     try {
-      return JSON.parse(userStr) as UserDomainModel;
+      const user = JSON.parse(userStr) as UserDomainModel;
+      console.log('📖 [AUTH STORAGE] Loading user from localStorage:', { id: user.id, name: user.name, username: user.username, email: user.email });
+      return user;
     } catch {
       return null;
     }

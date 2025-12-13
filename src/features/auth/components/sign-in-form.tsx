@@ -34,7 +34,7 @@ export function SignInForm() {
   } = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
   });
@@ -115,39 +115,39 @@ export function SignInForm() {
           className="space-y-6"
           noValidate
         >
-          {/* Email Field */}
+          {/* Username Field */}
           <div className="space-y-2">
             <label
               className="text-base font-bold text-slate-700"
-              htmlFor="signin-email"
+              htmlFor="signin-username"
             >
-              {t("auth.signIn.email") || "Email"}
+              {t("auth.signIn.username") || "Tên đăng nhập"}
             </label>
             {/* [UPDATE ANIMATION] Wrapper chịu trách nhiệm hiệu ứng border và shadow */}
             <div
               className={`relative rounded-lg border-2 bg-white transition-all duration-200 ease-out will-change-transform
                 ${
-                  errors.email
+                  errors.username
                     ? "border-red-500 focus-within:shadow-[4px_4px_0px_#ef4444]"
                     : "border-black focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1"
                 }
               `}
             >
               <input
-                id="signin-email"
-                type="email"
+                id="signin-username"
+                type="text"
                 placeholder={
-                  t("auth.signIn.emailPlaceholder") || "example@email.com"
+                  t("auth.signIn.usernamePlaceholder") || "john_doe"
                 }
                 // [UPDATE] Input trong suốt, không viền, chiều cao h-14
                 className="w-full h-14 px-5 bg-transparent border-none outline-none text-black font-medium placeholder:text-slate-400"
                 disabled={isLoading}
-                {...register("email")}
+                {...register("username")}
               />
             </div>
-            {errors.email && (
+            {errors.username && (
               <p className="text-sm font-bold text-red-500 mt-1 animate-pulse">
-                {errors.email.message}
+                {errors.username.message}
               </p>
             )}
           </div>
@@ -161,12 +161,13 @@ export function SignInForm() {
               >
                 {t("auth.signIn.password") || "Mật khẩu"}
               </label>
-              <Link
+              {/* ❌ HIDDEN: Forgot password link - Ẩn link đặt lại mật khẩu */}
+              {/* <Link
                 to="/auth/forgot-password"
                 className="text-sm font-bold text-blue-600 hover:text-black hover:underline decoration-2 underline-offset-2"
               >
                 {t("auth.signIn.forgotPassword") || "Quên mật khẩu?"}
-              </Link>
+              </Link> */}
             </div>
             {/* [UPDATE ANIMATION] Wrapper chịu trách nhiệm hiệu ứng border và shadow */}
             <div

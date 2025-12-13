@@ -20,6 +20,7 @@ export interface UserProfile {
   id: string;
   name: string;
   email: string;
+  username?: string;
   picture?: string;
   gender?: GenderType;
   dob?: string;
@@ -54,6 +55,7 @@ export interface UserProfileResponse {
   id: string;
   name: string;
   email: string;
+  username?: string;
   picture?: string | null;
   gender?: GenderType | null;
   dob?: string | null; // ISO 8601 date string

@@ -40,7 +40,7 @@ export type EmailAction = (typeof EmailAction)[keyof typeof EmailAction];
 
 // POST /api/auth/login
 export interface SignInRequestModel {
-  email: string; // required
+  username: string; // required
   password: string; // required
 }
 
@@ -56,6 +56,7 @@ export type SignInResponseModel = ApiResponse<SignInResponseDataModel>;
 // POST /api/auth/register
 export interface SignUpRequestModel {
   name: string; // required
+  username: string; // required
   email: string; // required
   password: string; // required
 }
@@ -175,6 +176,7 @@ export interface GetCurrentUserResponseDataModel {
   id: string;                     // GUID - match với backend response "id"
   name: string;                   // Cho avatar initials & hiển thị
   email: string;                  // Cho hiển thị
+  username?: string;              // Username for login
   
   // Optional nhưng recommended - cho Header & Profile
   picture?: string | null;        // URL ảnh avatar hoặc null - cho Header avatar

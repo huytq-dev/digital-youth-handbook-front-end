@@ -345,6 +345,8 @@
       "subtitle": "Tham gia cộng đồng học tập và phát triển bản thân",
       "name": "Họ và Tên",
       "namePlaceholder": "Nguyễn Văn A",
+      "username": "Tên đăng nhập",
+      "usernamePlaceholder": "john_doe",
       "email": "Email",
       "emailPlaceholder": "example@email.com",
       "password": "Mật khẩu",
@@ -361,7 +363,7 @@
       "haveAccount": "Đã có tài khoản?",
       "signInLink": "Đăng nhập",
       "successTitle": "Đăng ký thành công!",
-      "successMessage": "Vui lòng kiểm tra email để xác nhận tài khoản.",
+      "successMessage": "Tài khoản của bạn đã được tạo. Vui lòng đăng nhập để tiếp tục.",
       "redirectMessage": "Đang chuyển đến trang đăng nhập...",
       "errorTitle": "Đăng ký thất bại",
       "errorMessage": "Có lỗi xảy ra. Vui lòng thử lại sau."
@@ -369,6 +371,8 @@
     "signIn": {
       "title": "Đăng nhập",
       "subtitle": "Chào mừng bạn trở lại Hành Trang Số",
+      "username": "Tên đăng nhập",
+      "usernamePlaceholder": "john_doe",
       "email": "Email",
       "emailPlaceholder": "example@email.com",
       "password": "Mật khẩu",

@@ -9,12 +9,12 @@ import {
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // Sign In Schema
-// Backend: email (Required, Valid email), password (Required, Min 6 chars)
+// Backend: username (Required, Min 3 chars), password (Required, Min 6 chars)
 export const signInSchema = z.object({
-  email: z
+  username: z
     .string()
-    .min(1, "Email là bắt buộc")
-    .email("Email không đúng định dạng"),
+    .min(1, "Tên đăng nhập là bắt buộc")
+    .min(3, "Tên đăng nhập phải có ít nhất 3 ký tự"),
   password: z
     .string()
     .min(1, "Mật khẩu là bắt buộc")
@@ -24,10 +24,16 @@ export const signInSchema = z.object({
 export type SignInFormData = z.infer<typeof signInSchema>;
 
 // Sign Up Schema
-// Backend: name (Required), email (Required, Valid email), password (Required, Min 6 chars)
+// Backend: name (Required), username (Required, Min 3 chars), email (Required, Valid email), password (Required, Min 6 chars)
 export const signUpSchema = z
   .object({
     name: z.string().min(1, "Họ và tên là bắt buộc"),
+    username: z
+      .string()
+      .min(1, "Tên đăng nhập là bắt buộc")
+      .min(3, "Tên đăng nhập phải có ít nhất 3 ký tự")
+      .max(50, "Tên đăng nhập không được vượt quá 50 ký tự")
+      .regex(/^[a-zA-Z0-9_-]+$/, "Tên đăng nhập chỉ chứa chữ, số, gạch dưới và gạch ngang"),
     email: z
       .string()
       .min(1, "Email là bắt buộc")

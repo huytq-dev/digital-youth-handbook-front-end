@@ -81,6 +81,7 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
+    // @deprecated Email verification no longer used - accounts are instantly activated
     // POST /api/auth/email/verification/send
     sendVerificationEmail: builder.mutation<
       SendVerificationEmailResponseModel,
@@ -93,6 +94,7 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
+    // @deprecated Email verification no longer used - accounts are instantly activated
     // POST /api/auth/email/verification/confirm
     verifyEmail: builder.mutation<
       VerifyEmailResponseModel,
