@@ -34,10 +34,12 @@ export function SignUpForm() {
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
+      username: "",
       email: "",
       password: "",
       passwordConfirm: "",
@@ -48,6 +50,15 @@ export function SignUpForm() {
   // [UPDATE] Theo dõi giá trị để control animation
   const passwordValue = watch("password");
   const termsAccepted = watch("termsAccepted");
+  const usernameValue = watch("username");
+
+  // Auto-generate email from username
+  useEffect(() => {
+    if (usernameValue && usernameValue.length >= 3) {
+      // Simple email generation: username@app.local (or any domain you prefer)
+      setValue("email", `${usernameValue}@handbook.local`);
+    }
+  }, [usernameValue, setValue]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -116,7 +127,7 @@ export function SignUpForm() {
         <p className="text-base font-medium text-slate-600 mb-6">
           <AnimatedText>
             {t("auth.signUp.successMessage") ||
-              "Vui lòng kiểm tra email để xác nhận tài khoản."}
+              "Tài khoản của bạn đã được tạo. Vui lòng đăng nhập để tiếp tục."}
           </AnimatedText>
         </p>
         <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden border border-black">
@@ -200,40 +211,41 @@ export function SignUpForm() {
             )}
           </div>
 
-          {/* Email Field */}
+          {/* Username Field */}
           <div className="space-y-2">
             <label
               className="text-sm font-bold text-slate-700"
-              htmlFor="signup-email"
+              htmlFor="signup-username"
             >
-              {t("auth.signUp.email") || "Email"}
+              {t("auth.signUp.username") || "Tên đăng nhập"}
             </label>
             <div
               className={`relative rounded-lg border-2 bg-white transition-all duration-200 ease-out will-change-transform
                             ${
-                              errors.email
+                              errors.username
                                 ? "border-red-500 focus-within:shadow-[4px_4px_0px_#ef4444]"
                                 : "border-black focus-within:shadow-[4px_4px_0px_black] focus-within:-translate-y-1 focus-within:-translate-x-1"
                             }
                         `}
             >
               <input
-                id="signup-email"
-                type="email"
+                id="signup-username"
+                type="text"
                 placeholder={
-                  t("auth.signUp.emailPlaceholder") || "example@email.com"
+                  t("auth.signUp.usernamePlaceholder") || "john_doe"
                 }
                 className="w-full h-14 px-5 bg-transparent border-none outline-none text-black font-medium placeholder:text-slate-400"
                 disabled={isLoading}
-                {...register("email")}
+                {...register("username")}
               />
             </div>
-            {errors.email && (
+            {errors.username && (
               <p className="text-xs font-bold text-red-500 mt-1 animate-pulse">
-                {errors.email.message}
+                {errors.username.message}
               </p>
             )}
           </div>
+
 
           {/* Password Field */}
           <div className="space-y-2">

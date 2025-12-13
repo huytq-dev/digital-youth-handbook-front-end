@@ -212,6 +212,7 @@ export interface ApiResponse<T = unknown> {
     id: string;  // Match với backend response "id"
     name: string;
     email: string;
+    username?: string;              // Username for login
     
     // Optional nhưng recommended
     picture?: string | null;        // URL ảnh avatar - cho Header

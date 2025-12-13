@@ -25,6 +25,7 @@ function ProfilePage() {
       id: user.id,
       name: user.name,
       email: user.email,
+      username: user.username,
       picture: user.picture ?? undefined,
       gender: user.gender ?? undefined,
       dob: user.dob ?? undefined,

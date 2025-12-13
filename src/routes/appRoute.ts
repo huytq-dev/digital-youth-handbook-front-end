@@ -25,7 +25,6 @@ const SignInPage = lazy(() => import("@/pages/auth/sign-in"));
 const SignUpPage = lazy(() => import("@/pages/auth/sign-up"));
 const ForgotPasswordPage = lazy(() => import("@/pages/auth/forgot-password"));
 const ResetPasswordPage = lazy(() => import("@/pages/auth/reset-password"));
-const VerifyEmailPage = lazy(() => import("@/pages/auth/verify-email"));
 
 // Error
 const ServerErrorPage = lazy(() => import("@/pages/error/server-error"));
@@ -39,7 +38,6 @@ export const publicRoutes = [
   { path: ROUTE_PATH.AUTH.SIGN_UP, component: SignUpPage },
   { path: ROUTE_PATH.AUTH.FORGOT_PASSWORD, component: ForgotPasswordPage },
   { path: ROUTE_PATH.AUTH.RESET_PASSWORD, component: ResetPasswordPage },
-  { path: ROUTE_PATH.AUTH.VERIFY_EMAIL, component: VerifyEmailPage },
   { path: ROUTE_PATH.SERVER_ERROR, component: ServerErrorPage },
   { path: ROUTE_PATH.DISCONNECTED, component: DisconnectedPage },
   { path: ROUTE_PATH.NOT_FOUND, component: NotFoundPage },
