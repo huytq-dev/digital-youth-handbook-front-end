@@ -7,6 +7,7 @@ import { store } from "@/redux/store";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { LoadingProvider } from "@/contexts/loading-context";
+import { GeminiChatbot } from "@/components/chatbot/gemini-chatbot";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -20,6 +21,7 @@ export const Providers = ({ children }: ProvidersProps) => {
           <LoadingProvider>
             {children}
             <Toaster />
+            <GeminiChatbot />
           </LoadingProvider>
         </ThemeProvider>
       </BrowserRouter>
