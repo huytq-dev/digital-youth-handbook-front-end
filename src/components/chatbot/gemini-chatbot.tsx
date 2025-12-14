@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Bot, X, Loader2, LogIn } from "lucide-react"; // Đảm bảo đã import Bot
+import { Send, Bot, X, Loader2, LogIn } from "lucide-react"; 
 import { GEMINI_API_KEY, GEMINI_MODEL } from "@/config";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
