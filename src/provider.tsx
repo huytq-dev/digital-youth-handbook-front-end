@@ -21,7 +21,9 @@ export const Providers = ({ children }: ProvidersProps) => {
           <LoadingProvider>
             {children}
             <Toaster />
-            <GeminiChatbot />
+            <div className="hidden sm:block">
+              <GeminiChatbot />
+            </div>
           </LoadingProvider>
         </ThemeProvider>
       </BrowserRouter>

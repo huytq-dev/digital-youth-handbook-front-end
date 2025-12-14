@@ -136,7 +136,7 @@ export const LandingFooter = () => {
             <div className="space-y-3">
               <div className="flex items-start gap-3 text-sm text-slate-600 font-medium group">
                 <MapPin size={18} className="shrink-0 text-red-500 fill-red-100 group-hover:bounce" />
-                <span>Trường THCS Nguyễn Thị Minh Khai, Q.Thanh Khê, Đà Nẵng</span>
+                <span>Trường THCS Nguyễn Thị Minh Khai, Phường Thanh Khê, Đà Nẵng</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-slate-600 font-medium group">
                 <Phone size={18} className="shrink-0 text-green-600 fill-green-100" />
@@ -234,14 +234,6 @@ export const LandingFooter = () => {
               <p className="text-xs font-bold text-slate-500 mt-1">
                  Vì sự phát triển của thế hệ trẻ Việt Nam. 🇻🇳
               </p>
-          </div>
-          
-          <div className="flex items-center gap-3">
-              {['DMCA', 'BIT'].map((tag) => (
-                  <div key={tag} className="px-3 py-1 bg-slate-200 rounded border-2 border-black text-[10px] font-black text-slate-600 hover:bg-white hover:text-black cursor-pointer transition-colors shadow-[2px_2px_0px_rgba(0,0,0,0.1)]">
-                    {tag} PROTECTED
-                  </div>
-              ))}
           </div>
         </div>
       </div>

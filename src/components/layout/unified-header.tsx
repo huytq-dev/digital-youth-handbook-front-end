@@ -9,6 +9,7 @@ import {
   LogOut,
   X,
   Sparkles,
+  ArrowRight // Import thêm ArrowRight ở đây
 } from "lucide-react";
 import { Button } from "@/components/ui/primitives";
 import { cn } from "@/lib/utils";
@@ -23,7 +24,7 @@ import {
 import type { UserDomainModel } from "@/features/common/common.type";
 import { useIsMobile, useReducedMotion } from "@/hooks/use-reduced-motion";
 
-// --- Types ---
+// --- Types & Navigation Data (Giữ nguyên) ---
 type NavSubItem = { label: string; href?: string };
 type NavItem = { label: string; href?: string; subItems?: NavSubItem[] };
 
@@ -54,7 +55,9 @@ const NAVIGATION: NavItem[] = [
   { label: "Thi hay", href: "/quizzes" },
 ];
 
-// --- Sub-components ---
+// --- Sub-components (SheetOverlay, NavLinkBtn, UserProfileDropdown) ---
+// VẪN GIỮ NGUYÊN CODE CŨ CỦA BẠN CHO CÁC COMPONENT NÀY
+// (Mình rút gọn ở đây để tập trung vào thay đổi chính, bạn cứ dùng lại code cũ của các phần này)
 
 interface SheetOverlayProps {
   isOpen: boolean;
@@ -156,7 +159,6 @@ const NavLinkBtn = memo(({ item }: { item: NavItem }) => {
 });
 NavLinkBtn.displayName = "NavLinkBtn";
 
-// --- MỚI: Component UserProfileDropdown ---
 interface UserProfileDropdownProps {
   user: UserDomainModel;
   onSignOut: () => void;
@@ -219,11 +221,11 @@ const UserProfileDropdown = memo(
             <span className="text-[10px] font-bold text-slate-500 uppercase leading-none">
               Xin chào
             </span>
-            <span 
+            <span
               className="text-sm font-black text-slate-900 leading-none max-w-[120px] truncate"
               title={user.name} // Hover vào sẽ hiện full tên
             >
-              {displayName} 
+              {displayName}
             </span>
           </div>
 
@@ -254,8 +256,8 @@ const UserProfileDropdown = memo(
                 <p className="text-[10px] font-bold text-slate-800 uppercase tracking-wider">
                   Tài khoản của bạn
                 </p>
-                <p 
-                  className="text-xs font-black text-slate-900 truncate" 
+                <p
+                  className="text-xs font-black text-slate-900 truncate"
                   title={user.username}
                 >
                   {user.username}
@@ -305,6 +307,98 @@ const UserProfileDropdown = memo(
 );
 UserProfileDropdown.displayName = "UserProfileDropdown";
 
+// --- NEW MOBILE MENU COMPONENTS (Phần bạn đã duyệt trước đó) ---
+const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void }) => {
+  return (
+    <div className="mb-3 last:mb-0">
+      <div className="relative z-10 bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,0.1)] overflow-hidden group">
+        {item.subItems ? (
+          <div className="px-4 py-2.5 bg-yellow-300 border-b-2 border-black flex items-center gap-2">
+             <div className="w-1.5 h-1.5 rounded-full bg-black" />
+             <span className="font-black text-base text-slate-900 uppercase tracking-wide">
+                {item.label}
+             </span>
+          </div>
+        ) : (
+          <Link
+            to={item.href || "#"}
+            onClick={onClose}
+            className="block px-4 py-2.5 bg-white hover:bg-yellow-50 transition-colors font-black text-base text-slate-900 flex items-center justify-between"
+          >
+            {item.label}
+            <ArrowRight size={16} />
+          </Link>
+        )}
+
+        {item.subItems && (
+          <div className="bg-white p-1.5">
+            <div className="flex flex-col gap-0.5">
+              {item.subItems.map((subItem) => (
+                <Link
+                  key={subItem.label}
+                  to={subItem.href || "#"}
+                  onClick={onClose}
+                  className="group/sub flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-all border border-transparent hover:border-black/10"
+                >
+                  <div className="w-6 flex justify-center">
+                     <div className="w-1 h-1 rounded-full bg-slate-300 group-hover/sub:bg-blue-600 group-hover/sub:scale-125 transition-all" />
+                  </div>
+                  <span className="font-bold text-slate-600 group-hover/sub:text-blue-700 text-sm">
+                    {subItem.label}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const MobileUserCard = ({ user, onSignOut, onClose }: { user: any, onSignOut: any, onClose: any }) => (
+  <div className="bg-white border-2 border-black rounded-xl p-4 shadow-[3px_3px_0px_black] relative overflow-hidden mt-4">
+      <div className="absolute top-0 left-0 w-full h-14 bg-blue-600 border-b-2 border-black" />
+      <div className="absolute top-2 right-2 flex gap-1">
+          <div className="w-1.5 h-1.5 rounded-full bg-red-500 border border-black" />
+          <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 border border-black" />
+          <div className="w-1.5 h-1.5 rounded-full bg-green-500 border border-black" />
+      </div>
+
+      <div className="relative flex flex-col items-center mt-6">
+          <div className="w-14 h-14 rounded-xl border-2 border-black bg-white p-0.5 mb-2 shadow-sm">
+             <div className="w-full h-full rounded-lg bg-gray-200 overflow-hidden">
+                {user.picture ? (
+                  <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center font-black text-lg text-slate-400">
+                    {user.name?.charAt(0)}
+                  </div>
+                )}
+             </div>
+          </div>
+          
+          <h3 className="font-black text-base text-slate-900">{user.name}</h3>
+          <p className="font-bold text-xs text-slate-500 mb-3">@{user.username}</p>
+
+          <div className="grid grid-cols-2 gap-2 w-full">
+             <Link to="/profile" onClick={onClose}>
+                <button className="w-full py-1.5 bg-yellow-300 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:shadow-none transition-all">
+                   Hồ sơ
+                </button>
+             </Link>
+             <button 
+                onClick={() => { onSignOut(); onClose(); }}
+                className="w-full py-1.5 bg-red-100 text-red-700 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:shadow-none transition-all"
+             >
+                Đăng xuất
+             </button>
+          </div>
+      </div>
+  </div>
+);
+
+
 // --- MAIN COMPONENT ---
 
 export const UnifiedHeader = () => {
@@ -353,60 +447,61 @@ export const UnifiedHeader = () => {
         "fixed top-0 w-full z-50 transition-all duration-300 font-sans",
         scrolled
           ? "bg-[#fff9f0]/95 backdrop-blur-md py-2 border-b-4 border-black shadow-sm"
-          : "bg-[#fff9f0] py-4 border-b-4 border-black/10"
+          // FIX: Giảm padding trên mobile (py-2)
+          : "bg-[#fff9f0] py-2 sm:py-3 lg:py-4 border-b-4 border-black/10"
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-14">
-          {/* Logo Section */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-12 sm:h-14 lg:h-16">
+          {/* Logo Section - RESPONSIVE */}
           <Link
             to="/"
-            className="flex items-center gap-3 cursor-pointer group select-none"
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer group select-none flex-shrink-0"
           >
             <div className="relative">
-              <div className="bg-blue-600 w-11 h-11 rounded-lg border-2 border-black flex items-center justify-center text-white shadow-[3px_3px_0px_black] group-hover:translate-x-0.5 group-hover:translate-y-0.5 group-hover:shadow-none transition-all">
+              <div className="bg-blue-600 w-9 sm:w-10 lg:w-11 h-9 sm:h-10 lg:h-11 rounded-lg border-2 border-black flex items-center justify-center text-white shadow-[2px_2px_0px_black] sm:shadow-[3px_3px_0px_black] group-hover:translate-x-0.5 group-hover:translate-y-0.5 group-hover:shadow-none transition-all">
                 <Star
                   fill="currentColor"
-                  size={22}
+                  size={18}
                   className={cn(
-                    "transition-transform duration-500",
+                    "sm:w-5 sm:h-5 lg:w-6 lg:h-6 transition-transform duration-500",
                     shouldReduceMotion || isMobile
                       ? ""
                       : "group-hover:rotate-180"
                   )}
                 />
               </div>
-              <div className="absolute -top-1 -right-1 bg-red-500 w-3 h-3 rounded-full border-2 border-black" />
+              <div className="absolute -top-1 -right-1 bg-red-500 w-2 sm:w-2.5 lg:w-3 h-2 sm:h-2.5 lg:h-3 rounded-full border-2 border-black" />
             </div>
-            <div className="flex flex-col">
-              <span className="font-black text-xl leading-none text-slate-900 tracking-tight">
+            <div className="flex flex-col hidden sm:flex">
+              <span className="font-black text-sm sm:text-base lg:text-xl leading-none text-slate-900 tracking-tight">
                 HÀNH TRANG <span className="text-blue-600">SỐ</span>
               </span>
-              <span className="text-[10px] font-black text-white bg-orange-500 px-1 py-0.5 border border-black rounded-sm tracking-widest uppercase mt-1 w-fit rotate-[-2deg] group-hover:rotate-0 transition-transform">
+              <span className="text-[7px] sm:text-[9px] lg:text-[10px] font-black text-white bg-orange-500 px-1 py-0.5 border border-black rounded-sm tracking-widest uppercase mt-0.5 lg:mt-1 w-fit rotate-[-2deg] group-hover:rotate-0 transition-transform">
                 Khát Vọng
               </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-2">
+          {/* Desktop Navigation - RESPONSIVE */}
+          <div className="hidden lg:flex items-center gap-1 xl:gap-2">
             {NAVIGATION.map((item) => (
               <NavLinkBtn key={item.label} item={item} />
             ))}
           </div>
 
-          {/* Right Side: Auth Buttons or User Avatar */}
-          <div className="hidden lg:flex items-center gap-4">
+          {/* Right Side: Auth Buttons or User Avatar - RESPONSIVE */}
+          <div className="hidden lg:flex items-center gap-3 xl:gap-4">
             {!isAuthenticated ? (
               <>
                 <Link to="/auth/sign-in">
-                  <button className="h-11 px-6 rounded-lg font-black text-base border-2 border-black bg-white text-slate-900 shadow-[4px_4px_0px_black] transition-all hover:bg-slate-50 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center justify-center">
+                  <button className="h-10 xl:h-11 px-4 xl:px-6 rounded-lg font-black text-xs xl:text-base border-2 border-black bg-white text-slate-900 shadow-[3px_3px_0px_black] xl:shadow-[4px_4px_0px_black] transition-all hover:bg-slate-50 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[4px_4px_0px_black] xl:hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center justify-center">
                     Đăng nhập
                   </button>
                 </Link>
                 <Link to="/auth/sign-up">
-                  <button className="h-11 px-6 bg-blue-600 text-white font-black text-base border-2 border-black rounded-lg shadow-[4px_4px_0px_black] transition-all hover:bg-blue-700 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center gap-2 justify-center">
-                    Đăng ký <ArrowRightIcon className="w-4 h-4" />
+                  <button className="h-10 xl:h-11 px-4 xl:px-6 bg-blue-600 text-white font-black text-xs xl:text-base border-2 border-black rounded-lg shadow-[3px_3px_0px_black] xl:shadow-[4px_4px_0px_black] transition-all hover:bg-blue-700 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[4px_4px_0px_black] xl:hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center gap-1 xl:gap-2 justify-center">
+                    Đăng ký <ArrowRight className="w-3 h-3 xl:w-4 xl:h-4" />
                   </button>
                 </Link>
               </>
@@ -415,163 +510,69 @@ export const UnifiedHeader = () => {
             ) : null}
           </div>
 
-          {/* Mobile Toggle Button */}
+          {/* Mobile/Tablet Toggle Button - RESPONSIVE */}
           <div className="lg:hidden">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsOpen(true)}
-              className="border-2 border-black bg-white shadow-[2px_2px_0px_black] hover:translate-y-0.5 hover:shadow-none transition-all active:bg-gray-100"
+              className="border-2 border-black bg-white shadow-[2px_2px_0px_black] hover:translate-y-0.5 hover:shadow-none transition-all active:bg-gray-100 w-9 h-9 sm:w-10 sm:h-10"
             >
-              <Menu size={24} strokeWidth={2.5} />
+              <Menu size={20} strokeWidth={2.5} className="sm:w-6 sm:h-6" />
             </Button>
           </div>
         </div>
       </div>
 
-      {/* MOBILE SHEET CONTENT */}
+      {/* MOBILE SHEET CONTENT - SỬ DỤNG COMPONENT MỚI */}
       <SheetOverlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-black border-dashed">
-          <div className="flex items-center gap-3">
-            <div className="w-5 h-5 bg-orange-500 rounded-full border-2 border-black shadow-[1px_1px_0px_black]" />
-            <span className="font-black text-2xl tracking-tight text-slate-900">
-              MENU
-            </span>
-          </div>
+        {/* Header của Menu */}
+        <div className="flex items-center justify-between mb-5 pb-3 border-b-2 border-black border-dashed">
+           <div className="bg-orange-500 text-white px-3 py-1 border-2 border-black shadow-[2px_2px_0px_black] rotate-[-2deg]">
+             <span className="font-black text-lg tracking-wider">MENU</span>
+           </div>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsOpen(false)}
-            className="hover:bg-transparent text-slate-500 hover:text-black transition-colors"
+            className="bg-red-500 text-white border-2 border-black hover:bg-red-600 hover:text-white shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[2px] transition-all rounded-lg w-8 h-8"
           >
-            <X size={24} strokeWidth={3} />
+            <X size={20} strokeWidth={3} />
           </Button>
         </div>
 
-        <div className="flex-1 overflow-y-auto flex flex-col gap-4 pr-1 pb-4 custom-scrollbar">
-          {NAVIGATION.map((item) => (
-            <div
-              key={item.label}
-              className="border-2 border-black rounded-xl bg-white shadow-[3px_3px_0px_rgba(0,0,0,0.1)] overflow-hidden"
-            >
-              {item.subItems ? (
-                <>
-                  <div className="px-5 py-4 bg-white border-b border-black/10">
-                    <span className="font-bold text-lg text-slate-900 block">
-                      {item.label}
-                    </span>
-                  </div>
-                  <div className="px-5 py-4 flex flex-col gap-3.5 bg-white">
-                    {item.subItems.map((subItem) => (
-                      <Link
-                        key={subItem.label}
-                        to={subItem.href || "#"}
-                        onClick={() => setIsOpen(false)}
-                        className="group flex items-center gap-3 text-slate-600 font-semibold text-[15px] hover:text-blue-600 transition-colors"
-                      >
-                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 group-hover:scale-125 transition-transform" />
-                        {subItem.label}
-                      </Link>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <Link
-                  to={item.href || "#"}
-                  onClick={() => setIsOpen(false)}
-                  className="block w-full px-5 py-4 font-bold text-lg text-slate-900 hover:bg-slate-50 transition-colors"
-                >
-                  {item.label}
-                </Link>
-              )}
-            </div>
-          ))}
+        {/* Danh sách Menu Items */}
+        <div className="flex-1 overflow-y-auto pr-1 pb-4 custom-scrollbar">
+          <div className="flex flex-col">
+             {NAVIGATION.map((item) => (
+                <MobileMenuItem key={item.label} item={item} onClose={() => setIsOpen(false)} />
+             ))}
+          </div>
         </div>
 
-        <div className="mt-auto pt-6 border-t-2 border-black">
-          {!isAuthenticated ? (
-            <div className="grid grid-cols-2 gap-3">
-              <Link
-                to="/auth/sign-in"
-                className="w-full"
-                onClick={() => setIsOpen(false)}
-              >
-                <button className="w-full h-12 rounded-xl border-2 border-black font-black text-base bg-white text-slate-900 shadow-[3px_3px_0px_black] active:translate-y-0.5 active:translate-x-0.5 active:shadow-none transition-all">
-                  Đăng nhập
-                </button>
-              </Link>
-              <Link
-                to="/auth/sign-up"
-                className="w-full"
-                onClick={() => setIsOpen(false)}
-              >
-                <button className="w-full h-12 rounded-xl border-2 border-black font-black text-base bg-blue-600 text-white shadow-[3px_3px_0px_black] active:translate-y-0.5 active:translate-x-0.5 active:shadow-none transition-all">
-                  Đăng ký
-                </button>
-              </Link>
-            </div>
-          ) : user ? (
-            <div className="space-y-3">
-              <div className="px-4 py-3 bg-blue-50 border-2 border-black rounded-xl flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-blue-600 border-2 border-black flex items-center justify-center text-white font-black overflow-hidden">
-                  {user.picture ? (
-                    <img
-                      src={user.picture}
-                      alt={user.name}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <span>{user.name?.charAt(0)?.toUpperCase() || "U"}</span>
-                  )}
-                </div>
-                <div className="overflow-hidden">
-                  <p className="font-black text-sm text-slate-900 truncate" title={user.name}>
-                    {user.name}
-                  </p>
-                  <p className="text-xs font-bold text-slate-600 truncate" title={user.username}>
-                    {user.username}
-                  </p>
-                </div>
+        {/* Footer: Auth / User Profile */}
+        <div className="mt-2">
+           {!isAuthenticated ? (
+              <div className="flex flex-col gap-3 pt-4 border-t-2 border-black border-dashed">
+                 <p className="text-center font-bold text-slate-500 text-xs">Tham gia cùng cộng đồng Gen Z!</p>
+                 <div className="grid grid-cols-2 gap-2">
+                    <Link to="/auth/sign-in" onClick={() => setIsOpen(false)}>
+                       <button className="w-full h-10 rounded-lg border-2 border-black bg-white font-black text-sm shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all hover:bg-gray-50">
+                          Đăng nhập
+                       </button>
+                    </Link>
+                    <Link to="/auth/sign-up" onClick={() => setIsOpen(false)}>
+                       <button className="w-full h-10 rounded-lg border-2 border-black bg-blue-600 text-white font-black text-sm shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all hover:bg-blue-700">
+                          Đăng ký
+                       </button>
+                    </Link>
+                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <Link to="/profile" onClick={() => setIsOpen(false)}>
-                  <button className="w-full h-11 rounded-lg border-2 border-black bg-white font-bold text-sm shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[2px] transition-all">
-                    Cá nhân
-                  </button>
-                </Link>
-                <button
-                  onClick={() => {
-                    handleSignOut();
-                    setIsOpen(false);
-                  }}
-                  className="w-full h-11 rounded-lg border-2 border-black bg-red-100 text-red-700 font-bold text-sm shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[2px] transition-all"
-                >
-                  Đăng xuất
-                </button>
-              </div>
-            </div>
-          ) : null}
+           ) : user ? (
+              <MobileUserCard user={user} onSignOut={handleSignOut} onClose={() => setIsOpen(false)} />
+           ) : null}
         </div>
       </SheetOverlay>
     </nav>
   );
 };
-
-// Helper Icon
-const ArrowRightIcon = (props: any) => (
-  <svg
-    width="15"
-    height="15"
-    viewBox="0 0 15 15"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <path
-      d="M8.14645 3.14645C8.34171 2.95118 8.65829 2.95118 8.85355 3.14645L12.8536 7.14645C13.0488 7.34171 13.0488 7.65829 12.8536 7.85355L8.85355 11.8536C8.65829 12.0488 8.34171 12.0488 8.14645 11.8536C7.95118 11.6583 7.95118 11.3417 8.14645 11.1464L11.2929 8H2.5C2.22386 8 2 7.77614 2 7.5C2 7.22386 2.22386 7 2.5 7H11.2929L8.14645 3.85355C7.95118 3.65829 7.95118 3.34171 8.14645 3.14645Z"
-      fill="currentColor"
-      fillRule="evenodd"
-      clipRule="evenodd"
-    ></path>
-  </svg>
-);
