@@ -19,10 +19,6 @@ export const QUOTES: Quote[] = [
     author: "Hồ Chí Minh",
   },
   {
-    content: "Một dân tộc dốt là một dân tộc yếu.",
-    author: "Hồ Chí Minh",
-  },
-  {
     content:
       "Phải làm cho dân tộc ta trở nên một dân tộc anh dũng, một dân tộc văn minh, một dân tộc mạnh khoẻ.",
     author: "Hồ Chí Minh",
