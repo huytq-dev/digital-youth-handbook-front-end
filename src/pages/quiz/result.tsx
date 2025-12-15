@@ -60,7 +60,7 @@ const QuizResultPageWrapper = () => {
   // --- TRÍCH XUẤT DỮ LIỆU ---
   const resultData: QuizResultData | null = (quizResponse as any)?.data || quizResponse || null;
 
-  // Gọi Hook để lấy giá trị số đang chạy (duration 2s)
+  // Gọi Hook để lấy giá trị số đang chạy (duration 2s) - số câu đúng
   // Lưu ý: Nếu resultData null thì mặc định là 0
   const animatedScore = useCountUp(resultData?.totalScore || 0, 2000);
 
@@ -108,7 +108,7 @@ const QuizResultPageWrapper = () => {
   }
 
   // --- RENDER GIAO DIỆN CHÍNH ---
-  const { isPassed, totalScore, attemptId } = resultData;
+  const { isPassed, totalScore } = resultData;
   const statusColor = isPassed ? "bg-[#A3E635]" : "bg-[#FF8888]";
   
   // Icon
@@ -157,28 +157,14 @@ const QuizResultPageWrapper = () => {
                   Tổng điểm của bạn
                 </span>
                 
-                {/* PHẦN HIỂN THỊ ĐIỂM SỐ ĐÃ ANIMATION */}
-                <div className="relative">
-                  {/* Lớp bóng mờ bên dưới */}
-                  <span className="absolute top-1 left-1 text-8xl font-black text-slate-300 select-none blur-[1px]">
-                    {animatedScore}%
-                  </span>
-                  
-                  {/* Lớp chữ chính bên trên */}
-                  <span className="relative text-8xl font-black text-black z-10">
+                {/* PHẦN HIỂN THỊ ĐIỂM SỐ DẠNG 7/10 */}
+                <div className="flex items-baseline gap-2">
+                  <span className="text-8xl font-black text-black">
                     {animatedScore}
-                    <span className="text-4xl align-top">%</span>
                   </span>
-                </div>
-                
-              </div>
-
-              <div className="mb-8 grid grid-cols-1 gap-4">
-                <div className="border-2 border-black bg-slate-50 p-4 rounded-lg flex flex-col items-start shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
-                  <span className="text-xs font-black uppercase bg-black text-white px-2 py-0.5 rounded-sm mb-2">
-                    Attempt ID
+                  <span className="text-4xl font-bold text-slate-600">
+                    / {resultData.totalQuestions || 0}
                   </span>
-                  <p className="font-mono text-xs md:text-sm text-slate-700 break-all">{attemptId}</p>
                 </div>
               </div>
 

@@ -1,7 +1,7 @@
 import { Lightbulb, Download, FileText, List, CheckCircle2 } from "lucide-react";
 
 // --- Dữ liệu Mục lục (Label + ID tương ứng) ---
-const TOC_ITEMS = [
+export const TOC_ITEMS = [
   { label: 'Mục tiêu chủ đề', id: 'section-objectives' },
   { label: 'Nội dung trọng tâm', id: 'section-content' },
   { label: 'Infographic ghi nhớ', id: 'section-infographic' },
@@ -50,8 +50,12 @@ export const ResourceCard = () => (
   </div>
 );
 
-// 3. Component "Mục lục" (Table of Contents) - Đã cập nhật logic Scroll
-export const TableOfContents = () => {
+// 3. Component "Mục lục" (Table of Contents) - Có Active State
+interface TableOfContentsProps {
+  activeId?: string;
+}
+
+export const TableOfContents = ({ activeId = "" }: TableOfContentsProps) => {
   // Hàm xử lý cuộn trang
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -73,16 +77,28 @@ export const TableOfContents = () => {
         <List size={20} /> Mục lục
       </h3>
       <ul className="space-y-3">
-        {TOC_ITEMS.map((item, i) => (
-          <li 
-            key={i} 
-            onClick={() => scrollToSection(item.id)}
-            className="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-blue-600 cursor-pointer transition-colors group"
-          >
-            <CheckCircle2 size={14} className="text-slate-300 group-hover:text-blue-500 transition-colors" />
-            {item.label}
-          </li>
-        ))}
+        {TOC_ITEMS.map((item, i) => {
+          const isActive = activeId === item.id;
+          return (
+            <li 
+              key={i} 
+              onClick={() => scrollToSection(item.id)}
+              className={`flex items-center gap-2 text-sm font-bold cursor-pointer transition-all duration-300 group ${
+                isActive 
+                  ? "text-emerald-700 translate-x-2"
+                  : "text-slate-600 hover:text-emerald-600 hover:translate-x-1"
+              }`}
+            >
+              <CheckCircle2 
+                size={14} 
+                className={`transition-colors duration-300 ${
+                  isActive ? "text-emerald-600 fill-emerald-100" : "text-slate-300 group-hover:text-emerald-400"
+                }`} 
+              />
+              {item.label}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

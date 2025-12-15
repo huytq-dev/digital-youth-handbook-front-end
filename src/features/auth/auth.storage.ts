@@ -24,8 +24,10 @@ export const mapBackendUserToUserDomainModel = (backendUser: GetCurrentUserRespo
     gender: backendUser.gender,
     dob: backendUser.dob,
     address: backendUser.address,
+    // Thêm schoolName và className từ backend response
+    schoolName: backendUser.schoolName || null,
+    className: backendUser.className || null,
   };
-  console.log('🔄 [MAPPING] Backend user mapped to UserDomainModel:', { id: mappedUser.id, name: mappedUser.name, username: mappedUser.username, email: mappedUser.email });
   return mappedUser;
 };
 

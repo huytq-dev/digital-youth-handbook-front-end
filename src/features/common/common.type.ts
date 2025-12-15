@@ -223,4 +223,8 @@ export interface ApiResponse<T = unknown> {
     gender?: GenderType | null;
     dob?: string | null;            // ISO 8601 date string
     address?: string | null;
+    
+    // Thông tin trường/lớp
+    schoolName?: string | null;     // Tên trường
+    className?: string | null;      // Tên lớp
   }

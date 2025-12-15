@@ -21,6 +21,7 @@ export interface QuizQuestion {
   options: string[];
   correctOptionIndex: number;
   explanation?: string;
+  points?: number; 
 }
 
 export interface QuizLeaderboardEntry {

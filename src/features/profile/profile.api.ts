@@ -10,6 +10,8 @@ export interface UpdateUserProfileRequest {
   dob?: string; // ISO 8601: YYYY-MM-DD
   address?: string;
   gender?: number;
+  schoolName?: string;  // Tên trường
+  className?: string;   // Tên lớp
 }
 
 // ==========================================
@@ -26,6 +28,8 @@ export interface UserProfileResponse {
   dob?: string | null;
   address?: string | null;
   roleName: string;
+  schoolName?: string | null;  // Tên trường
+  className?: string | null;   // Tên lớp
 }
 
 export interface AvatarUploadResponse {

@@ -131,6 +131,36 @@ export const updateUserProfileSchema = z.object({
           "URL ảnh đại diện phải là URL hợp lệ (bắt đầu với http:// hoặc https://) và không quá 500 ký tự",
       }
     ),
+
+  // SchoolName: optional, nếu có thì max 200 ký tự
+  schoolName: z
+    .string()
+    .nullable()
+    .optional()
+    .refine(
+      (val) => {
+        if (!hasValue(val)) return true;
+        return val!.trim().length <= 100;
+      },
+      {
+        message: "Tên trường không được vượt quá 100 ký tự",
+      }
+    ),
+
+  // ClassName: optional, nếu có thì max 50 ký tự
+  className: z
+    .string()
+    .nullable()
+    .optional()
+    .refine(
+      (val) => {
+        if (!hasValue(val)) return true;
+        return val!.trim().length <= 10;
+      },
+      {
+        message: "Tên lớp không được vượt quá 10 ký tự",
+      }
+    ),
 });
 
 export type UpdateUserProfileFormData = z.infer<
