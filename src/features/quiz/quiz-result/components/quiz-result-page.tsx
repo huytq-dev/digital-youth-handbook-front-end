@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, useSpring, useTransform, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  useSpring,
+  useTransform,
+  AnimatePresence,
+} from "framer-motion";
 import {
   Trophy,
-  XCircle,
   CheckCircle2,
   Clock,
   RotateCcw,
@@ -18,16 +22,18 @@ import { cn } from "@/lib/utils";
 import type { QuizAnswer, QuizQuestion } from "@/features/quiz/quiz.type";
 
 interface QuizResultPageProps {
-  score: number; // Số câu đúng
-  totalQuestions: number;
+  score: number; // Nhận từ API: data.totalScore (ví dụ: 4)
+  totalQuestions: number; // Có thể lấy từ data.questions.length
   timeSpent: number; // seconds
   answers: QuizAnswer[];
-  questions: QuizQuestion[];
+  questions: QuizQuestion[]; // List câu hỏi từ API start quiz
   quizId: string;
 }
 
-// Helper: Phân loại kết quả
-const getResultConfig = (scorePercentage: number) => {
+// Helper: Phân loại kết quả và tin nhắn dựa trên score/total
+const getResultConfig = (score: number, total: number) => {
+  const scorePercentage = total > 0 ? (score / total) * 100 : 0;
+  
   if (scorePercentage === 100) {
     return {
       title: "TUYỆT ĐỐI!!!",
@@ -51,7 +57,7 @@ const getResultConfig = (scorePercentage: number) => {
   if (scorePercentage >= 50) {
     return {
       title: "TẠM ỔN",
-      desc: "Cần cố gắng thêm chút nữa. 📚",
+      desc: "Đã qua môn, nhưng cần cố gắng thêm. 📚",
       bg: "bg-blue-300",
       text: "text-blue-900",
       icon: Meh,
@@ -59,10 +65,10 @@ const getResultConfig = (scorePercentage: number) => {
     };
   }
   return {
-    title: "CỐ GẮNG LẠI NHÉ",
-    desc: "Học lại thôi bạn ơi. 💪",
-    bg: "bg-red-400",
-    text: "text-red-900",
+    title: "ĐỪNG NẢN CHÍ!",
+    desc: "THẤT BẠI LÀ MẸ THÀNH CÔNG!",
+    bg: "bg-pink-200",
+    text: "text-pink-900",
     icon: Frown,
     showConfetti: false,
   };
@@ -71,7 +77,7 @@ const getResultConfig = (scorePercentage: number) => {
 // Component số chạy (Count Up)
 const AnimatedNumber = ({ value }: { value: number }) => {
   const spring = useSpring(0, { mass: 0.8, stiffness: 75, damping: 15 });
-  const display = useTransform(spring, (current) => Math.round(current));
+  const display = useTransform(spring, (current) => Math.round(current)); 
 
   useEffect(() => {
     spring.set(value);
@@ -80,31 +86,26 @@ const AnimatedNumber = ({ value }: { value: number }) => {
   return <motion.span>{display}</motion.span>;
 };
 
-// Confetti Component (CSS-based)
+// Confetti Component
 const Confetti = () => {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       {[...Array(30)].map((_, i) => {
-        const colors = ["#fbbf24", "#f59e0b", "#ef4444", "#8b5cf6", "#3b82f6", "#10b981", "#ec4899"];
+        const colors = [
+          "#fbbf24", "#f59e0b", "#ef4444", "#8b5cf6",
+          "#3b82f6", "#10b981", "#ec4899",
+        ];
         const delay = Math.random() * 0.5;
         const duration = 2 + Math.random() * 1;
         const angle = (i / 30) * 360;
         const distance = 300 + Math.random() * 200;
-        
+
         return (
           <motion.div
             key={i}
             className="absolute left-1/2 top-1/2 h-3 w-3 rounded-sm"
-            style={{
-              backgroundColor: colors[i % colors.length],
-            }}
-            initial={{
-              x: 0,
-              y: 0,
-              rotate: 0,
-              scale: 1,
-              opacity: 1,
-            }}
+            style={{ backgroundColor: colors[i % colors.length] }}
+            initial={{ x: 0, y: 0, opacity: 1 }}
             animate={{
               x: Math.cos((angle * Math.PI) / 180) * distance,
               y: Math.sin((angle * Math.PI) / 180) * distance - 100,
@@ -112,11 +113,7 @@ const Confetti = () => {
               scale: [1, 1.2, 0],
               opacity: [1, 1, 0],
             }}
-            transition={{
-              duration,
-              delay,
-              ease: "easeOut" as const,
-            }}
+            transition={{ duration, delay, ease: "easeOut" }}
           />
         );
       })}
@@ -124,9 +121,9 @@ const Confetti = () => {
   );
 };
 
+// --- MAIN COMPONENT ---
 export const QuizResultPage = ({
   score,
-  totalQuestions,
   timeSpent,
   answers,
   questions,
@@ -135,10 +132,11 @@ export const QuizResultPage = ({
   const navigate = useNavigate();
   const [showReview, setShowReview] = useState(false);
 
-  const scorePercentage = Math.round((score / totalQuestions) * 100);
-  const correctAnswers = score;
-  const wrongAnswers = totalQuestions - score;
-  const config = getResultConfig(scorePercentage);
+  // Tính toán dựa trên số lượng câu hỏi (để hiển thị dạng 8/10)
+  const questionCount = questions.length || 0;
+
+  // Lấy config dựa trên score và questionCount
+  const config = getResultConfig(score, questionCount);
   const IconComponent = config.icon;
 
   // Format time
@@ -146,32 +144,18 @@ export const QuizResultPage = ({
   const seconds = timeSpent % 60;
   const timeFormatted = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
-  // Animation variants cho Card rơi xuống
   const cardVariants = {
-    hidden: {
-      y: -500,
-      opacity: 0,
-      rotate: -10,
-    },
+    hidden: { y: -500, opacity: 0, rotate: -10 },
     visible: {
       y: 0,
       opacity: 1,
       rotate: 0,
-      transition: {
-        type: "spring" as const,
-        stiffness: 200,
-        damping: 20,
-      },
+      transition: { type: "spring" as const, stiffness: 200, damping: 20 },
     },
   };
 
-  const handlePlayAgain = () => {
-    navigate(`/quizzes/${quizId}`);
-  };
-
-  const handleGoHome = () => {
-    navigate("/quizzes");
-  };
+  const handlePlayAgain = () => navigate(`/quizzes/${quizId}`);
+  const handleGoHome = () => navigate("/quizzes");
 
   const getAnswerForQuestion = (questionId: string) => {
     return answers.find((a) => a.questionId === questionId);
@@ -186,7 +170,6 @@ export const QuizResultPage = ({
       }}
     >
       <div className="mx-auto flex min-h-screen max-w-2xl items-center justify-center px-4 py-8">
-        {/* Container chính */}
         <motion.div
           className="w-full"
           variants={cardVariants}
@@ -196,7 +179,7 @@ export const QuizResultPage = ({
           {/* Confetti overlay */}
           {config.showConfetti && <Confetti />}
 
-          {/* Header Card: Kết quả */}
+          {/* --- HEADER CARD: KẾT QUẢ --- */}
           <div
             className={cn(
               "relative overflow-hidden rounded-t-3xl border-4 border-black p-8 text-center shadow-[8px_8px_0px_black]",
@@ -209,7 +192,11 @@ export const QuizResultPage = ({
               animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
               transition={{ repeat: Infinity, duration: 2 }}
             >
-              <IconComponent size={48} strokeWidth={2.5} className={config.text} />
+              <IconComponent
+                size={48}
+                strokeWidth={2.5}
+                className={config.text}
+              />
             </motion.div>
 
             <h1 className="text-4xl font-black uppercase tracking-tight text-black">
@@ -217,88 +204,87 @@ export const QuizResultPage = ({
             </h1>
             <p className="mt-2 font-bold text-black/70">{config.desc}</p>
 
-            {/* Điểm số to đùng */}
-            <div className="mt-6 flex items-baseline justify-center gap-1 rounded-2xl border-2 border-black bg-black/10 p-4 backdrop-blur-sm">
-              <span className="text-6xl font-black text-black">
-                <AnimatedNumber value={scorePercentage} />
-              </span>
-              <span className="text-xl font-bold text-black/60">/ 100</span>
+            {/* HIỂN THỊ ĐIỂM SỐ CHÍNH: SCORE / QUESTION_COUNT */}
+            <div className="mt-6 flex items-center justify-center rounded-2xl border-2 border-black bg-black/10 p-4 backdrop-blur-sm">
+              <div className="flex items-baseline gap-1">
+                {/* Số câu đúng */}
+                <span className="text-6xl font-black text-black">
+                  <AnimatedNumber value={score} />
+                </span>
+                {/* Tổng số câu hỏi */}
+                <span className="text-3xl font-bold text-black/60">
+                  / {questionCount}
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Body Card: Thống kê */}
+          {/* --- BODY CARD: THỐNG KÊ --- */}
           <div className="rounded-b-3xl border-4 border-t-0 border-black bg-white p-6 shadow-[8px_8px_0px_black]">
-            {/* Grid Thống kê */}
             <div className="grid grid-cols-2 gap-4">
-              {/* Box 1: Câu đúng */}
+              {/* Box 1: Điểm số thực tế */}
               <div className="flex flex-col items-center rounded-xl border-2 border-black bg-green-100 p-3 shadow-[2px_2px_0px_black]">
-                <CheckCircle2 size={24} className="mb-1 text-green-600" strokeWidth={3} />
-                <span className="text-xs font-bold uppercase text-slate-500">Chính xác</span>
+                <CheckCircle2
+                  size={24}
+                  className="mb-1 text-green-600"
+                  strokeWidth={3}
+                />
+                <span className="text-xs font-bold uppercase text-slate-500">
+                  Số câu đúng
+                </span>
                 <span className="text-xl font-black text-slate-900">
-                  {correctAnswers}/{totalQuestions}
+                  {score}/{questionCount}
                 </span>
               </div>
 
-              {/* Box 2: Câu sai */}
-              <div className="flex flex-col items-center rounded-xl border-2 border-black bg-red-100 p-3 shadow-[2px_2px_0px_black]">
-                <XCircle size={24} className="mb-1 text-red-500" strokeWidth={3} />
-                <span className="text-xs font-bold uppercase text-slate-500">Sai / Bỏ qua</span>
-                <span className="text-xl font-black text-slate-900">{wrongAnswers}</span>
-              </div>
-
-              {/* Box 3: Thời gian */}
-              <div className="col-span-2 flex items-center justify-between rounded-xl border-2 border-black bg-blue-50 p-3 px-6 shadow-[2px_2px_0px_black]">
-                <div className="flex items-center gap-2">
-                  <Clock size={20} className="text-blue-600" strokeWidth={3} />
-                  <span className="font-bold text-slate-500">Thời gian:</span>
-                </div>
-                <span className="text-xl font-black text-slate-900">{timeFormatted}</span>
+              {/* Box 2: Thời gian */}
+              <div className="flex flex-col items-center rounded-xl border-2 border-black bg-blue-100 p-3 shadow-[2px_2px_0px_black]">
+                <Clock size={24} className="mb-1 text-blue-600" strokeWidth={3} />
+                <span className="text-xs font-bold uppercase text-slate-500">
+                  Thời gian
+                </span>
+                <span className="text-xl font-black text-slate-900">
+                  {timeFormatted}
+                </span>
               </div>
             </div>
 
-            {/* Action Buttons */}
+            {/* --- ACTION BUTTONS --- */}
             <div className="mt-8 space-y-3">
-              {/* Nút Xem lại đáp án */}
               <button
                 onClick={() => setShowReview(!showReview)}
                 className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-black bg-white py-3 font-bold text-black shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none"
               >
                 {showReview ? (
                   <>
-                    <EyeOff size={20} strokeWidth={3} />
-                    Ẩn đáp án
+                    <EyeOff size={20} strokeWidth={3} /> Ẩn đáp án
                   </>
                 ) : (
                   <>
-                    <Eye size={20} strokeWidth={3} />
-                    Xem lại đáp án
+                    <Eye size={20} strokeWidth={3} /> Xem lại đáp án
                   </>
                 )}
               </button>
 
               <div className="grid grid-cols-2 gap-3">
-                {/* Nút Chơi lại */}
                 <button
                   onClick={handlePlayAgain}
                   className="flex items-center justify-center gap-2 rounded-xl border-2 border-black bg-amber-200 py-3 font-bold text-black shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none"
                 >
-                  <RotateCcw size={20} strokeWidth={3} />
-                  Chơi lại
+                  <RotateCcw size={20} strokeWidth={3} /> Chơi lại
                 </button>
 
-                {/* Nút Về trang chủ (Primary) */}
                 <button
                   onClick={handleGoHome}
                   className="flex items-center justify-center gap-2 rounded-xl border-2 border-black bg-indigo-500 py-3 font-bold text-white shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none"
                 >
-                  <Home size={20} strokeWidth={3} />
-                  Trang chủ
+                  <Home size={20} strokeWidth={3} /> Trang chủ
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Review Section (Accordion Slide Down) */}
+          {/* --- REVIEW SECTION (Giữ nguyên logic của bạn) --- */}
           <AnimatePresence>
             {showReview && (
               <motion.div
@@ -308,8 +294,10 @@ export const QuizResultPage = ({
                 className="mt-6 overflow-hidden"
               >
                 <div className="rounded-2xl border-2 border-black bg-white p-4 shadow-[4px_4px_0px_black]">
-                  <h3 className="mb-4 font-black uppercase text-slate-400">Chi tiết bài làm</h3>
-                  <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                  <h3 className="mb-4 font-black uppercase text-slate-400">
+                    Chi tiết bài làm
+                  </h3>
+                  <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
                     {questions.map((question, index) => {
                       const answer = getAnswerForQuestion(question.id);
                       const isCorrect = answer?.isCorrect ?? false;
@@ -325,9 +313,15 @@ export const QuizResultPage = ({
                               : "border-red-300 bg-red-50"
                           )}
                         >
-                          <p className="mb-2 font-bold text-slate-800">
-                            Câu {index + 1}: {question.question}
-                          </p>
+                          <div className="mb-2 flex justify-between gap-2">
+                            <p className="font-bold text-slate-800">
+                              Câu {index + 1}: {question.question}
+                            </p>
+                            <span className="flex-shrink-0 text-xs font-bold text-slate-500">
+                              [{question.points || 1} điểm]
+                            </span>
+                          </div>
+
                           <div className="space-y-1 text-sm">
                             {question.options.map((option, optIndex) => {
                               const isSelected = optIndex === selectedIndex;
@@ -337,12 +331,12 @@ export const QuizResultPage = ({
                                 <div
                                   key={optIndex}
                                   className={cn(
-                                    "rounded px-2 py-1",
+                                    "rounded px-2 py-1 transition-colors",
                                     isCorrectOption
-                                      ? "bg-green-200 font-bold text-green-800"
+                                      ? "bg-green-200 font-bold text-green-800 border border-green-300"
                                       : isSelected && !isCorrectOption
-                                      ? "bg-red-200 font-bold text-red-800 line-through"
-                                      : "text-slate-600"
+                                        ? "bg-red-200 font-bold text-red-800 border border-red-300 line-through"
+                                        : "text-slate-600 bg-white/50"
                                   )}
                                 >
                                   {String.fromCharCode(65 + optIndex)}. {option}
@@ -352,10 +346,10 @@ export const QuizResultPage = ({
                             })}
                           </div>
                           {question.explanation && (
-                            <p className="mt-2 text-xs text-slate-600">
+                            <div className="mt-2 rounded bg-white/60 p-2 text-xs text-slate-600">
                               <span className="font-bold">💡 Giải thích: </span>
                               {question.explanation}
-                            </p>
+                            </div>
                           )}
                         </div>
                       );
@@ -370,4 +364,3 @@ export const QuizResultPage = ({
     </main>
   );
 };
-

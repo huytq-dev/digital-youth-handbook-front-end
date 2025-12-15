@@ -1,14 +1,17 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import type { LearningTopicQuizQuestion } from "../learning-topics.type";
-import { Check, X, Trophy, RefreshCw, HelpCircle } from "lucide-react";
+import { Check, X, Trophy, RefreshCw, HelpCircle, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils"; // Import utils để clean code style
+import { ROUTE_PATH } from "@/routes/routePath";
 
 interface QuizSectionProps {
   questions: LearningTopicQuizQuestion[];
+  quizId?: string; // Quiz ID để link đến trang quiz đầy đủ
 }
 
-export const QuizSection = ({ questions }: QuizSectionProps) => {
+export const QuizSection = ({ questions, quizId }: QuizSectionProps) => {
   const [userAnswers, setUserAnswers] = useState<Record<number, number>>({});
   const [showResult, setShowResult] = useState(false);
 
@@ -33,7 +36,7 @@ export const QuizSection = ({ questions }: QuizSectionProps) => {
     <div className="relative rounded-xl border-2 border-black bg-white shadow-[8px_8px_0px_black] overflow-hidden">
       {/* Header Quiz */}
       <div className="bg-orange-500 p-6 border-b-2 border-black text-white flex items-center justify-between relative overflow-hidden">
-          <div className="relative z-10">
+          <div className="relative z-10 flex-1">
             <h2 className="text-3xl font-black uppercase tracking-wider flex items-center gap-3 text-white drop-shadow-[2px_2px_0px_black]">
                 <HelpCircle size={32} strokeWidth={3} /> Trắc nghiệm
             </h2>
@@ -41,6 +44,20 @@ export const QuizSection = ({ questions }: QuizSectionProps) => {
                Kiểm tra kiến thức vừa học
             </p>
           </div>
+          {/* Button link đến quiz đầy đủ */}
+          <Link
+            to={quizId ? ROUTE_PATH.QUIZ.intro(quizId) : ROUTE_PATH.QUIZ.INDEX}
+            className="relative z-10 ml-4"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05, x: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-2 px-4 py-2 bg-white text-orange-600 font-black border-2 border-black rounded-lg shadow-[3px_3px_0px_black] hover:shadow-[1px_1px_0px_black] hover:translate-x-1 hover:translate-y-1 transition-all"
+            >
+              <span className="text-sm uppercase">Làm bài đầy đủ</span>
+              <ArrowRight size={18} strokeWidth={3} />
+            </motion.button>
+          </Link>
           {/* Decor Pattern */}
           <div className="absolute right-[-20px] top-[-20px] text-white/20 rotate-12">
              <Trophy size={120} />

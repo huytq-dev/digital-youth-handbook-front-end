@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { useGetQuizLeaderboardQuery } from "../honor.api";
 import { isApiResponseSuccess } from "@/features/common/common.type";
 import { LeaderboardCard } from "./leaderboard-card";
-import { cn } from "@/lib/utils";
-import { ChevronDown, Flame } from "lucide-react";
+import { Flame } from "lucide-react";
 
 interface QuizLeaderboardSectionProps {
   quizId: string;
@@ -14,20 +12,23 @@ export const QuizLeaderboardSection = ({
   quizId,
   quizTitle,
 }: QuizLeaderboardSectionProps) => {
-  const [topCount, setTopCount] = useState(13); // Mặc định hiển thị Top 3 + 10 người tiếp theo
-  const { data: apiResponse, isLoading, error } = useGetQuizLeaderboardQuery({
+  // Chỉ hiển thị top 5
+  const topCount = 5;
+  const {
+    data: apiResponse,
+    isLoading,
+    error,
+  } = useGetQuizLeaderboardQuery({
     quizId,
     top: topCount,
   });
 
   const leaderboard =
-    apiResponse && isApiResponseSuccess(apiResponse)
-      ? apiResponse.data
-      : null;
-  
-  // Tách Top 3 và phần còn lại
+    apiResponse && isApiResponseSuccess(apiResponse) ? apiResponse.data : null;
+
+  // Tách Top 3 và phần còn lại (top 4, 5)
   const topThree = leaderboard?.slice(0, 3) || [];
-  const others = leaderboard?.slice(3) || [];
+  const others = leaderboard?.slice(3, 5) || []; // Chỉ lấy top 4 và 5
 
   return (
     <div className="mb-10 sm:mb-12 md:mb-16">
@@ -37,10 +38,12 @@ export const QuizLeaderboardSection = ({
           <Flame size={20} className="text-white sm:w-6 sm:h-6" />
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className="text-lg sm:text-2xl md:text-3xl font-black uppercase text-black leading-none truncate">
+          <h2 className="text-lg sm:text-2xl md:text-3xl font-black uppercase text-black leading-tight">
             {quizTitle}
           </h2>
-          <p className="text-xs sm:text-sm font-bold text-slate-600 mt-0.5 sm:mt-1">Bảng xếp hạng</p>
+          <p className="text-xs sm:text-sm font-bold text-slate-600 mt-0.5 sm:mt-1">
+            Bảng xếp hạng
+          </p>
         </div>
       </div>
 
@@ -65,58 +68,48 @@ export const QuizLeaderboardSection = ({
         <div className="space-y-4 sm:space-y-6">
           
           {/* 1. TOP 3 - GRID LAYOUT */}
-          {/* Mobile: stack theo thứ tự 1-2-3, Tablet+: 2-1-3 để tạo hiệu ứng bục vinh quang */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6 sm:items-end">
-             {/* Rank 2 */}
-             {topThree.find(x => x.rank === 2) && (
-                <div className="order-2 sm:order-1">
-                   <LeaderboardCard item={topThree.find(x => x.rank === 2)!} />
-                </div>
-             )}
-             
-             {/* Rank 1 (Luôn ở giữa và to nhất trên tablet+) */}
-             {topThree.find(x => x.rank === 1) && (
-                <div className="order-1 sm:order-2 sm:-mt-4 md:-mt-8 relative z-10">
-                   <LeaderboardCard item={topThree.find(x => x.rank === 1)!} />
-                </div>
-             )}
+          {/* Thêm padding-top để tạo không gian cho Top 1 nổi lên mà không bị đè */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6 sm:items-end pt-0 sm:pt-8 md:pt-10">
+            {/* Rank 2 - Bên trái */}
+            {topThree.find((x) => x.rank === 2) && (
+              <div className="order-2 sm:order-1">
+                <LeaderboardCard item={topThree.find((x) => x.rank === 2)!} />
+              </div>
+            )}
 
-             {/* Rank 3 */}
-             {topThree.find(x => x.rank === 3) && (
-                <div className="order-3">
-                   <LeaderboardCard item={topThree.find(x => x.rank === 3)!} />
-                </div>
-             )}
+            {/* Rank 1 - Ở giữa, nhô lên cao */}
+            {topThree.find((x) => x.rank === 1) && (
+              <div className="order-1 sm:order-2 relative z-10 transform sm:-translate-y-4 md:-translate-y-8">
+                {/* Dùng translate thay cho margin-top âm để mượt hơn và dễ kiểm soát z-index */}
+                <LeaderboardCard item={topThree.find((x) => x.rank === 1)!} />
+
+                {/* (Optional) Thêm vương miện hoặc icon trang trí nếu muốn */}
+              </div>
+            )}
+
+            {/* Rank 3 - Bên phải */}
+            {topThree.find((x) => x.rank === 3) && (
+              <div className="order-3">
+                <LeaderboardCard item={topThree.find((x) => x.rank === 3)!} />
+              </div>
+            )}
           </div>
 
-          {/* 2. THE REST - COMPACT GRID LAYOUT */}
+          {/* 2. TOP 4 & 5 - COMPACT GRID LAYOUT */}
           {others.length > 0 && (
             <div className="mt-3 sm:mt-4">
-              <p className="text-[10px] sm:text-xs font-black uppercase text-slate-500 mb-2 sm:mb-3 ml-1">Những người nổi bật khác</p>
+              <p className="text-[10px] sm:text-xs font-black uppercase text-slate-500 mb-2 sm:mb-3 ml-1">
+                Top 4 & 5
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                 {others.map((item) => (
-                  <LeaderboardCard key={item.userId} item={item} isCompact={true} />
+                  <LeaderboardCard
+                    key={item.userId}
+                    item={item}
+                    isCompact={true}
+                  />
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* Load More Button */}
-          {leaderboard.length >= topCount && (
-            <div className="flex justify-center mt-4 sm:mt-6">
-                <button
-                onClick={() => setTopCount((prev) => prev + 10)}
-                className={cn(
-                    "px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 font-black uppercase text-[10px] sm:text-xs tracking-wider",
-                    "border-2 border-black bg-white text-black rounded-full",
-                    "shadow-[2px_2px_0px_black] sm:shadow-[3px_3px_0px_black] transition-all duration-200",
-                    "hover:shadow-[3px_3px_0px_black] sm:hover:shadow-[5px_5px_0px_black] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[2px_2px_0px_black]",
-                    "flex items-center gap-1.5 sm:gap-2"
-                )}
-                >
-                <ChevronDown size={14} className="sm:w-4 sm:h-4" />
-                Xem thêm xếp hạng
-                </button>
             </div>
           )}
         </div>

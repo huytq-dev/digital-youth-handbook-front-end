@@ -20,7 +20,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { ChevronDown } from "lucide-react";
 import { showToast } from "@/lib/toast";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
@@ -68,14 +69,14 @@ const TableOfContents = ({ activeId }: { activeId: string }) => {
               onClick={() => scrollToSection(item.id)}
               className={`flex items-center gap-2 text-sm font-bold cursor-pointer transition-all duration-300 group ${
                 isActive 
-                  ? "text-blue-700 translate-x-2" // Active style: Màu xanh đậm + dịch sang phải
-                  : "text-slate-600 hover:text-blue-600 hover:translate-x-1" // Inactive style
+                  ? "text-emerald-700 translate-x-2"
+                  : "text-slate-600 hover:text-emerald-600 hover:translate-x-1"
               }`}
             >
               <CheckCircle2 
                 size={14} 
                 className={`transition-colors duration-300 ${
-                  isActive ? "text-blue-600 fill-blue-100" : "text-slate-300 group-hover:text-blue-400"
+                  isActive ? "text-emerald-600 fill-emerald-100" : "text-slate-300 group-hover:text-emerald-400"
                 }`} 
               />
               {item.label}
@@ -144,34 +145,165 @@ const sectionVariants = {
   },
 };
 
+// --- Component SubSections có thể đóng/mở ---
+import type { LearningContentSubSection } from "../learning-topics.type";
+
+interface CollapsibleSubSectionsProps {
+  subSections: LearningContentSubSection[];
+  parentIndex: number;
+}
+
+const CollapsibleSubSections = ({ subSections, parentIndex }: CollapsibleSubSectionsProps) => {
+  // State lưu trữ các mục đang mở (mặc định mở mục đầu tiên)
+  const [openItems, setOpenItems] = useState<Set<number>>(new Set([0]));
+
+  const toggleItem = useCallback((index: number) => {
+    setOpenItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  }, []);
+
+  const expandAll = useCallback(() => {
+    setOpenItems(new Set(subSections.map((_, i) => i)));
+  }, [subSections]);
+
+  const collapseAll = useCallback(() => {
+    setOpenItems(new Set());
+  }, []);
+
+  return (
+    <div className="space-y-3">
+      {/* Nút điều khiển đóng/mở tất cả */}
+      <div className="flex gap-2 justify-end mb-2">
+        <button
+          onClick={expandAll}
+          className="text-xs font-bold text-sky-600 hover:text-sky-800 hover:underline transition-colors"
+        >
+          Mở tất cả
+        </button>
+        <span className="text-slate-300">|</span>
+        <button
+          onClick={collapseAll}
+          className="text-xs font-bold text-sky-600 hover:text-sky-800 hover:underline transition-colors"
+        >
+          Đóng tất cả
+        </button>
+      </div>
+
+      {/* Danh sách các mục con */}
+      {subSections.map((subSection, subIndex) => {
+        const isOpen = openItems.has(subIndex);
+        return (
+          <div 
+            key={subIndex}
+            className="border-2 border-sky-200 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
+          >
+            {/* Header - Click để toggle */}
+            <button
+              onClick={() => toggleItem(subIndex)}
+              className="w-full flex items-center justify-between gap-3 px-4 py-3 bg-sky-50 hover:bg-sky-100 transition-colors text-left"
+            >
+              <div className="flex items-center gap-3">
+                <span className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-sky-500 text-xs font-black text-white border-2 border-sky-600 shadow-[2px_2px_0px_rgba(0,0,0,0.2)]">
+                  {parentIndex + 1}.{subIndex + 1}
+                </span>
+                <h4 className="text-sm font-black text-sky-900 leading-tight">
+                  {subSection.title}
+                </h4>
+              </div>
+              <ChevronDown 
+                size={20} 
+                className={`text-sky-600 transition-transform duration-300 flex-shrink-0 ${
+                  isOpen ? "rotate-180" : "rotate-0"
+                }`}
+              />
+            </button>
+
+            {/* Content - Collapsible */}
+            <motion.div
+              initial={false}
+              animate={{
+                height: isOpen ? "auto" : 0,
+                opacity: isOpen ? 1 : 0,
+              }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="overflow-hidden"
+            >
+              <div className="px-4 py-4 border-t-2 border-sky-100">
+                <p className="text-sm font-medium leading-relaxed text-slate-600 whitespace-pre-line">
+                  {subSection.content}
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
   const [activeSection, setActiveSection] = useState<string>("");
   const shouldReduceMotion = useReducedMotion();
 
   // Logic theo dõi cuộn trang (Scroll Spy)
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+    const handleScroll = () => {
+      const sectionIds = TOC_ITEMS.map(item => item.id);
+      const headerOffset = 200; // Offset cho header + margin
+      
+      // Tìm section đang hiển thị nhiều nhất trong viewport
+      let currentSection = "";
+      let minDistance = Infinity;
+      
+      for (const id of sectionIds) {
+        const element = document.getElementById(id);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          // Tính khoảng cách từ top của element đến vùng trigger (headerOffset)
+          const distance = Math.abs(rect.top - headerOffset);
+          
+          // Nếu element đang trong viewport (top < headerOffset và bottom > 0)
+          if (rect.top <= headerOffset && rect.bottom > 100) {
+            // Chọn section có top gần với headerOffset nhất
+            if (distance < minDistance) {
+              minDistance = distance;
+              currentSection = id;
+            }
           }
-        });
-      },
-      {
-        // rootMargin giúp kích hoạt active sớm hơn một chút trước khi element chạm đỉnh
-        rootMargin: "-20% 0px -50% 0px", 
-        threshold: 0.1
+        }
       }
-    );
+      
+      // Fallback: nếu không tìm thấy, lấy section đầu tiên có trong viewport
+      if (!currentSection) {
+        for (const id of sectionIds) {
+          const element = document.getElementById(id);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+              currentSection = id;
+              break;
+            }
+          }
+        }
+      }
+      
+      if (currentSection) {
+        setActiveSection(currentSection);
+      }
+    };
 
-    const sectionIds = TOC_ITEMS.map(item => item.id);
-    sectionIds.forEach((id) => {
-      const element = document.getElementById(id);
-      if (element) observer.observe(element);
-    });
-
-    return () => observer.disconnect();
+    // Gọi ngay khi mount để set initial state
+    handleScroll();
+    
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Hàm xử lý chia sẻ - copy link và hiển thị thông báo
@@ -250,22 +382,23 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
           </motion.header>
 
         {/* --- MAIN LAYOUT GRID --- */}
-        {/* Đã xóa 'items-start' để 2 cột cao bằng nhau (hỗ trợ sticky) */}
+        {/* Mobile/Tablet: 1 cột full width | Desktop: 12 cols grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* === LEFT CONTENT (8 cols) === */}
+          {/* === LEFT CONTENT === */}
+          {/* Mobile/Tablet: full width | Desktop: 8 cols */}
           <motion.div
-            className="lg:col-span-8 space-y-12"
+            className="col-span-1 lg:col-span-8 space-y-12"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            {/* 1. OBJECTIVES */}
+            {/* 1. OBJECTIVES - Màu Emerald (Xanh lá) */}
             <motion.section
               id="section-objectives"
               variants={sectionVariants}
-              className="relative group scroll-mt-28" // Tăng scroll-mt để tránh bị header che
+              className="relative group scroll-mt-28"
             >
-              <div className="absolute inset-0 bg-blue-500 rounded-xl translate-x-2 translate-y-2 border-2 border-black transition-transform group-hover:translate-x-3 group-hover:translate-y-3" />
+              <div className="absolute inset-0 bg-emerald-500 rounded-xl translate-x-2 translate-y-2 border-2 border-black transition-transform group-hover:translate-x-3 group-hover:translate-y-3" />
               <motion.div 
                 className="relative rounded-xl border-2 border-black bg-white p-8"
                 variants={textContainerVariants}
@@ -274,7 +407,7 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
               >
                 <motion.h2 
                   variants={textH2Variants}
-                  className="mb-6 flex items-center text-2xl font-black text-blue-600 uppercase border-b-2 border-dashed border-blue-200 pb-2 w-fit"
+                  className="mb-6 flex items-center text-2xl font-black text-emerald-700 uppercase border-b-2 border-dashed border-emerald-200 pb-2 w-fit"
                 >
                   <Target className="mr-3" size={28} strokeWidth={2.5} />
                   Mục tiêu
@@ -289,7 +422,7 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                       variants={textSpanVariants}
                       className="flex items-start text-base font-bold text-slate-700"
                     >
-                      <span className="mr-4 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-blue-100 text-sm font-black text-blue-700 border-2 border-black shadow-[2px_2px_0px_black]">
+                      <span className="mr-4 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-sm font-black text-emerald-800 border-2 border-black shadow-[2px_2px_0px_black]">
                         {index + 1}
                       </span>
                       <span className="mt-1">{obj}</span>
@@ -299,15 +432,16 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
               </motion.div>
             </motion.section>
 
-            {/* 2. CONTENT TEXT & VIDEO */}
+            {/* 2. CONTENT TEXT & VIDEO - Màu Sky Blue */}
             <motion.section
               id="section-content"
               variants={sectionVariants}
-              className="rounded-xl border-2 border-black bg-white p-6 shadow-[6px_6px_0px_black] scroll-mt-28"
+              className="space-y-6 scroll-mt-28"
               {...(!shouldReduceMotion && {
                 viewport: { once: true, margin: "-100px" },
               })}
             >
+              {/* Header chung cho phần Nội dung trọng tâm */}
               <motion.div
                 variants={textContainerVariants}
                 initial="hidden"
@@ -315,37 +449,113 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                   whileInView: "visible",
                   viewport: { once: true, margin: "-50px" },
                 })}
+                className="flex items-center gap-3"
               >
                 <motion.h2 
                   variants={textH2Variants}
-                  className="mb-4 flex items-center text-xl font-black text-black uppercase bg-green-200 w-fit px-3 py-1 border-2 border-black rounded-lg -rotate-1"
+                  className="flex items-center text-xl font-black text-black uppercase bg-sky-300 w-fit px-3 py-1 border-2 border-black rounded-lg -rotate-1"
                 >
                   <BookOpen className="mr-2" size={20} strokeWidth={2.5} />
                   Nội dung trọng tâm
                 </motion.h2>
-                <motion.p 
-                  variants={textPVariants}
-                  className="mb-6 text-sm font-medium leading-relaxed text-slate-700 border-l-4 border-green-200 pl-4"
-                >
-                  {topic.content.summary}
-                </motion.p>
               </motion.div>
 
-              {topic.content.videoUrl && (
-                <div className="group relative overflow-hidden rounded-lg border-2 border-black bg-black ring-offset-2 ring-black hover:ring-2 transition-all">
-                  <div className="aspect-video">
-                    <iframe
-                      src={topic.content.videoUrl}
-                      title="Video bài giảng"
-                      className="h-full w-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                  <div className="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded border-2 border-black shadow-[2px_2px_0px_black] flex items-center gap-1 animate-pulse">
-                    <Video size={12} /> LIVE
-                  </div>
+              {/* Hiển thị các section nội dung chi tiết (nếu có) */}
+              {topic.content.sections && topic.content.sections.length > 0 ? (
+                <div className="space-y-5">
+                  {topic.content.sections.map((section, index) => (
+                    <motion.div
+                      key={index}
+                      variants={sectionVariants}
+                      initial="hidden"
+                      {...(!shouldReduceMotion && {
+                        whileInView: "visible",
+                        viewport: { once: true, margin: "-50px" },
+                      })}
+                      className="group relative"
+                    >
+                      {/* Shadow layer - Sky Blue */}
+                      <div className="absolute inset-0 bg-sky-500 rounded-xl translate-x-2 translate-y-2 border-2 border-black transition-transform group-hover:translate-x-3 group-hover:translate-y-3" />
+                      
+                      {/* Main card */}
+                      <div className="relative rounded-xl border-2 border-black bg-white overflow-hidden">
+                        {/* Section header - Sky Blue */}
+                        <div className="bg-sky-100 border-b-2 border-black px-5 py-3 flex items-center gap-3">
+                          <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-sky-500 text-sm font-black text-white border-2 border-black shadow-[2px_2px_0px_black]">
+                            {index + 1}
+                          </span>
+                          <h3 className="text-base font-black text-sky-900 leading-tight">
+                            {section.title}
+                          </h3>
+                        </div>
+                        
+                        {/* Section content */}
+                        <div className="p-5">
+                          {/* Nếu có content trực tiếp */}
+                          {section.content && (
+                            <p className="text-sm font-medium leading-relaxed text-slate-700 whitespace-pre-line">
+                              {section.content}
+                            </p>
+                          )}
+                          
+                          {/* Nếu có subSections (mục con 4.1, 4.2...) - Collapsible */}
+                          {section.subSections && section.subSections.length > 0 && (
+                            <CollapsibleSubSections 
+                              subSections={section.subSections} 
+                              parentIndex={index} 
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
+              ) : (
+                /* Fallback: hiển thị summary nếu không có sections */
+                <motion.div
+                  variants={textContainerVariants}
+                  initial="hidden"
+                  {...(!shouldReduceMotion && {
+                    whileInView: "visible",
+                    viewport: { once: true, margin: "-50px" },
+                  })}
+                  className="rounded-xl border-2 border-black bg-white p-6 shadow-[6px_6px_0px_black]"
+                >
+                  <motion.p 
+                    variants={textPVariants}
+                    className="text-sm font-medium leading-relaxed text-slate-700 border-l-4 border-sky-200 pl-4"
+                  >
+                    {topic.content.summary}
+                  </motion.p>
+                </motion.div>
+              )}
+
+              {/* Video section */}
+              {topic.content.videoUrl && (
+                <motion.div
+                  variants={sectionVariants}
+                  initial="hidden"
+                  {...(!shouldReduceMotion && {
+                    whileInView: "visible",
+                    viewport: { once: true, margin: "-50px" },
+                  })}
+                  className="rounded-xl border-2 border-black bg-white p-4 shadow-[6px_6px_0px_black]"
+                >
+                  <div className="group relative overflow-hidden rounded-lg border-2 border-black bg-black ring-offset-2 ring-black hover:ring-2 transition-all">
+                    <div className="aspect-video">
+                      <iframe
+                        src={topic.content.videoUrl}
+                        title="Video bài giảng"
+                        className="h-full w-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded border-2 border-black shadow-[2px_2px_0px_black] flex items-center gap-1 animate-pulse">
+                      <Video size={12} /> LIVE
+                    </div>
+                  </div>
+                </motion.div>
               )}
             </motion.section>
 
@@ -436,13 +646,50 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
               viewport={{ once: true }}
               className="scroll-mt-28"
             >
-              <QuizSection questions={topic.quiz} />
+              <QuizSection questions={topic.quiz} quizId={topic.quizId} />
             </motion.section>
+
+            {/* 5. TÀI LIỆU THAM KHẢO */}
+            {topic.references && topic.references.length > 0 && (
+              <motion.section
+                id="section-references"
+                variants={sectionVariants}
+                viewport={{ once: true }}
+                className="scroll-mt-28"
+              >
+                <div className="rounded-xl border-2 border-black bg-white overflow-hidden shadow-[4px_4px_0px_black]">
+                  {/* Header */}
+                  <div className="bg-slate-100 border-b-2 border-black px-5 py-3 flex items-center gap-2">
+                    <BookOpen size={20} className="text-slate-700" />
+                    <h2 className="text-lg font-black text-slate-800 uppercase">
+                      Tài liệu tham khảo
+                    </h2>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="p-5">
+                    <ol className="space-y-3 list-none">
+                      {topic.references.map((ref) => (
+                        <li 
+                          key={ref.id}
+                          className="flex items-start gap-3 text-sm text-slate-600 leading-relaxed"
+                        >
+                          <span className="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700 border border-slate-300 mt-0.5">
+                            {ref.id}
+                          </span>
+                          <span className="italic">{ref.text}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+              </motion.section>
+            )}
           </motion.div>
 
           {/* === RIGHT SIDEBAR (4 cols) - Sticky === */}
-          {/* Đã thêm 'h-full' để đảm bảo chiều cao sidebar bằng với nội dung chính */}
-          <aside className="lg:col-span-4 h-full">
+          {/* Ẩn trên mobile và tablet, chỉ hiển thị trên desktop (lg trở lên) */}
+          <aside className="hidden lg:block lg:col-span-4 h-full">
             {/* Sticky wrapper */}
             <div className="sticky top-24 space-y-8 h-fit">
               <motion.div

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Trophy, Flame, Clock } from "lucide-react";
+import { Trophy, Flame, Clock, GraduationCap } from "lucide-react";
 import type { LeaderboardItem } from "../honor.type";
 
 interface LeaderboardCardProps {
@@ -50,9 +50,19 @@ export const LeaderboardCard = ({ item, isCompact = false }: LeaderboardCardProp
           )}
         </div>
 
-        {/* Name */}
+        {/* Name & School Info */}
         <div className="flex-1 min-w-0">
           <p className="font-bold text-xs sm:text-sm text-black truncate">{item.userName}</p>
+          {(item.schoolName || item.className) && (
+            <div className="flex items-center gap-1 mt-0.5">
+              <GraduationCap size={10} className="text-slate-400 flex-shrink-0 sm:w-3 sm:h-3" />
+              <p className="text-[9px] sm:text-[10px] font-semibold text-slate-500 truncate">
+                {item.schoolName && item.className 
+                  ? `${item.schoolName} - ${item.className}`
+                  : item.schoolName || item.className}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Stats Compact */}
@@ -112,6 +122,16 @@ export const LeaderboardCard = ({ item, isCompact = false }: LeaderboardCardProp
                 <p className="font-black text-sm sm:text-base md:text-lg text-black truncate">
                   {item.userName}
                 </p>
+                {(item.schoolName || item.className) && (
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <GraduationCap size={10} className="text-slate-500 flex-shrink-0 sm:w-3 sm:h-3" />
+                    <p className="text-[9px] sm:text-[10px] font-bold text-slate-600 truncate">
+                      {item.schoolName && item.className 
+                        ? `${item.schoolName} - ${item.className}`
+                        : item.schoolName || item.className}
+                    </p>
+                  </div>
+                )}
                 <p className="text-[10px] sm:text-xs font-bold text-black/60">
                   {new Date(item.completedAt).toLocaleDateString("vi-VN")}
                 </p>
