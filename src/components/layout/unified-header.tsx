@@ -26,6 +26,7 @@ import { useIsMobile, useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useMenu } from "@/contexts/menu-context";
 
 // --- Types & Navigation Data (Giữ nguyên) ---
+// --- Types & Navigation Data (Giữ nguyên) ---
 type NavSubItem = { label: string; href?: string };
 type NavItem = { label: string; href?: string; subItems?: NavSubItem[] };
 
@@ -212,9 +213,11 @@ const UserProfileDropdown = memo(
               Xin chào
             </span>
             <span
+            <span
               className="text-sm font-black text-slate-900 leading-none max-w-[120px] truncate"
               title={user.name}
             >
+              {displayName}
               {displayName}
             </span>
           </div>
@@ -242,6 +245,8 @@ const UserProfileDropdown = memo(
                 <p className="text-[10px] font-bold text-slate-800 uppercase tracking-wider">
                   Tài khoản của bạn
                 </p>
+                <p
+                  className="text-xs font-black text-slate-900 truncate"
                 <p
                   className="text-xs font-black text-slate-900 truncate"
                   title={user.username}
@@ -441,13 +446,17 @@ export const UnifiedHeader = () => {
           <Link
             to="/"
             className="flex items-center gap-2 sm:gap-3 cursor-pointer group select-none flex-shrink-0"
+            className="flex items-center gap-2 sm:gap-3 cursor-pointer group select-none flex-shrink-0"
           >
             <div className="relative">
+              <div className="bg-blue-600 w-9 sm:w-10 lg:w-11 h-9 sm:h-10 lg:h-11 rounded-lg border-2 border-black flex items-center justify-center text-white shadow-[2px_2px_0px_black] sm:shadow-[3px_3px_0px_black] group-hover:translate-x-0.5 group-hover:translate-y-0.5 group-hover:shadow-none transition-all">
               <div className="bg-blue-600 w-9 sm:w-10 lg:w-11 h-9 sm:h-10 lg:h-11 rounded-lg border-2 border-black flex items-center justify-center text-white shadow-[2px_2px_0px_black] sm:shadow-[3px_3px_0px_black] group-hover:translate-x-0.5 group-hover:translate-y-0.5 group-hover:shadow-none transition-all">
                 <Star
                   fill="currentColor"
                   size={18}
+                  size={18}
                   className={cn(
+                    "sm:w-5 sm:h-5 lg:w-6 lg:h-6 transition-transform duration-500",
                     "sm:w-5 sm:h-5 lg:w-6 lg:h-6 transition-transform duration-500",
                     shouldReduceMotion || isMobile
                       ? ""
@@ -456,11 +465,13 @@ export const UnifiedHeader = () => {
                 />
               </div>
               <div className="absolute -top-1 -right-1 bg-red-500 w-2 sm:w-2.5 lg:w-3 h-2 sm:h-2.5 lg:h-3 rounded-full border-2 border-black" />
+              <div className="absolute -top-1 -right-1 bg-red-500 w-2 sm:w-2.5 lg:w-3 h-2 sm:h-2.5 lg:h-3 rounded-full border-2 border-black" />
             </div>
             <div className="flex flex-col">
               <span className="font-black text-sm sm:text-base lg:text-xl leading-none text-blue-600 tracking-tight">
                 HÀNH TRANG SỐ
               </span>
+              <span className="text-[7px] sm:text-[9px] lg:text-[10px] font-black text-white bg-orange-500 px-1 py-0.5 border border-black rounded-sm tracking-widest uppercase mt-0.5 lg:mt-1 w-fit rotate-[-2deg] group-hover:rotate-0 transition-transform">
               <span className="text-[7px] sm:text-[9px] lg:text-[10px] font-black text-white bg-orange-500 px-1 py-0.5 border border-black rounded-sm tracking-widest uppercase mt-0.5 lg:mt-1 w-fit rotate-[-2deg] group-hover:rotate-0 transition-transform">
                 Khát Vọng
               </span>
@@ -501,14 +512,16 @@ export const UnifiedHeader = () => {
               size="icon"
               onClick={() => setIsOpen(true)}
               className="border-2 border-black bg-white shadow-[2px_2px_0px_black] hover:translate-y-0.5 hover:shadow-none transition-all active:bg-gray-100 w-9 h-9 sm:w-10 sm:h-10"
+              className="border-2 border-black bg-white shadow-[2px_2px_0px_black] hover:translate-y-0.5 hover:shadow-none transition-all active:bg-gray-100 w-9 h-9 sm:w-10 sm:h-10"
             >
+              <Menu size={20} strokeWidth={2.5} className="sm:w-6 sm:h-6" />
               <Menu size={20} strokeWidth={2.5} className="sm:w-6 sm:h-6" />
             </Button>
           </div>
         </div>
       </div>
 
-      {/* MOBILE SHEET CONTENT */}
+      {/* MOBILE SHEET CONTENT - SỬ DỤNG COMPONENT MỚI */}
       <SheetOverlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <div className="flex items-center justify-between mb-5 pb-3 border-b-2 border-black border-dashed">
            <div className="bg-orange-500 text-white px-3 py-1 border-2 border-black shadow-[2px_2px_0px_black] rotate-[-2deg]">
@@ -520,6 +533,7 @@ export const UnifiedHeader = () => {
             onClick={() => setIsOpen(false)}
             className="bg-red-500 text-white border-2 border-black hover:bg-red-600 hover:text-white shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[2px] active:translate-x-[2px] transition-all rounded-lg w-8 h-8"
           >
+            <X size={20} strokeWidth={3} />
             <X size={20} strokeWidth={3} />
           </Button>
         </div>
