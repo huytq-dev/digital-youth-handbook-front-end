@@ -35,6 +35,8 @@ function ProfilePage() {
         { id: user.id, roleName: user.roleName } // Map roleName thành roles array
       ],
       quizAttempts: [], // Quiz attempts sẽ được fetch riêng sau
+      schoolName: user.schoolName ?? undefined,  // Thêm schoolName
+      className: user.className ?? undefined,    // Thêm className
     };
   }, [user]);
 

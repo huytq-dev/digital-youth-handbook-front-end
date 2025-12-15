@@ -28,6 +28,8 @@ export interface UserProfile {
   isVerified: boolean;
   roles: UserRole[];
   quizAttempts: QuizAttempt[];
+  schoolName?: string;  // Tên trường
+  className?: string;   // Tên lớp
 }
 
 export interface SocialMediaLink {
@@ -48,6 +50,8 @@ export interface UpdateUserProfileRequest {
   gender?: GenderType | null;
   address?: string | null;
   pictureUrl?: string | null;
+  schoolName?: string | null;  // Tên trường
+  className?: string | null;   // Tên lớp
 }
 
 // Response data từ backend
@@ -63,6 +67,8 @@ export interface UserProfileResponse {
   isVerified: boolean;
   roles: UserRole[];
   quizAttempts: QuizAttempt[];
+  schoolName?: string | null;  // Tên trường
+  className?: string | null;   // Tên lớp
 }
 
 export type UpdateUserProfileResponseModel = ApiResponse<UserProfileResponse>;

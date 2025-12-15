@@ -9,7 +9,7 @@ import {
   LogOut,
   X,
   Sparkles,
-  ArrowRight // Import thêm ArrowRight ở đây
+  ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/primitives";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,7 @@ import {
 } from "@/features/auth/auth.slice";
 import type { UserDomainModel } from "@/features/common/common.type";
 import { useIsMobile, useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useMenu } from "@/contexts/menu-context";
 
 // --- Types & Navigation Data (Giữ nguyên) ---
 type NavSubItem = { label: string; href?: string };
@@ -55,10 +56,7 @@ const NAVIGATION: NavItem[] = [
   { label: "Thi hay", href: "/quizzes" },
 ];
 
-// --- Sub-components (SheetOverlay, NavLinkBtn, UserProfileDropdown) ---
-// VẪN GIỮ NGUYÊN CODE CŨ CỦA BẠN CHO CÁC COMPONENT NÀY
-// (Mình rút gọn ở đây để tập trung vào thay đổi chính, bạn cứ dùng lại code cũ của các phần này)
-
+// --- Sub-components (Giữ nguyên code cũ của bạn: SheetOverlay, NavLinkBtn, UserProfileDropdown, MobileMenuItem, MobileUserCard) ---
 interface SheetOverlayProps {
   isOpen: boolean;
   onClose: () => void;
@@ -69,14 +67,14 @@ const SheetOverlay = memo(({ isOpen, onClose, children }: SheetOverlayProps) => 
   <>
     {isOpen && (
       <div
-        className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+        className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
       />
     )}
     <div
       className={cn(
-        "fixed inset-y-0 right-0 z-[9999] h-[100dvh] w-full sm:w-[400px] bg-[#fff9f0] border-l-4 border-black shadow-[-10px_0px_20px_rgba(0,0,0,0.2)] transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col",
-        isOpen ? "translate-x-0" : "translate-x-full"
+        "fixed inset-y-0 right-0 h-[100dvh] w-full sm:w-[400px] bg-[#fff9f0] border-l-4 border-black shadow-[-10px_0px_20px_rgba(0,0,0,0.2)] transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col",
+        isOpen ? "z-[10001] translate-x-0 pointer-events-auto" : "z-0 translate-x-full pointer-events-none"
       )}
     >
       <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-yellow-400 to-red-500 z-10" />
@@ -168,7 +166,6 @@ const UserProfileDropdown = memo(
   ({ user, onSignOut }: UserProfileDropdownProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    // Xử lý click outside để đóng menu
     useEffect(() => {
       if (!isOpen) return;
       const handleClickOutside = () => setIsOpen(false);
@@ -183,14 +180,10 @@ const UserProfileDropdown = memo(
         .join("")
         .toUpperCase()
         .slice(0, 2) || "U";
-
-    // --- FIX: Lấy tên gọi (từ cuối) để hiển thị cho gọn ---
-    // Ví dụ: "Trần Quang Huy" -> "Huy"
     const displayName = user.name?.trim().split(" ").pop() || user.name;
 
     return (
       <div className="relative">
-        {/* Trigger Button */}
         <button
           type="button"
           onClick={(e) => {
@@ -203,7 +196,6 @@ const UserProfileDropdown = memo(
               "translate-y-[2px] translate-x-[2px] shadow-[1px_1px_0px_black] bg-blue-50"
           )}
         >
-          {/* Avatar Circle */}
           <div className="h-8 w-8 overflow-hidden rounded-full border border-black bg-gray-200 flex items-center justify-center text-xs font-bold">
             {user.picture ? (
               <img
@@ -215,21 +207,17 @@ const UserProfileDropdown = memo(
               <span>{initials}</span>
             )}
           </div>
-
-          {/* Text Info - Đã sửa logic hiển thị tên */}
           <div className="hidden flex-col text-left sm:flex">
             <span className="text-[10px] font-bold text-slate-500 uppercase leading-none">
               Xin chào
             </span>
             <span
               className="text-sm font-black text-slate-900 leading-none max-w-[120px] truncate"
-              title={user.name} // Hover vào sẽ hiện full tên
+              title={user.name}
             >
               {displayName}
             </span>
           </div>
-
-          {/* Chevron Icon */}
           <ChevronDown
             size={16}
             strokeWidth={3}
@@ -240,7 +228,6 @@ const UserProfileDropdown = memo(
           />
         </button>
 
-        {/* Dropdown Menu */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -251,7 +238,6 @@ const UserProfileDropdown = memo(
               className="absolute right-0 top-full mt-2 w-64 overflow-hidden rounded-xl border-2 border-black bg-white shadow-[4px_4px_0px_black] z-50"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Header màu vàng */}
               <div className="border-b-2 border-black bg-yellow-300 px-4 py-2.5">
                 <p className="text-[10px] font-bold text-slate-800 uppercase tracking-wider">
                   Tài khoản của bạn
@@ -264,7 +250,6 @@ const UserProfileDropdown = memo(
                 </p>
               </div>
 
-              {/* Menu Items */}
               <div className="flex flex-col p-1.5 gap-1">
                 <Link
                   to="/profile"
@@ -274,7 +259,6 @@ const UserProfileDropdown = memo(
                   <User size={16} strokeWidth={2.5} />
                   Trang cá nhân
                 </Link>
-
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
@@ -283,9 +267,7 @@ const UserProfileDropdown = memo(
                   <Sparkles size={16} strokeWidth={2.5} />
                   Kế hoạch đã lưu
                 </button>
-
                 <div className="my-1 border-t-2 border-dashed border-slate-200" />
-
                 <button
                   type="button"
                   className="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-left font-bold text-red-600 hover:bg-red-50 hover:text-red-700 border-2 border-transparent hover:border-red-200 transition-all text-sm"
@@ -307,7 +289,6 @@ const UserProfileDropdown = memo(
 );
 UserProfileDropdown.displayName = "UserProfileDropdown";
 
-// --- NEW MOBILE MENU COMPONENTS (Phần bạn đã duyệt trước đó) ---
 const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void }) => {
   return (
     <div className="mb-3 last:mb-0">
@@ -316,7 +297,7 @@ const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void 
           <div className="px-4 py-2.5 bg-yellow-300 border-b-2 border-black flex items-center gap-2">
              <div className="w-1.5 h-1.5 rounded-full bg-black" />
              <span className="font-black text-base text-slate-900 uppercase tracking-wide">
-                {item.label}
+               {item.label}
              </span>
           </div>
         ) : (
@@ -383,13 +364,13 @@ const MobileUserCard = ({ user, onSignOut, onClose }: { user: any, onSignOut: an
 
           <div className="grid grid-cols-2 gap-2 w-full">
              <Link to="/profile" onClick={onClose}>
-                <button className="w-full py-1.5 bg-yellow-300 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:shadow-none transition-all">
+                <button className="w-full py-1.5 bg-yellow-300 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all">
                    Hồ sơ
                 </button>
              </Link>
              <button 
                 onClick={() => { onSignOut(); onClose(); }}
-                className="w-full py-1.5 bg-red-100 text-red-700 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:shadow-none transition-all"
+                className="w-full py-1.5 bg-red-100 text-red-700 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
              >
                 Đăng xuất
              </button>
@@ -408,10 +389,14 @@ export const UnifiedHeader = () => {
   const dispatch = useDispatch();
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useIsMobile();
+  const { setIsMenuOpen } = useMenu();
 
-  // Use Redux state
   const user = useSelector(selectCurrentUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
+
+  useEffect(() => {
+    setIsMenuOpen(isOpen);
+  }, [isOpen, setIsMenuOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -447,13 +432,12 @@ export const UnifiedHeader = () => {
         "fixed top-0 w-full z-50 transition-all duration-300 font-sans",
         scrolled
           ? "bg-[#fff9f0]/95 backdrop-blur-md py-2 border-b-4 border-black shadow-sm"
-          // FIX: Giảm padding trên mobile (py-2)
           : "bg-[#fff9f0] py-2 sm:py-3 lg:py-4 border-b-4 border-black/10"
       )}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="flex justify-between items-center h-12 sm:h-14 lg:h-16">
-          {/* Logo Section - RESPONSIVE */}
+          {/* Logo Section */}
           <Link
             to="/"
             className="flex items-center gap-2 sm:gap-3 cursor-pointer group select-none flex-shrink-0"
@@ -473,9 +457,9 @@ export const UnifiedHeader = () => {
               </div>
               <div className="absolute -top-1 -right-1 bg-red-500 w-2 sm:w-2.5 lg:w-3 h-2 sm:h-2.5 lg:h-3 rounded-full border-2 border-black" />
             </div>
-            <div className="flex flex-col hidden sm:flex">
-              <span className="font-black text-sm sm:text-base lg:text-xl leading-none text-slate-900 tracking-tight">
-                HÀNH TRANG <span className="text-blue-600">SỐ</span>
+            <div className="flex flex-col">
+              <span className="font-black text-sm sm:text-base lg:text-xl leading-none text-blue-600 tracking-tight">
+                HÀNH TRANG SỐ
               </span>
               <span className="text-[7px] sm:text-[9px] lg:text-[10px] font-black text-white bg-orange-500 px-1 py-0.5 border border-black rounded-sm tracking-widest uppercase mt-0.5 lg:mt-1 w-fit rotate-[-2deg] group-hover:rotate-0 transition-transform">
                 Khát Vọng
@@ -483,24 +467,24 @@ export const UnifiedHeader = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation - RESPONSIVE */}
+          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1 xl:gap-2">
             {NAVIGATION.map((item) => (
               <NavLinkBtn key={item.label} item={item} />
             ))}
           </div>
 
-          {/* Right Side: Auth Buttons or User Avatar - RESPONSIVE */}
+          {/* Right Side: Auth Buttons or User Avatar */}
           <div className="hidden lg:flex items-center gap-3 xl:gap-4">
             {!isAuthenticated ? (
               <>
                 <Link to="/auth/sign-in">
-                  <button className="h-10 xl:h-11 px-4 xl:px-6 rounded-lg font-black text-xs xl:text-base border-2 border-black bg-white text-slate-900 shadow-[3px_3px_0px_black] xl:shadow-[4px_4px_0px_black] transition-all hover:bg-slate-50 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[4px_4px_0px_black] xl:hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center justify-center">
+                  <button className="h-10 xl:h-11 px-4 xl:px-6 rounded-lg font-black text-xs xl:text-base border-2 border-black bg-white text-slate-900 shadow-[4px_4px_0px_black] transition-all hover:bg-slate-50 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none flex items-center justify-center">
                     Đăng nhập
                   </button>
                 </Link>
                 <Link to="/auth/sign-up">
-                  <button className="h-10 xl:h-11 px-4 xl:px-6 bg-blue-600 text-white font-black text-xs xl:text-base border-2 border-black rounded-lg shadow-[3px_3px_0px_black] xl:shadow-[4px_4px_0px_black] transition-all hover:bg-blue-700 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[4px_4px_0px_black] xl:hover:shadow-[6px_6px_0px_black] active:translate-y-1 active:translate-x-1 active:shadow-none flex items-center gap-1 xl:gap-2 justify-center">
+                  <button className="h-10 xl:h-11 px-4 xl:px-6 bg-blue-600 text-white font-black text-xs xl:text-base border-2 border-black rounded-lg shadow-[4px_4px_0px_black] transition-all hover:bg-blue-700 hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] active:translate-y-[4px] active:translate-x-[4px] active:shadow-none flex items-center gap-1 xl:gap-2 justify-center">
                     Đăng ký <ArrowRight className="w-3 h-3 xl:w-4 xl:h-4" />
                   </button>
                 </Link>
@@ -510,7 +494,7 @@ export const UnifiedHeader = () => {
             ) : null}
           </div>
 
-          {/* Mobile/Tablet Toggle Button - RESPONSIVE */}
+          {/* Mobile/Tablet Toggle Button */}
           <div className="lg:hidden">
             <Button
               variant="ghost"
@@ -524,9 +508,8 @@ export const UnifiedHeader = () => {
         </div>
       </div>
 
-      {/* MOBILE SHEET CONTENT - SỬ DỤNG COMPONENT MỚI */}
+      {/* MOBILE SHEET CONTENT */}
       <SheetOverlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        {/* Header của Menu */}
         <div className="flex items-center justify-between mb-5 pb-3 border-b-2 border-black border-dashed">
            <div className="bg-orange-500 text-white px-3 py-1 border-2 border-black shadow-[2px_2px_0px_black] rotate-[-2deg]">
              <span className="font-black text-lg tracking-wider">MENU</span>
@@ -535,13 +518,12 @@ export const UnifiedHeader = () => {
             variant="ghost"
             size="icon"
             onClick={() => setIsOpen(false)}
-            className="bg-red-500 text-white border-2 border-black hover:bg-red-600 hover:text-white shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[2px] transition-all rounded-lg w-8 h-8"
+            className="bg-red-500 text-white border-2 border-black hover:bg-red-600 hover:text-white shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[2px] active:translate-x-[2px] transition-all rounded-lg w-8 h-8"
           >
             <X size={20} strokeWidth={3} />
           </Button>
         </div>
 
-        {/* Danh sách Menu Items */}
         <div className="flex-1 overflow-y-auto pr-1 pb-4 custom-scrollbar">
           <div className="flex flex-col">
              {NAVIGATION.map((item) => (
@@ -550,26 +532,25 @@ export const UnifiedHeader = () => {
           </div>
         </div>
 
-        {/* Footer: Auth / User Profile */}
         <div className="mt-2">
            {!isAuthenticated ? (
               <div className="flex flex-col gap-3 pt-4 border-t-2 border-black border-dashed">
                  <p className="text-center font-bold text-slate-500 text-xs">Tham gia cùng cộng đồng Gen Z!</p>
                  <div className="grid grid-cols-2 gap-2">
                     <Link to="/auth/sign-in" onClick={() => setIsOpen(false)}>
-                       <button className="w-full h-10 rounded-lg border-2 border-black bg-white font-black text-sm shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all hover:bg-gray-50">
+                       <button className="w-full h-10 rounded-lg border-2 border-black bg-white font-black text-sm shadow-[4px_4px_0px_black] transition-all hover:bg-gray-50 active:translate-y-[4px] active:translate-x-[4px] active:shadow-none">
                           Đăng nhập
                        </button>
                     </Link>
                     <Link to="/auth/sign-up" onClick={() => setIsOpen(false)}>
-                       <button className="w-full h-10 rounded-lg border-2 border-black bg-blue-600 text-white font-black text-sm shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all hover:bg-blue-700">
+                       <button className="w-full h-10 rounded-lg border-2 border-black bg-blue-600 text-white font-black text-sm shadow-[4px_4px_0px_black] transition-all hover:bg-blue-700 active:translate-y-[4px] active:translate-x-[4px] active:shadow-none">
                           Đăng ký
                        </button>
                     </Link>
                  </div>
               </div>
            ) : user ? (
-              <MobileUserCard user={user} onSignOut={handleSignOut} onClose={() => setIsOpen(false)} />
+             <MobileUserCard user={user} onSignOut={handleSignOut} onClose={() => setIsOpen(false)} />
            ) : null}
         </div>
       </SheetOverlay>

@@ -24,10 +24,12 @@ export const signInSchema = z.object({
 export type SignInFormData = z.infer<typeof signInSchema>;
 
 // Sign Up Schema
-// Backend: name (Required), username (Required, Min 3 chars), email (Required, Valid email), password (Required, Min 6 chars)
+// Backend: name (Required), username (Required, Min 3 chars), email (Required, Valid email), password (Required, Min 6 chars), schoolName (Required), className (Required)
 export const signUpSchema = z
   .object({
     name: z.string().min(1, "Họ và tên là bắt buộc"),
+    schoolName: z.string().min(1, "Trường là bắt buộc"),
+    className: z.string().min(1, "Lớp là bắt buộc"),
     username: z
       .string()
       .min(1, "Tên đăng nhập là bắt buộc")

@@ -59,6 +59,8 @@ export interface SignUpRequestModel {
   username: string; // required
   email: string; // required
   password: string; // required
+  schoolName: string; // required - Tên trường
+  className: string; // required - Tên lớp
 }
 
 export interface SignUpResponseDataModel {
@@ -187,6 +189,10 @@ export interface GetCurrentUserResponseDataModel {
   gender?: GenderType | null;     // 1=Nam, 2=Nữ, 3=Khác
   dob?: string | null;            // ISO 8601 date string (YYYY-MM-DDTHH:mm:ssZ)
   address?: string | null;
+  
+  // Thông tin trường/lớp
+  schoolName?: string | null;     // Tên trường
+  className?: string | null;      // Tên lớp
 }
 
 export type GetCurrentUserResponseModel =

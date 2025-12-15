@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Bot, X, Loader2, LogIn } from "lucide-react"; 
+import { createPortal } from "react-dom";
+import { Send, Bot, X, Loader2, LogIn } from "lucide-react";
 import { GEMINI_API_KEY, GEMINI_MODEL } from "@/config";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,6 +8,7 @@ import { GoogleGenAI } from "@google/genai";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "@/features/auth/auth.slice";
 import { useNavigate } from "react-router-dom";
+import { useMenu } from "@/contexts/menu-context";
 
 interface Message {
   id: string;
@@ -28,40 +30,62 @@ export const GeminiChatbot = () => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   // Lấy trạng thái đăng nhập
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const navigate = useNavigate();
+  const { isMenuOpen } = useMenu();
 
-  // Auto scroll to bottom
+  // Detect mobile/tablet device
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    const checkDevice = () => {
+      setIsMobileDevice(window.innerWidth < 640);
+    };
+    checkDevice();
+    window.addEventListener("resize", checkDevice);
+    return () => window.removeEventListener("resize", checkDevice);
+  }, []);
+
+  // Auto scroll to bottom với delay để layout kịp render
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, [messages, isOpen]);
+
+  // [UX Mobile] Khóa cuộn trang web nền khi mở chat trên mobile
+  useEffect(() => {
+    if (isOpen && isMobileDevice) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [isOpen, isMobileDevice]);
 
   const callGeminiAPI = async (userMessage: string): Promise<string> => {
     if (!GEMINI_API_KEY) {
-      return "❌ Lỗi: Chưa cấu hình Gemini API Key. Vui lòng thêm VITE_GEMINI_API_KEY vào file .env";
+      return "❌ Lỗi: Chưa cấu hình Gemini API Key.";
     }
 
     try {
-      const ai = new GoogleGenAI({
-        apiKey: GEMINI_API_KEY,
-      });
-
+      const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
       const systemPrompt = "Bạn là trợ lý thông minh cho ứng dụng Hành Trang. Trả lời ngắn gọn, hữu ích, bằng tiếng Việt.";
-
-      // Kết hợp system prompt với message
       const fullMessage = `${systemPrompt}\n\nNguời dùng: ${userMessage}`;
-
       const response = await ai.models.generateContent({
         model: GEMINI_MODEL,
         contents: fullMessage,
       });
-
-      // Truy cập text từ response - text là property, không phải method
-      const botMessage = response.text || "Xin lỗi, tôi không thể xử lý yêu cầu của bạn.";
-      return botMessage;
+      return response.text || "Xin lỗi, tôi không thể xử lý yêu cầu của bạn.";
     } catch (error: any) {
       console.error("Gemini API error:", error);
       return `❌ Lỗi: ${error.message}`;
@@ -71,9 +95,9 @@ export const GeminiChatbot = () => {
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
-    // Kiểm tra đăng nhập trước khi gửi message
     if (!isAuthenticated) {
       setInput("");
+      setIsOpen(false); // Đóng chat trên mobile để chuyển trang mượt hơn
       navigate("/auth/sign-in");
       return;
     }
@@ -114,111 +138,110 @@ export const GeminiChatbot = () => {
     }
   };
 
-  return (
+  // Ẩn chatbot hoàn toàn trên mobile
+  if (isMobileDevice) {
+    return null;
+  }
+
+  // Sử dụng Portal để render chatbot ra ngoài DOM tree, trực tiếp vào document.body
+  // Điều này đảm bảo position: fixed hoạt động đúng (không bị ảnh hưởng bởi parent transforms)
+  return createPortal(
     <>
-      {/* Floating Button (Robot Head) */}
+      {/* Floating Button - Ẩn khi menu mở */}
       <AnimatePresence>
-        {!isOpen && (
+        {!isOpen && !isMenuOpen && (
           <motion.button
-            // Animation xuất hiện/biến mất của nút
             initial={{ scale: 0, opacity: 0, rotate: -180 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
             exit={{ scale: 0, opacity: 0, rotate: 180 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            
             whileHover={{ scale: 1.1, rotate: 15 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-40 flex h-16 w-16 items-center justify-center rounded-full border-2 border-black bg-blue-600 text-white shadow-[4px_4px_0px_black] hover:bg-blue-700 hover:shadow-[2px_2px_0px_black] transition-colors"
+            id="gemini-chatbot-trigger"
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[10002] flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full border-2 border-black bg-blue-600 text-white shadow-[4px_4px_0px_black] hover:bg-blue-700 hover:shadow-[2px_2px_0px_black] transition-colors"
           >
-            {/* Thay MessageCircle bằng Bot */}
-            <Bot size={32} />
+            <Bot size={32} className="w-6 h-6 sm:w-8 sm:h-8" />
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Chat Window (Robot Body Unfolding) */}
+      {/* Chat Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            // Key logic: transformOrigin đặt ở góc dưới phải để "mọc" ra từ nút
-            style={{ transformOrigin: "bottom right" }}
-            
-            // Animation mở bụng
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            
-            // Hiệu ứng lò xo (bouncy)
-            transition={{ 
-                type: "spring", 
-                stiffness: 300, 
-                damping: 25 
-            }}
-            
-            className="fixed bottom-6 right-6 z-40 h-[500px] w-[350px] flex flex-col rounded-xl border-2 border-black bg-white shadow-[8px_8px_0px_black] overflow-hidden"
+            style={{ transformOrigin: isMobileDevice ? "bottom center" : "bottom right" }}
+            // Mobile/Tablet: Slide up animation (tránh lỗi scale: 0)
+            // Desktop: Scale animation (giữ nguyên hiệu ứng cũ)
+            initial={
+              isMobileDevice
+                ? { opacity: 0, y: 100, scale: 0.95 }
+                : { opacity: 0, scale: 0 }
+            }
+            animate={
+              isMobileDevice
+                ? { opacity: 1, y: 0, scale: 1 }
+                : { opacity: 1, scale: 1 }
+            }
+            exit={
+              isMobileDevice
+                ? { opacity: 0, y: 100, scale: 0.95 }
+                : { opacity: 0, scale: 0 }
+            }
+            transition={
+              isMobileDevice
+                ? { duration: 0.3, ease: "easeOut" }
+                : { type: "spring", stiffness: 300, damping: 25 }
+            }
+            // FIX: Tăng z-index lên z-[10002] để cao hơn menu (z-[10000] và z-[10001])
+            className={cn(
+              "fixed z-[10002] flex flex-col bg-white overflow-hidden",
+              "inset-0 h-[100dvh] w-full rounded-none border-0", // Mobile
+              "sm:inset-auto sm:bottom-6 sm:right-6 sm:h-[500px] sm:w-[350px] sm:rounded-xl sm:border-2 sm:border-black sm:shadow-[8px_8px_0px_black]" // Desktop
+            )}
           >
             {/* Header */}
-            <motion.div
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center justify-between border-b-2 border-black bg-blue-600 px-4 py-3"
-            >
+            <div className="flex items-center justify-between border-b-2 border-black bg-blue-600 px-4 py-3 shrink-0">
               <div className="flex items-center gap-2">
                 <div className="bg-white p-1 rounded-full border border-black">
-                    <Bot size={20} className="text-blue-600" />
+                  <Bot size={20} className="text-blue-600" />
                 </div>
                 <span className="font-bold text-white">Trợ lý AI</span>
               </div>
-              <motion.button
-                whileHover={{ rotate: 90, scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+              <button
                 onClick={() => setIsOpen(false)}
                 className="rounded-full bg-blue-500 p-1 hover:bg-blue-400 transition-colors border border-transparent hover:border-black"
               >
                 <X size={18} className="text-white" />
-              </motion.button>
-            </motion.div>
+              </button>
+            </div>
 
-            {/* Messages Container */}
-            <div className="flex-1 overflow-y-auto space-y-3 p-4 bg-slate-50 flex flex-col">
-              {!isAuthenticated && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex-1 flex flex-col items-center justify-center gap-4 py-8"
-                >
+            {/* Messages Container - Sửa lỗi scroll với min-h-0 */}
+            <div className="flex-1 flex flex-col overflow-y-auto bg-slate-50 min-h-0">
+              <div className="flex-1 p-4 space-y-3">
+                {!isAuthenticated ? (
+                  <div className="flex flex-col items-center justify-center h-full gap-4 py-8">
                   <div className="p-4 rounded-full bg-blue-100 border-2 border-blue-600">
                     <LogIn size={32} className="text-blue-600" />
                   </div>
                   <div className="text-center">
                     <p className="font-bold text-slate-900 mb-1">Vui lòng đăng nhập</p>
-                    <p className="text-sm text-slate-600">Để có thể sử dụng trợ lý AI</p>
+                    <p className="text-sm text-slate-600">Để sử dụng trợ lý AI</p>
                   </div>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate("/auth/sign-in")}
+                  <button
+                    onClick={() => { setIsOpen(false); navigate("/auth/sign-in"); }}
                     className="mt-4 px-6 py-2 bg-blue-600 text-white font-bold rounded-lg border-2 border-black shadow-[2px_2px_0px_black] hover:bg-blue-700 transition-all"
                   >
                     Đăng nhập ngay
-                  </motion.button>
-                </motion.div>
-              )}
+                  </button>
+                </div>
+              ) : (
 
-              {isAuthenticated && (
                 <>
                   {messages.map((msg) => (
-                    <motion.div
+                    <div
                       key={msg.id}
-                      initial={{ opacity: 0, x: msg.type === "user" ? 20 : -20, scale: 0.9 }}
-                      animate={{ opacity: 1, x: 0, scale: 1 }}
-                      transition={{ duration: 0.3 }}
-                      className={cn(
-                        "flex gap-2",
-                        msg.type === "user" ? "justify-end" : "justify-start"
-                      )}
+                      className={cn("flex gap-2", msg.type === "user" ? "justify-end" : "justify-start")}
                     >
                       {msg.type === "bot" && (
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black bg-blue-100">
@@ -227,47 +250,33 @@ export const GeminiChatbot = () => {
                       )}
                       <div
                         className={cn(
-                          "max-w-[80%] rounded-lg px-3 py-2 text-sm border border-black shadow-[2px_2px_0px_rgba(0,0,0,0.1)]",
-                          msg.type === "user"
-                            ? "bg-blue-600 text-white rounded-br-none"
-                            : "bg-white text-slate-900 rounded-bl-none"
+                          "max-w-[85%] sm:max-w-[80%] rounded-lg px-3 py-2 text-sm border border-black shadow-[2px_2px_0px_rgba(0,0,0,0.1)]",
+                          msg.type === "user" ? "bg-blue-600 text-white rounded-br-none" : "bg-white text-slate-900 rounded-bl-none"
                         )}
                       >
-                        <p className="whitespace-pre-wrap break-words">
-                          {msg.content}
-                        </p>
-                        <span className={cn("text-[10px] mt-1 block", msg.type === "user" ? "text-blue-100" : "text-slate-400")}>
-                          {msg.timestamp.toLocaleTimeString("vi-VN", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </span>
+                        <p className="whitespace-pre-wrap break-words">{msg.content}</p>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
-
                   {isLoading && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="flex gap-2 items-center"
-                    >
+                    <div className="flex gap-2 items-center">
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black bg-blue-100">
-                        <Bot size={16} className="text-blue-600" />
+                         <Bot size={16} className="text-blue-600" />
                       </div>
                       <div className="bg-white border border-black rounded-lg rounded-bl-none px-3 py-2 shadow-sm">
                         <Loader2 size={16} className="animate-spin text-blue-600" />
                       </div>
-                    </motion.div>
+                    </div>
                   )}
                 </>
               )}
-
+              {/* Dummy div để scroll xuống cuối */}
               <div ref={messagesEndRef} />
             </div>
+          </div>
 
-            {/* Input Area */}
-            <div className="border-t-2 border-black bg-white p-3">
+            {/* Input */}
+            <div className="border-t-2 border-black bg-white p-3 shrink-0 safe-area-bottom">
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -275,23 +284,22 @@ export const GeminiChatbot = () => {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder={isAuthenticated ? "Nhập câu hỏi..." : "Vui lòng đăng nhập..."}
-                  className="flex-1 rounded-lg border-2 border-black px-3 py-2 text-sm outline-none focus:shadow-[2px_2px_0px_black] transition-all bg-slate-50 focus:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 rounded-lg border-2 border-black px-3 py-2 text-base sm:text-sm outline-none focus:shadow-[2px_2px_0px_black] transition-all bg-slate-50 focus:bg-white disabled:opacity-50"
                   disabled={isLoading || !isAuthenticated}
                 />
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <button
                   onClick={handleSendMessage}
                   disabled={isLoading || !input.trim()}
-                  className="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-black bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-all hover:shadow-[2px_2px_0px_black]"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-black bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-all hover:shadow-[2px_2px_0px_black]"
                 >
                   <Send size={16} />
-                </motion.button>
+                </button>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </>,
+    document.body
   );
 };

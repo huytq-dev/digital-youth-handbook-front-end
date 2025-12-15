@@ -53,8 +53,8 @@ export function AuthHeader() {
             </div>
             
             <div className="flex flex-col">
-              <span className="font-black text-xl leading-none text-slate-900 tracking-tight">
-                HÀNH TRANG <span className="text-blue-600">SỐ</span>
+              <span className="font-black text-xl leading-none text-blue-600 tracking-tight">
+                HÀNH TRANG SỐ
               </span>
               <span className="text-[10px] font-black text-white bg-orange-500 px-1 py-0.5 border border-black rounded-sm tracking-widest uppercase mt-1 w-fit rotate-[-2deg] group-hover:rotate-0 transition-transform">
                 <AnimatedText>Khát Vọng</AnimatedText>
