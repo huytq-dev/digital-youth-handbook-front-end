@@ -197,7 +197,16 @@ const MessageBubble = memo(
 MessageBubble.displayName = "MessageBubble";
 
 export const GroqChatbot = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  console.log("[GroqChatbot] Component rendered");
+  
+  const [isOpen, setIsOpenState] = useState(false);
+  
+  // Wrapper để log mọi lần setIsOpen được gọi
+  const setIsOpen = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+    const stack = new Error().stack;
+    console.log(`[GroqChatbot] setIsOpen(${typeof value === 'function' ? 'function' : value}) called`, stack?.split('\n').slice(1, 4).join('\n'));
+    setIsOpenState(value);
+  }, []);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -221,6 +230,8 @@ export const GroqChatbot = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const navigate = useNavigate();
   const { isMenuOpen } = useMenu();
+
+  console.log("[GroqChatbot] State:", { isOpen, isMenuOpen, isMobileDevice, isAuthenticated });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 640px)");
@@ -420,20 +431,32 @@ export const GroqChatbot = () => {
     }
   };
 
+  const shouldShowButton = !isOpen && !isMenuOpen;
+  console.log("[GroqChatbot] shouldShowButton:", shouldShowButton, "- isOpen:", isOpen, "- isMenuOpen:", isMenuOpen);
+
   return createPortal(
     <>
       <AnimatePresence>
-        {!isOpen && !isMenuOpen && (
+        {shouldShowButton && (
           <motion.button
             initial={{ scale: 0, opacity: 0, rotate: -180 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
             exit={{ scale: 0, opacity: 0, rotate: 180 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            whileHover={{ scale: 1.1, rotate: 15 }}
+            // FIX 1: Tắt hover trên mobile để nhạy hơn
+            whileHover={isMobileDevice ? undefined : { scale: 1.1, rotate: 15 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => setIsOpen(true)}
+            onClick={(e) => {
+              // FIX 2: Ngăn chặn lan truyền sự kiện nếu cần
+              e.stopPropagation();
+              console.log("[GroqChatbot] ✅ open button clicked - setting isOpen to true");
+              setIsOpen(true);
+            }}
+            onMouseEnter={() => console.log("[GroqChatbot] Button hovered")}
             id="gemini-chatbot-trigger"
-            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[10002] flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full border-2 border-black bg-blue-600 text-white shadow-[4px_4px_0px_black] hover:bg-blue-700 hover:shadow-[2px_2px_0px_black] transition-colors"
+            // FIX 3: Thêm touch-action-manipulation để trình duyệt không delay click
+            style={{ touchAction: "manipulation" }}
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[99999] flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full border-2 border-black bg-blue-600 text-white shadow-[4px_4px_0px_black] hover:bg-blue-700 hover:shadow-[2px_2px_0px_black] transition-colors"
           >
             <Bot size={32} className="w-6 h-6 sm:w-8 sm:h-8" />
           </motion.button>

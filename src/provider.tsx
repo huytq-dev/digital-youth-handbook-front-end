@@ -24,7 +24,10 @@ const ChatbotWrapper = () => {
   const isQuizGamePage = path.startsWith(ROUTE_PATH.QUIZ.INDEX) && path.includes("/game");
   const isQuizResultPage = path.startsWith(ROUTE_PATH.QUIZ.INDEX) && path.includes("/result");
   
-  if (isAuthPage || isProfilePage || isQuizGamePage || isQuizResultPage) return null;
+  const shouldHide = isAuthPage || isProfilePage || isQuizGamePage || isQuizResultPage;
+  
+  // Không dùng useMemo trả về JSX, hãy trả về trực tiếp hoặc null
+  if (shouldHide) return null;
   
   return <GroqChatbot />;
 };
