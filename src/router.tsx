@@ -6,9 +6,20 @@ import PublicRouteGuard from "@/middleware/PublicRouteGuard";
 import AuthGuard from "@/middleware/AuthGuard";
 import { ROUTE_PATH } from "./routes/routePath";
 
+// Optimized PageLoader với skeleton loading
 const PageLoader = () => (
-  <div className="flex min-h-screen items-center justify-center">
-    <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-[hsl(var(--blue-600))]" />
+  <div className="flex min-h-screen items-center justify-center bg-[#fff9f0]">
+    <div className="flex flex-col items-center gap-4">
+      <div className="relative">
+        <div className="h-16 w-16 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="h-8 w-8 rounded-full bg-blue-600/20" />
+        </div>
+      </div>
+      <p className="text-sm font-semibold text-slate-600 animate-pulse">
+        Đang tải...
+      </p>
+    </div>
   </div>
 );
 

@@ -61,6 +61,7 @@ export interface UserProfileResponse {
   email: string;
   username?: string;
   picture?: string | null;
+  pictureUrl?: string | null;
   gender?: GenderType | null;
   dob?: string | null; // ISO 8601 date string
   address?: string | null;

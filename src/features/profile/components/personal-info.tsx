@@ -174,6 +174,39 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Đóng gợi ý khi người dùng cuộn/resize/touch move để tránh glitch thị giác (nhất là mobile)
+  useEffect(() => {
+    if (!showSchoolSuggestions) return;
+    const closeSuggestions = () => {
+      setShowSchoolSuggestions(false);
+      setSelectedSchoolIndex(-1);
+    };
+    const handleScroll = () => closeSuggestions();
+    const handleResize = () => closeSuggestions();
+    const handleTouchMove = (event: TouchEvent) => {
+      const target = event.target as Node | null;
+      // Nếu đang tương tác trong input hoặc dropdown thì không đóng
+      if (
+        (schoolDropdownRef.current &&
+          schoolDropdownRef.current.contains(target as Node)) ||
+        (schoolInputRef.current && schoolInputRef.current.contains(target as Node))
+      ) {
+        return;
+      }
+      closeSuggestions();
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("touchmove", handleTouchMove);
+    };
+  }, [showSchoolSuggestions]);
+
   // Handle school selection
   const handleSchoolSelect = useCallback(
     (school: string) => {
@@ -347,9 +380,12 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
         const responseData = response.data || response.Data;
         if (responseData) {
           // Cập nhật Redux auth state
+          const normalizedPicture =
+            responseData.picture || responseData.pictureUrl || null;
+
           const updatedUser: Partial<UserDomainModel> = {
             name: responseData.name,
-            picture: responseData.picture || null,
+            picture: normalizedPicture,
             gender: (responseData.gender as any) ?? null,
             dob: responseData.dob || null,
             address: responseData.address || null,
@@ -358,8 +394,8 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
           };
           dispatch(updateUserProfile(updatedUser));
 
-          if (responseData.picture) {
-            setAvatar(responseData.picture);
+          if (normalizedPicture) {
+            setAvatar(normalizedPicture);
           }
 
           // Cập nhật schoolQuery nếu có schoolName mới

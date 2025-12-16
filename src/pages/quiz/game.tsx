@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import type { RootState } from "@/redux/store";
@@ -35,6 +35,7 @@ const QuizGamePageWrapper = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showExitModal, setShowExitModal] = useState(false);
   const [showSubmitConfirmModal, setShowSubmitConfirmModal] = useState(false);
+  const hasAutoSubmittedRef = useRef(false); // Track xem đã auto submit chưa
 
   // Hàm xử lý chọn đáp án
   const handleSelectAnswer = (optionId: string) => {
@@ -52,8 +53,8 @@ const QuizGamePageWrapper = () => {
   };
 
   // Hàm xử lý nộp bài (thực tế gọi API)
-  const handleSubmitQuiz = async () => {
-    if (!currentAttempt) return;
+  const handleSubmitQuiz = useCallback(async () => {
+    if (!currentAttempt || isSubmitting) return;
     
     setIsSubmitting(true);
     setShowSubmitConfirmModal(false); // Đóng modal xác nhận
@@ -80,7 +81,7 @@ const QuizGamePageWrapper = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [currentAttempt, isSubmitting, submitQuiz, dispatch, navigate]);
 
   // Chặn F5 và refresh
   useEffect(() => {
@@ -116,20 +117,32 @@ const QuizGamePageWrapper = () => {
     };
   }, [currentAttempt]);
 
+  // Timer effect - chỉ chạy khi currentAttempt thay đổi
   useEffect(() => {
-    if (!currentAttempt) return; // Không chạy nếu không có data
+    if (!currentAttempt) return;
 
-    // Nếu hết thời gian, tự động nộp bài
-    if (secondsLeft === 0) {
-      handleSubmitQuiz();
-      return;
-    }
+    // Reset timer và flag khi currentAttempt thay đổi
+    setSecondsLeft(totalDuration);
+    hasAutoSubmittedRef.current = false;
 
     const timer = setInterval(() => {
-      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      setSecondsLeft((prev) => {
+        const newValue = prev > 0 ? prev - 1 : 0;
+        return newValue;
+      });
     }, 1000);
+
     return () => clearInterval(timer);
-  }, [currentAttempt, secondsLeft]);
+  }, [currentAttempt, totalDuration]);
+
+  // Effect riêng để xử lý khi hết thời gian
+  useEffect(() => {
+    if (!currentAttempt || secondsLeft > 0 || hasAutoSubmittedRef.current || isSubmitting) return;
+    
+    // Chỉ gọi một lần khi hết thời gian
+    hasAutoSubmittedRef.current = true;
+    handleSubmitQuiz();
+  }, [secondsLeft, currentAttempt, handleSubmitQuiz, isSubmitting]);
 
   // Format thời gian
   const formatTime = (seconds: number) => {
@@ -215,11 +228,12 @@ const QuizGamePageWrapper = () => {
   const ConfirmSubmitModal = () => {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-        <div className="bg-white border-4 border-black rounded-2xl p-8 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] max-w-md w-full">
+        <div className="relative bg-white border-4 border-black rounded-2xl p-8 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] max-w-md w-full">
           {/* Close button */}
           <button
             onClick={() => setShowSubmitConfirmModal(false)}
-            className="absolute top-4 right-4 p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            className="absolute top-4 right-4 z-10 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 hover:bg-slate-100 active:bg-slate-200 rounded-lg transition-colors touch-manipulation"
+            aria-label="Đóng"
           >
             <X size={24} className="text-black" />
           </button>
@@ -455,27 +469,40 @@ const QuizGamePageWrapper = () => {
                   </div>
 
                   {/* Navigation buttons */}
-                  <div className="flex gap-4 justify-between items-center">
+                  <div className="flex gap-3 sm:gap-4 justify-between items-center flex-wrap">
                     <button
                       onClick={() => setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1))}
                       disabled={currentQuestionIndex === 0}
                       className={cn(
-                        "inline-flex items-center gap-2 px-6 py-3 font-black uppercase text-sm",
-                        "border-2 rounded-lg transition-all duration-200",
+                        "inline-flex items-center gap-2 px-4 sm:px-6 py-3 font-black uppercase text-xs sm:text-sm",
+                        "border-2 rounded-lg transition-all duration-200 shrink-0",
                         currentQuestionIndex === 0
                           ? "border-slate-300 bg-slate-100 text-slate-400 cursor-not-allowed"
                           : "border-black bg-white text-black hover:shadow-[4px_4px_0px_black] hover:-translate-y-0.5 shadow-[2px_2px_0px_black]"
                       )}
                     >
                       <ChevronLeft size={18} />
-                      Câu trước
+                      <span className="hidden sm:inline">Câu trước</span>
+                      <span className="sm:hidden">Trước</span>
                     </button>
 
                     {currentQuestionIndex === currentAttempt.questions.length - 1 ? (
                       <button
                         onClick={() => setShowSubmitConfirmModal(true)}
                         disabled={isSubmitting}
-                        className={buttonBaseStyle}
+                        className={cn(
+                          "inline-flex items-center justify-center gap-2",
+                          "px-4 sm:px-8 py-3 sm:py-4",
+                          "font-black uppercase tracking-wider text-xs sm:text-sm",
+                          "border-2 border-black rounded-lg",
+                          "bg-[#FFDE00] text-black",
+                          "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
+                          "transition-all duration-200",
+                          "hover:-translate-y-[2px] hover:-translate-x-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:bg-[#FFE550]",
+                          "active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]",
+                          "disabled:opacity-70 disabled:cursor-not-allowed",
+                          "shrink-0"
+                        )}
                       >
                         {isSubmitting ? "Đang gửi..." : "Nộp bài"}
                       </button>
@@ -483,12 +510,13 @@ const QuizGamePageWrapper = () => {
                       <button
                         onClick={() => setCurrentQuestionIndex(Math.min(currentAttempt.questions.length - 1, currentQuestionIndex + 1))}
                         className={cn(
-                          "inline-flex items-center gap-2 px-6 py-3 font-black uppercase text-sm",
-                          "border-2 rounded-lg transition-all duration-200",
+                          "inline-flex items-center gap-2 px-4 sm:px-6 py-3 font-black uppercase text-xs sm:text-sm",
+                          "border-2 rounded-lg transition-all duration-200 shrink-0",
                           "border-black bg-white text-black hover:shadow-[4px_4px_0px_black] hover:-translate-y-0.5 shadow-[2px_2px_0px_black]"
                         )}
                       >
-                        Câu tiếp
+                        <span className="hidden sm:inline">Câu tiếp</span>
+                        <span className="sm:hidden">Tiếp</span>
                         <ChevronRight size={18} />
                       </button>
                     )}

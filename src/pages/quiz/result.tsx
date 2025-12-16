@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { UnifiedHeader } from "@/components/layout/unified-header";
 import { useAppSelector } from "@/redux/hooks";
 import type { RootState } from "@/redux/store";
@@ -55,10 +55,15 @@ const getResultMessage = (isPassed: boolean, score: number) => {
 
 const QuizResultPageWrapper = () => {
   const navigate = useNavigate();
+  const { id: quizId } = useParams<{ id: string }>();
   const quizResponse = useAppSelector((state: RootState) => state.quiz.quizResult);
+  const currentAttempt = useAppSelector((state: RootState) => state.quiz.currentAttempt);
 
   // --- TRÍCH XUẤT DỮ LIỆU ---
   const resultData: QuizResultData | null = (quizResponse as any)?.data || quizResponse || null;
+  
+  // Lấy quizId từ URL params hoặc từ currentAttempt
+  const finalQuizId = quizId || currentAttempt?.quizId;
 
   // Gọi Hook để lấy giá trị số đang chạy (duration 2s) - số câu đúng
   // Lưu ý: Nếu resultData null thì mặc định là 0
@@ -178,7 +183,13 @@ const QuizResultPageWrapper = () => {
                 </button>
 
                 <button
-                  onClick={() => navigate(0)} // Reload
+                  onClick={() => {
+                    if (finalQuizId) {
+                      navigate(`/quizzes/${finalQuizId}`);
+                    } else {
+                      navigate("/quizzes");
+                    }
+                  }}
                   className={`${buttonBaseStyle} flex-1 bg-[#67E8F9] text-black hover:bg-[#A5F3FC]`}
                 >
                   <RotateCcw size={18} />

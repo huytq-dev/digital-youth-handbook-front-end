@@ -1,11 +1,4 @@
-import {
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-  memo,
-  useCallback,
-} from "react";
+import { useState, useRef, useEffect, useMemo, memo, useCallback } from "react";
 import type { KeyboardEvent } from "react";
 import { createPortal } from "react-dom";
 import { Send, Bot, X, Loader2, LogIn } from "lucide-react";
@@ -29,13 +22,45 @@ interface Message {
   timestamp: Date;
 }
 
+// Simple toxicity detection for Vietnamese profanity commonly used in chat
+const TOXIC_PATTERNS = [
+  /dm\b/i,
+  /dmm\b/i,
+  /địt mẹ/i,
+  /d?mẹ mày/i,
+  /con mẹ mày/i,
+  /cmm\b/i,
+  /fuck/i,
+];
+
+const TOXIC_RESPONSES = [
+  "Chúng mình cùng giữ gìn sự trong sáng của Tiếng Việt và môi trường văn minh nhé! Bạn có thắc mắc gì về bài học không? 🌱",
+  "Lời nói chẳng mất tiền mua, lựa lời mà nói cho vừa lòng nhau. Mình quay lại chủ đề chính nha! 😊",
+  "Mình là trợ lý học tập nên xin phép không phản hồi các từ ngữ này ạ. Chúng ta nói về Lý tưởng cách mạng nhé? 🇻🇳",
+];
+
+const isToxicMessage = (text: string) =>
+  TOXIC_PATTERNS.some((pattern) => pattern.test(text));
+
+const getToxicResponse = () =>
+  TOXIC_RESPONSES[Math.floor(Math.random() * TOXIC_RESPONSES.length)];
+
+// Limit how many prior exchanges we send to Groq to save tokens and speed up responses
+const MAX_HISTORY_MESSAGES = 10;
+
+// --- CẤU HÌNH RATE LIMIT (Burst Rate Limiting) ---
+const RATE_LIMIT_WINDOW = 10000; // Cửa sổ thời gian: 10 giây
+const MAX_MSG_IN_WINDOW = 3; // Tối đa 3 tin nhắn trong cửa sổ trên
+const COOLDOWN_TIME = 5000; // Nếu vi phạm, phạt chờ: 5 giây
+
 // Gọi Groq REST API với system prompt + dữ liệu đã khai báo
 const callGroqAPI = async (
   userMessage: string,
   chatHistory: Message[]
 ): Promise<string> => {
   if (!GROQ_API_KEY) {
-    return "❌ Lỗi: Chưa cấu hình Groq API Key.";
+    console.error("❌ Missing API Key: GROQ_API_KEY chưa được cấu hình.");
+    return "⚠️ Hệ thống đang cập nhật. Vui lòng liên hệ Admin.";
   }
 
   try {
@@ -47,8 +72,10 @@ ${SYSTEM_DATA}
 ========================
 `;
 
+    // Giữ logic lọc history như cũ
     const history = chatHistory
       .filter((msg) => msg.id !== "welcome")
+      .slice(-MAX_HISTORY_MESSAGES)
       .map((msg) => ({
         role: msg.type === "user" ? "user" : "assistant",
         content: msg.content,
@@ -76,21 +103,55 @@ ${SYSTEM_DATA}
       }
     );
 
+    // --- XỬ LÝ LỖI CHI TIẾT ---
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error("Groq HTTP error:", errorData);
-      throw new Error(
-        (errorData as any)?.error?.message ||
-          `HTTP error! status: ${response.status}`
-      );
+      const errorData = await response.json().catch(() => ({})); // Parse JSON an toàn
+
+      // 1. Log chi tiết ra console cho Developer
+      console.group("🚨 GROQ API ERROR REPORT");
+      console.error("Status:", response.status, response.statusText);
+      console.error("Headers:", Object.fromEntries(response.headers.entries()));
+      console.error("Error Body:", errorData);
+      console.groupEnd();
+
+      // 2. Trả về thông báo thân thiện cho User
+      // Lỗi 429: Rate Limit (Quá tải)
+      if (response.status === 429) {
+        const errorMsg = errorData?.error?.message || "";
+        // Trích xuất số giây từ thông báo tiếng Anh của Groq (vd: "Please try again in 18.09s")
+        const waitTimeMatch = errorMsg.match(/try again in (\d+(\.\d+)?)s/);
+        const waitTime = waitTimeMatch ? Math.ceil(parseFloat(waitTimeMatch[1])) : "vài";
+        
+        return `⏳ Hệ thống đang quá tải. Bạn vui lòng đợi **${waitTime} giây** nữa rồi thử lại nhé!`;
+      }
+
+      // Lỗi 401: Sai Key
+      if (response.status === 401) {
+        return "🔒 Lỗi xác thực hệ thống.";
+      }
+
+      // Lỗi 500+: Server Groq lỗi
+      if (response.status >= 500) {
+        return "🤖 Máy chủ AI đang bảo trì hoặc gặp sự cố. Vui lòng thử lại sau ít phút.";
+      }
+
+      // Các lỗi khác
+      return `⚠️ Đã có lỗi xảy ra (${response.status}). Vui lòng thử lại sau.`;
     }
 
     const data = await response.json();
     const text = data.choices?.[0]?.message?.content;
-    return text || "Xin lỗi, mình không thể phản hồi tin nhắn này.";
+    return text || "🤔 Xin lỗi, mình chưa nghĩ ra câu trả lời. Bạn hỏi lại nhé?";
+
   } catch (error: any) {
-    console.error("Groq API error:", error);
-    return `❌ Lỗi kết nối: ${error.message || "Không thể kết nối với API"}`;
+    // Lỗi mạng (Network Error, Offline, DNS...)
+    console.error("🌐 NETWORK/UNEXPECTED ERROR:", error);
+
+    if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+      return "📡 Không có kết nối mạng. Vui lòng kiểm tra internet của bạn.";
+    }
+
+    return `⚠️ Lỗi hệ thống: ${error.message}`;
   }
 };
 
@@ -135,7 +196,7 @@ const MessageBubble = memo(
 );
 MessageBubble.displayName = "MessageBubble";
 
-export const GeminiChatbot = () => {
+export const GroqChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -150,6 +211,12 @@ export const GeminiChatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // --- STATE CHO RATE LIMIT ---
+  const [msgCount, setMsgCount] = useState(0);
+  const [windowStart, setWindowStart] = useState(Date.now());
+  const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState(0); // Để hiển thị đếm ngược UI
 
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const navigate = useNavigate();
@@ -201,6 +268,25 @@ export const GeminiChatbot = () => {
     }
   }, [messages, isOpen]);
 
+  // --- EFFECT ĐẾM NGƯỢC COOLDOWN ---
+  useEffect(() => {
+    if (!cooldownUntil) return;
+
+    const interval = setInterval(() => {
+      const remaining = Math.ceil((cooldownUntil - Date.now()) / 1000);
+      if (remaining <= 0) {
+        setCooldownUntil(null);
+        setMsgCount(0); // Reset lại khi hết phạt
+        setWindowStart(Date.now()); // Reset window
+        setTimeLeft(0);
+      } else {
+        setTimeLeft(remaining);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [cooldownUntil]);
+
   useEffect(() => {
     if (isOpen && isMobileDevice) {
       document.body.style.overflow = "hidden";
@@ -216,7 +302,18 @@ export const GeminiChatbot = () => {
   }, [isOpen, isMobileDevice]);
 
   const handleSendMessage = useCallback(async () => {
+    // 1. Kiểm tra input rỗng
     if (!input.trim()) return;
+
+    // 2. Kiểm tra đang bị phạt Cooldown không
+    if (cooldownUntil && Date.now() < cooldownUntil) {
+      return; // Chặn không cho gửi
+    }
+
+    // 3. Kiểm tra đang loading request cũ không
+    if (isLoading) return;
+
+    const sanitizedInput = input.trim();
 
     if (!isAuthenticated) {
       setInput("");
@@ -225,20 +322,72 @@ export const GeminiChatbot = () => {
       return;
     }
 
+    // --- LOGIC RATE LIMIT START ---
+    const now = Date.now();
+    let shouldBlock = false;
+
+    // Nếu đã qua cửa sổ 10s -> Reset đếm lại từ đầu
+    if (now - windowStart > RATE_LIMIT_WINDOW) {
+      setWindowStart(now);
+      setMsgCount(1);
+    } else {
+      // Nếu vẫn trong cửa sổ 10s -> Tăng biến đếm
+      const newCount = msgCount + 1;
+      setMsgCount(newCount);
+
+      // Nếu vượt quá giới hạn -> Kích hoạt Cooldown
+      if (newCount > MAX_MSG_IN_WINDOW) {
+        const cooldownEnd = now + COOLDOWN_TIME;
+        setCooldownUntil(cooldownEnd);
+        setTimeLeft(COOLDOWN_TIME / 1000);
+
+        // Thêm tin nhắn cảnh báo ảo vào chat
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: Date.now().toString(),
+            type: "bot",
+            content: "⏳ Bạn chat nhanh quá! Nghỉ tay 5 giây nhé...",
+            timestamp: new Date(),
+          },
+        ]);
+        shouldBlock = true; // Đánh dấu để chặn
+      }
+    }
+
+    // Nếu bị chặn do rate limit, dừng lại không gọi API
+    if (shouldBlock) {
+      return;
+    }
+    // --- LOGIC RATE LIMIT END ---
+
     const userMessage: Message = {
       id: Date.now().toString(),
       type: "user",
-      content: input,
+      content: sanitizedInput,
       timestamp: new Date(),
     };
 
     const currentMessages = messages;
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+
+    // Handle toxic messages locally following SYSTEM_INSTRUCTION instead of calling Groq
+    if (isToxicMessage(sanitizedInput)) {
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: "bot",
+        content: getToxicResponse(),
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, botMessage]);
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const botContent = await callGroqAPI(input, currentMessages);
+      const botContent = await callGroqAPI(sanitizedInput, currentMessages);
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -253,7 +402,16 @@ export const GeminiChatbot = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [input, isAuthenticated, messages, navigate]);
+  }, [
+    input,
+    isAuthenticated,
+    messages,
+    navigate,
+    isLoading,
+    cooldownUntil,
+    msgCount,
+    windowStart,
+  ]);
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -261,10 +419,6 @@ export const GeminiChatbot = () => {
       handleSendMessage();
     }
   };
-
-  if (isMobileDevice) {
-    return null;
-  }
 
   return createPortal(
     <>
@@ -289,37 +443,39 @@ export const GeminiChatbot = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            style={{
-              transformOrigin: isMobileDevice
-                ? "bottom center"
-                : "bottom right",
-            }}
-            initial={
-              isMobileDevice
-                ? { opacity: 0, y: 100, scale: 0.95 }
-                : { opacity: 0, scale: 0 }
-            }
-            animate={
-              isMobileDevice
-                ? { opacity: 1, y: 0, scale: 1 }
-                : { opacity: 1, scale: 1 }
-            }
-            exit={
-              isMobileDevice
-                ? { opacity: 0, y: 100, scale: 0.95 }
-                : { opacity: 0, scale: 0 }
-            }
-            transition={
-              isMobileDevice
-                ? { duration: 0.3, ease: "easeOut" }
-                : { type: "spring", stiffness: 300, damping: 25 }
-            }
-            className={cn(
-              "fixed z-[10002] flex flex-col bg-white overflow-hidden",
-              "inset-0 h-[100dvh] w-full rounded-none border-0",
-              "sm:inset-auto sm:bottom-6 sm:right-6 sm:h-[500px] sm:w-[350px] sm:rounded-xl sm:border-2 sm:border-black sm:shadow-[8px_8px_0px_black]"
-            )}
-          >
+              style={{
+                transformOrigin: isMobileDevice
+                  ? "bottom center"
+                  : "bottom right",
+              }}
+              initial={
+                isMobileDevice
+                  ? { opacity: 0, y: 100, scale: 0.95 }
+                  : { opacity: 0, scale: 0 }
+              }
+              animate={
+                isMobileDevice
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 1, scale: 1 }
+              }
+              exit={
+                isMobileDevice
+                  ? { opacity: 0, y: 100, scale: 0.95 }
+                  : { opacity: 0, scale: 0 }
+              }
+              transition={
+                isMobileDevice
+                  ? { duration: 0.3, ease: "easeOut" }
+                  : { type: "spring", stiffness: 300, damping: 25 }
+              }
+              className={cn(
+                "fixed z-[10002] flex flex-col bg-white overflow-hidden",
+                // Mobile: Fullscreen
+                "inset-0 h-[100dvh] w-full rounded-none border-0",
+                // Desktop: Floating window
+                "sm:inset-auto sm:bottom-6 sm:right-6 sm:h-[500px] sm:w-[350px] sm:rounded-xl sm:border-2 sm:border-black sm:shadow-[8px_8px_0px_black]"
+              )}
+            >
             {/* Header */}
             <div className="flex items-center justify-between border-b-2 border-black bg-blue-600 px-4 py-3 shrink-0">
               <div className="flex items-center gap-2">
@@ -399,21 +555,45 @@ export const GeminiChatbot = () => {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder={
-                    isAuthenticated
-                      ? "Nhập câu hỏi..."
-                      : "Vui lòng đăng nhập..."
+                    !isAuthenticated
+                      ? "Vui lòng đăng nhập..."
+                      : cooldownUntil
+                      ? `Đợi ${timeLeft}s để chat tiếp...`
+                      : isLoading
+                      ? "AI đang trả lời..."
+                      : "Nhập câu hỏi..."
                   }
-                  className="flex-1 rounded-lg border-2 border-black px-3 py-2 text-base sm:text-sm outline-none focus:shadow-[2px_2px_0px_black] transition-all bg-slate-50 focus:bg-white disabled:opacity-50"
-                  disabled={isLoading || !isAuthenticated}
+                  className={cn(
+                    "flex-1 rounded-lg border-2 px-3 py-2 text-base sm:text-sm outline-none transition-all",
+                    cooldownUntil
+                      ? "bg-red-50 text-red-500 border-red-300"
+                      : "border-black bg-slate-50 focus:bg-white focus:shadow-[2px_2px_0px_black]"
+                  )}
+                  disabled={isLoading || !isAuthenticated || !!cooldownUntil}
                 />
                 <button
                   onClick={handleSendMessage}
-                  disabled={isLoading || !input.trim()}
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-black bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-all hover:shadow-[2px_2px_0px_black]"
+                  disabled={isLoading || !input.trim() || !!cooldownUntil}
+                  className={cn(
+                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-black transition-all",
+                    cooldownUntil
+                      ? "bg-slate-300 cursor-not-allowed"
+                      : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-[2px_2px_0px_black] disabled:opacity-50"
+                  )}
                 >
-                  <Send size={16} />
+                  {cooldownUntil ? (
+                    <span className="text-xs font-bold">{timeLeft}</span>
+                  ) : (
+                    <Send size={16} />
+                  )}
                 </button>
               </div>
+              {/* Hiển thị text cảnh báo nhỏ nếu cần */}
+              {cooldownUntil && (
+                <p className="text-[10px] text-red-500 mt-1 text-center font-medium">
+                  Bạn đang gửi quá nhanh. Vui lòng chờ giây lát.
+                </p>
+              )}
             </div>
           </motion.div>
         )}

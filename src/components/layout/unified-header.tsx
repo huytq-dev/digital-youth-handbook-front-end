@@ -522,7 +522,6 @@ export const UnifiedHeader = () => {
             className="bg-red-500 text-white border-2 border-black hover:bg-red-600 hover:text-white shadow-[2px_2px_0px_black] active:shadow-none active:translate-y-[2px] active:translate-x-[2px] transition-all rounded-lg w-8 h-8"
           >
             <X size={20} strokeWidth={3} />
-            <X size={20} strokeWidth={3} />
           </Button>
         </div>
 
