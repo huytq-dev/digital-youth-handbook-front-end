@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  ArrowRight,
-  Star,
-  Sun,
-  Laptop,
-  Rocket,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, Star, Sun, Laptop, Rocket, Sparkles } from "lucide-react";
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/primitives";
 
@@ -293,10 +286,10 @@ export const LandingHero = () => {
 
             {/* DÒNG 2: CHỮ NỐI LIỀN - KHÔNG CÓ HỘP */}
             <h2
-              className="text-base sm:text-lg md:text-2xl lg:text-4xl font-black text-white uppercase tracking-wide leading-tight mt-2"
+              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white uppercase tracking-wide leading-relaxed mt-3 px-4 text-center"
               style={{
-                WebkitTextStroke: "1.5px black",
-                textShadow: "3px 3px 0px black",
+                WebkitTextStroke: "0.8px black",
+                textShadow: "1.5px 1.5px 0px black",
               }}
             >
               Cho Thanh Thiếu Niên Trong Thời Đại Mới

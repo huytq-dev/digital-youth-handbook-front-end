@@ -52,11 +52,23 @@ export const LeaderboardCard = ({ item, isCompact = false }: LeaderboardCardProp
 
         {/* Name & School Info */}
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-xs sm:text-sm text-black truncate">{item.userName}</p>
+          <p
+            className="font-bold text-xs sm:text-sm text-black truncate"
+            title={item.userName}
+          >
+            {item.userName}
+          </p>
           {(item.schoolName || item.className) && (
             <div className="flex items-center gap-1 mt-0.5">
               <GraduationCap size={10} className="text-slate-400 flex-shrink-0 sm:w-3 sm:h-3" />
-              <p className="text-[9px] sm:text-[10px] font-semibold text-slate-500 truncate">
+              <p
+                className="text-[9px] sm:text-[10px] font-semibold text-slate-500 truncate"
+                title={
+                  item.schoolName && item.className
+                    ? `${item.schoolName} - ${item.className}`
+                    : item.schoolName || item.className || undefined
+                }
+              >
                 {item.schoolName && item.className 
                   ? `${item.schoolName} - ${item.className}`
                   : item.schoolName || item.className}
@@ -119,13 +131,23 @@ export const LeaderboardCard = ({ item, isCompact = false }: LeaderboardCardProp
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="font-black text-sm sm:text-base md:text-lg text-black truncate">
+                <p
+                  className="font-black text-sm sm:text-base md:text-lg text-black truncate"
+                  title={item.userName}
+                >
                   {item.userName}
                 </p>
                 {(item.schoolName || item.className) && (
                   <div className="flex items-center gap-1 mt-0.5">
                     <GraduationCap size={10} className="text-slate-500 flex-shrink-0 sm:w-3 sm:h-3" />
-                    <p className="text-[9px] sm:text-[10px] font-bold text-slate-600 truncate">
+                    <p
+                      className="text-[9px] sm:text-[10px] font-bold text-slate-600 truncate"
+                      title={
+                        item.schoolName && item.className
+                          ? `${item.schoolName} - ${item.className}`
+                          : item.schoolName || item.className || undefined
+                      }
+                    >
                       {item.schoolName && item.className 
                         ? `${item.schoolName} - ${item.className}`
                         : item.schoolName || item.className}

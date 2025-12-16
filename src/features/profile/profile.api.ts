@@ -10,6 +10,8 @@ export interface UpdateUserProfileRequest {
   dob?: string; // ISO 8601: YYYY-MM-DD
   address?: string;
   gender?: number;
+  // Avatar image URL after upload
+  pictureUrl?: string;
   schoolName?: string;  // Tên trường
   className?: string;   // Tên lớp
 }
@@ -23,6 +25,7 @@ export interface UserProfileResponse {
   name: string;
   email: string;
   picture?: string | null;
+  pictureUrl?: string | null;
   isVerified: boolean;
   gender?: number | null;
   dob?: string | null;
