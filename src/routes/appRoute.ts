@@ -35,6 +35,14 @@ const UnauthorizedPage = lazy(() => import("@/pages/error/unauthorized"));
 
 export const publicRoutes = [
   { path: ROUTE_PATH.ROOT, component: LandingPage },
+  
+  // Learning topics công khai
+  { path: ROUTE_PATH.LEARNING.INDEX, component: LearningTopicsPage },
+  { path: ROUTE_PATH.LEARNING.DETAIL, component: LearningTopicsPage },
+
+  // Trang vinh danh công khai
+  { path: ROUTE_PATH.HONOR, component: HonorPage },
+
   { path: ROUTE_PATH.AUTH.SIGN_IN, component: SignInPage },
   { path: ROUTE_PATH.AUTH.SIGN_UP, component: SignUpPage },
   { path: ROUTE_PATH.AUTH.FORGOT_PASSWORD, component: ForgotPasswordPage },
@@ -52,10 +60,6 @@ export const protectedRoutes = {
     routes: [
       { path: ROUTE_PATH.HOME, component: HomePage },
 
-      // Learning
-      { path: ROUTE_PATH.LEARNING.INDEX, component: LearningTopicsPage },
-      { path: ROUTE_PATH.LEARNING.DETAIL, component: LearningTopicsPage },
-
       // Quiz
       { path: ROUTE_PATH.QUIZ.INDEX, component: QuizListingPage },
       { path: ROUTE_PATH.QUIZ.INTRO, component: QuizIntroPage },
@@ -64,9 +68,6 @@ export const protectedRoutes = {
 
       // Profile
       { path: ROUTE_PATH.PROFILE, component: ProfilePage },
-
-      // Honor
-      { path: ROUTE_PATH.HONOR, component: HonorPage },
     ],
   },
 };
