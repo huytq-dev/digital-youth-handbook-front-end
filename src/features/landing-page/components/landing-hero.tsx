@@ -199,9 +199,9 @@ const DoodleCarousel = () => {
 export const LandingHero = () => {
   return (
     <section
-      className="relative overflow-hidden bg-[#87CEEB] 
-        pt-28 md:pt-40 lg:pt-28 
-        pb-24 md:pb-32 lg:pb-16
+      className="relative overflow-x-hidden bg-[#87CEEB] 
+        pt-20 sm:pt-28 md:pt-40 lg:pt-28 
+        pb-16 sm:pb-24 md:pb-32 lg:pb-16
         font-sans text-slate-900 border-b-4 border-black min-h-screen flex flex-col items-center justify-start"
     >
       {/* Background Decor */}
@@ -269,14 +269,14 @@ export const LandingHero = () => {
 
           <div className="flex flex-col items-center gap-4 z-10 w-full">
             {/* DÒNG 1: HỘP VÀNG "HÀNH TRANG SỐ" */}
-            <div className="relative transform -rotate-1 hover:rotate-0 transition-transform duration-300">
-              <div className="bg-[#FDE047] border-3 md:border-4 border-black px-6 py-2 md:px-8 md:py-3 rounded-xl shadow-[6px_6px_0px_black]">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black text-slate-900 leading-none uppercase tracking-tight">
+            <div className="relative transform -rotate-1 hover:rotate-0 transition-transform duration-300 w-full px-2">
+              <div className="bg-[#FDE047] border-[3px] md:border-4 border-black px-3 py-2 sm:px-6 sm:py-2 md:px-8 md:py-3 rounded-xl shadow-[6px_6px_0px_black]">
+                <h1 className="text-xl sm:text-3xl md:text-5xl lg:text-7xl font-black text-slate-900 leading-tight sm:leading-none uppercase tracking-tight break-words overflow-wrap-anywhere">
                   Hành Trang Số
                 </h1>
               </div>
               {/* Decor góc hộp */}
-              <div className="absolute -top-2 -left-2 text-white">
+              <div className="absolute -top-2 -left-2 text-white hidden sm:block">
                 <Sparkles
                   size={24}
                   className="fill-white stroke-black stroke-2"
@@ -286,7 +286,7 @@ export const LandingHero = () => {
 
             {/* DÒNG 2: CHỮ NỐI LIỀN - KHÔNG CÓ HỘP */}
             <h2
-              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white uppercase tracking-wide leading-relaxed mt-3 px-4 text-center"
+              className="text-base sm:text-xl md:text-3xl lg:text-4xl font-black text-white uppercase tracking-wide leading-snug sm:leading-tight md:leading-relaxed mt-3 px-3 sm:px-4 text-center break-words overflow-wrap-anywhere"
               style={{
                 WebkitTextStroke: "0.8px black",
                 textShadow: "1.5px 1.5px 0px black",
@@ -300,10 +300,10 @@ export const LandingHero = () => {
         {/* White Box - KHUNG NỘI DUNG CHÍNH */}
         <motion.div
           className="relative w-full bg-white 
-            border-3 md:border-4 border-black rounded-xl md:rounded-2xl lg:rounded-[2rem] 
-            p-5 md:p-8 lg:p-8 
+            border-[3px] md:border-4 border-black rounded-xl md:rounded-2xl lg:rounded-[2rem] 
+            p-4 sm:p-5 md:p-8 lg:p-8 
             shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] md:shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)] 
-            mb-10 z-20 mt-2"
+            mb-6 sm:mb-10 z-20 mt-2 mx-2 sm:mx-0"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.5, type: "spring" }}
@@ -340,10 +340,10 @@ export const LandingHero = () => {
             </div>
 
             {/* Text Section */}
-            <div className="w-full space-y-4 px-1 md:px-6">
+            <div className="w-full space-y-4 px-2 sm:px-1 md:px-6">
               <div className="flex items-center justify-center gap-2"></div>
 
-              <p className="text-slate-700 font-bold text-base md:text-lg lg:text-xl leading-relaxed">
+              <p className="text-slate-700 font-bold text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed break-words overflow-wrap-anywhere">
                 Trong kỷ nguyên số, thanh thiếu niên (Gen Z) không chỉ cần được
                 trang bị kiến thức mà còn cần một nền tảng đạo đức và lý tưởng
                 cách mạng vững chắc.
@@ -355,8 +355,8 @@ export const LandingHero = () => {
                 cách mạng và trách nhiệm xã hội.
               </p>
 
-              <div className="inline-block bg-yellow-100 border-2 border-black p-4 md:p-5 rounded-lg shadow-[3px_3px_0px_black] rotate-[-1deg] mt-2 max-w-2xl mx-auto">
-                <p className="text-black font-bold text-sm md:text-base lg:text-lg leading-tight">
+              <div className="inline-block bg-yellow-100 border-2 border-black p-3 sm:p-4 md:p-5 rounded-lg shadow-[3px_3px_0px_black] rotate-[-1deg] mt-2 max-w-2xl mx-auto w-full sm:w-auto">
+                <p className="text-black font-bold text-xs sm:text-sm md:text-base lg:text-lg leading-snug sm:leading-tight break-words overflow-wrap-anywhere">
                   Hãy cùng chúng tôi xây dựng một thế hệ thanh, thiếu niên Việt
                   Nam: Vững vàng về đạo đức, giàu có về tri thức!
                 </p>
