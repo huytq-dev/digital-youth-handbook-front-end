@@ -1,5 +1,5 @@
 import {
-  Star, Facebook, Youtube, Instagram,
+  Star, Facebook, Globe,
   MapPin, Phone, Mail, Send, Heart, Cloud
 } from "lucide-react";
 import { Input } from "@/components/ui/primitives";
@@ -48,18 +48,24 @@ const NAVIGATION: NavItem[] = [
 
 // --- COMPONENTS PHỤ TRỢ ---
 
-const SocialButton = ({ Icon, className }: { Icon: any; className?: string }) => (
-  <motion.button
-    whileHover={{ y: -4, boxShadow: "4px 4px 0px 0px black" }}
-    whileTap={{ y: 0, boxShadow: "0px 0px 0px 0px black" }}
-    className={cn(
-      "w-10 h-10 flex items-center justify-center rounded-full border-2 border-black bg-white transition-all duration-200",
-      className
-    )}
-  >
-    <Icon size={18} />
-  </motion.button>
-);
+const SocialButton = ({ Icon, className, href }: { Icon: any; className?: string; href?: string }) => {
+  const Component = href ? motion.a : motion.button;
+  const props = href ? { href, target: "_blank", rel: "noopener noreferrer" } : {};
+  
+  return (
+    <Component
+      whileHover={{ y: -4, boxShadow: "4px 4px 0px 0px black" }}
+      whileTap={{ y: 0, boxShadow: "0px 0px 0px 0px black" }}
+      className={cn(
+        "w-10 h-10 flex items-center justify-center rounded-full border-2 border-black bg-white transition-all duration-200",
+        className
+      )}
+      {...props}
+    >
+      <Icon size={18} />
+    </Component>
+  );
+};
 
 const FooterDoodle = () => (
     <div className="absolute top-0 w-full overflow-hidden leading-none rotate-180 -z-0 opacity-10">
@@ -148,13 +154,30 @@ export const LandingFooter = () => {
                   banbientap@tuoitre.vn
                 </span>
               </div>
+              <div className="flex items-center gap-3 text-sm text-slate-600 font-medium group">
+                <a 
+                  href="http://thanhdoandanang.org.vn/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="group-hover:text-blue-600 group-hover:underline decoration-2 underline-offset-2 font-bold text-slate-900"
+                >
+                  thanhdoandanang.org.vn
+                </a>
+              </div>
             </div>
 
             {/* Social Icons */}
             <div className="flex gap-3">
-              <SocialButton Icon={Facebook} className="hover:bg-blue-600 hover:text-white" />
-              <SocialButton Icon={Youtube} className="hover:bg-red-600 hover:text-white" />
-              <SocialButton Icon={Instagram} className="hover:bg-pink-600 hover:text-white" />
+              <SocialButton 
+                Icon={Facebook} 
+                className="hover:bg-blue-600 hover:text-white" 
+                href="https://www.facebook.com/doanthanhnienubndtpdanang"
+              />
+              <SocialButton 
+                Icon={Globe} 
+                className="hover:bg-green-600 hover:text-white" 
+                href="http://thanhdoandanang.org.vn/"
+              />
             </div>
           </div>
 

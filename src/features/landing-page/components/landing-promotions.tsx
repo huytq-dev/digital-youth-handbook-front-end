@@ -8,9 +8,13 @@ import {
   Clock,
   Flame,
 } from "lucide-react";
-import { ARTICLES, SIDEBAR_NEWS } from "@/data/landing-promotion-data";
+import { SIDEBAR_NEWS } from "@/data/landing-promotion-data";
 import { motion, useInView } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import {
+  getThanhDoanSampleArticles,
+  type ThanhDoanArticle,
+} from "@/services/thanhdoan-api";
 
 // --- 1. CÁC COMPONENT PHỤ TRỢ ---
 
@@ -56,8 +60,14 @@ const BrutalistButton = ({ children, className, ...props }: any) => (
 
 // --- 2. ARTICLE CARD COMPONENT ---
 
-const ArticleCard = ({ article, index }: { article: any; index: number }) => {
+const ArticleCard = ({ article, index }: { article: ThanhDoanArticle; index: number }) => {
   const shouldReduceMotion = useReducedMotion();
+
+  const handleClick = () => {
+    if (article.url) {
+      window.open(article.url, "_blank", "noopener,noreferrer");
+    }
+  };
 
   return (
     <motion.div
@@ -68,7 +78,14 @@ const ArticleCard = ({ article, index }: { article: any; index: number }) => {
       className="group relative h-full"
     >
       <div className="absolute inset-0 bg-black rounded-sm translate-x-2 translate-y-2 transition-transform duration-300 group-hover:translate-x-3 group-hover:translate-y-3" />
-      <div className="relative h-full flex flex-col bg-white border-2 border-black transition-transform duration-300 group-hover:-translate-y-1 group-hover:-translate-x-1">
+      <div
+        className={`
+          relative h-full flex flex-col bg-white border-2 border-black
+          transition-transform duration-300 group-hover:-translate-y-1 group-hover:-translate-x-1
+          ${article.url ? "cursor-pointer" : ""}
+        `}
+        onClick={handleClick}
+      >
         <div className="relative h-56 overflow-hidden border-b-2 border-black bg-slate-200">
           <img
             src={article.imageUrl}
@@ -90,7 +107,8 @@ const ArticleCard = ({ article, index }: { article: any; index: number }) => {
                 <Flame
                   size={12}
                   className="mr-1 fill-yellow-300 text-yellow-300"
-                />{" "}
+                />
+                {" "}
                 HOT
               </StickerBadge>
             </motion.div>
@@ -114,19 +132,20 @@ const ArticleCard = ({ article, index }: { article: any; index: number }) => {
           <div className="mt-auto pt-4 border-t-2 border-dashed border-slate-300 flex items-center justify-between">
             <div className="flex gap-4 text-slate-500 text-xs font-black">
               <span className="flex items-center gap-1 hover:text-red-500 transition-colors cursor-pointer group/icon">
-                <Heart size={16} className="group-hover/icon:fill-red-500" />{" "}
+                <Heart size={16} className="group-hover/icon:fill-red-500" /> {" "}
                 {article.likes}
               </span>
               <span className="flex items-center gap-1 hover:text-blue-500 transition-colors cursor-pointer group/icon">
                 <MessageCircle
                   size={16}
                   className="group-hover/icon:fill-blue-500"
-                />{" "}
+                />
+                {" "}
                 {article.comments}
               </span>
             </div>
-            <div className="text-sm font-black flex items-center gap-1 group-hover:underline decoration-2 decoration-blue-500 underline-offset-4 cursor-pointer">
-              Đọc tiếp{" "}
+            <div className="text-sm font-black flex items-center gap-1 group-hover:underline decoration-2 decoration-blue-600 underline-offset-4 cursor-pointer">
+              {article.url ? "Đọc tiếp" : "Xem chi tiết"}
               <ArrowRight
                 size={16}
                 className="group-hover:translate-x-1 transition-transform"
@@ -191,35 +210,47 @@ const SidebarNews = () => {
           {/* Div chứa nội dung cuộn (Dùng CSS Class thay vì Framer Motion) */}
           <div className="p-4 space-y-4 animate-scroll will-change-transform">
             {SCROLL_ITEMS.map((item, i) => (
-              <div
+              <a
                 key={`${item.id}-${i}`}
-                className="group/item flex gap-3 pb-4 border-b-2 border-dashed border-slate-300 last:border-0 cursor-pointer hover:bg-white/80 p-2 rounded-lg transition-colors"
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block group/item no-underline text-inherit"
               >
-                <div className="w-16 h-16 bg-slate-200 border-2 border-black shrink-0 overflow-hidden relative group-hover/item:-rotate-2 transition-transform">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="flex gap-3 pb-4 border-b-2 border-dashed border-slate-300 last:border-0 cursor-pointer hover:bg-white/80 p-2 rounded-lg transition-colors">
+                  <div className="w-16 h-16 bg-slate-200 border-2 border-black shrink-0 overflow-hidden relative group-hover/item:-rotate-2 transition-transform">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm leading-snug text-slate-800 group-hover/item:text-blue-600 group-hover/item:underline decoration-2 transition-all line-clamp-2">
+                      {item.title}
+                    </h4>
+                    <span className=" text-xs font-mono text-slate-500 mt-1 block">
+                      {item.timestamp}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-sm leading-snug text-slate-800 group-hover/item:text-blue-600 group-hover/item:underline decoration-2 transition-all line-clamp-2">
-                    {item.title}
-                  </h4>
-                  <span className="text-xs font-mono text-slate-500 mt-1 block">
-                    {item.timestamp}
-                  </span>
-                </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>
 
         {/* Footer */}
         <div className="p-4 bg-slate-50 border-t-2 border-black z-20 relative">
-          <BrutalistButton className="w-full justify-center bg-white">
-            Xem Tất Cả Tin <ArrowRight size={16} />
-          </BrutalistButton>
+          <a
+            href="http://thanhdoandanang.org.vn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <BrutalistButton className="w-full justify-center bg-white">
+              Xem Tất Cả Tin <ArrowRight size={16} />
+            </BrutalistButton>
+          </a>
         </div>
       </div>
     </div>
@@ -232,6 +263,9 @@ export const LandingPromotions = () => {
   const shouldReduceMotion = useReducedMotion();
   const sectionRef = React.useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+
+  // Lấy cố định 4 bài tiêu điểm từ Thành Đoàn
+  const articles = getThanhDoanSampleArticles();
 
   return (
     <section
@@ -294,7 +328,7 @@ export const LandingPromotions = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Cột bài viết chính */}
           <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
-            {ARTICLES.map((article, index) => (
+            {articles.map((article, index) => (
               <ArticleCard
                 key={article.id || index}
                 article={article}

@@ -77,161 +77,98 @@ export const ARTICLES = [
  * @property {number} id
  * @property {string} title - Tiêu đề tin tức
  * @property {string} imageUrl - URL ảnh thumbnail
- * @property {string} timestamp - Thời gian đăng (ví dụ: "Vừa xong • Tin nóng")
+ * @property {string} url - Đường dẫn chi tiết bài viết
+ * @property {string} timestamp - Thời gian/nhãn chuyên mục (ví dụ: "Vừa xong • Tin nóng")
  */
 
 /**
  * @type {SidebarNewsItem[]}
  */
 export const SIDEBAR_NEWS = [
+  // --- TOPIC: Mạng lưới tình nguyện ---
   {
     id: 1,
-    title: "Hội nghị tuyên dương thanh niên tiên tiến làm theo lời Bác năm 2025",
-    imageUrl: "https://picsum.photos/100/100?random=101",
-    timestamp: "Vừa xong • Tin nóng",
+    title: "Đề xuất chính sách cho thanh niên tình nguyện tại diễn đàn quốc tế",
+    imageUrl:
+      "http://thanhdoandanang.org.vn/wp-content/uploads/2023/12/412034513_755665786594739_668777376406512372_n-390x205.jpg",
+    url: "http://thanhdoandanang.org.vn/archives/24594",
+    timestamp: "Mạng lưới tình nguyện • 29/11/2024",
   },
   {
     id: 2,
-    title: "Chương trình tình nguyện mùa đông ấm áp tại vùng cao",
-    imageUrl: "https://picsum.photos/100/100?random=102",
-    timestamp: "5 phút trước • Hoạt động",
+    title: "Chương trình “Mỗi tháng một địa chỉ yêu thương”",
+    imageUrl:
+      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/11/130c1782506beb35b27a-392x272.jpg",
+    url: "http://thanhdoandanang.org.vn/archives/24465",
+    timestamp: "Mạng lưới tình nguyện • 21/11/2024",
   },
   {
     id: 3,
-    title: "Cuộc thi sáng tạo khởi nghiệp thanh niên 2025 chính thức khởi động",
-    imageUrl: "https://picsum.photos/100/100?random=103",
-    timestamp: "15 phút trước • Tin nóng",
+    title: "Những ‘ngân hàng máu nóng’ tiếp sức bệnh nhân",
+    imageUrl:
+      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/09/images1755231_hieu-392x272.jpg",
+    url: "http://thanhdoandanang.org.vn/archives/24312",
+    timestamp: "Mạng lưới tình nguyện • 07/11/2024",
   },
+
+  // --- TOPIC: Chống luận điệu sai trái, tự diễn biến, tự chuyển hoá ---
   {
     id: 4,
-    title: "Workshop kỹ năng số cho thanh niên tại Hà Nội",
-    imageUrl: "https://picsum.photos/100/100?random=104",
-    timestamp: "30 phút trước • Sự kiện",
+    title: "Bài cuối: Lời cảnh báo từ chính “người trong cuộc”",
+    imageUrl:
+      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/10/6_viet-1728000710244-392x272.jpg",
+    url: "http://thanhdoandanang.org.vn/archives/24017",
+    timestamp: "Chống luận điệu sai trái • 12/10/2024",
   },
   {
     id: 5,
-    title: "Chiến dịch thanh niên tình nguyện hè 2025: Đăng ký bắt đầu",
-    imageUrl: "https://picsum.photos/100/100?random=105",
-    timestamp: "1 giờ trước • Thông báo",
+    title: "Lật tẩy chiêu trò đả kích, bôi nhọ của các thế lực thù địch",
+    imageUrl:
+      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/10/ct-copy-2-392x272.jpg",
+    url: "http://thanhdoandanang.org.vn/archives/24023",
+    timestamp: "Chống luận điệu sai trái • 22/12/2024",
   },
   {
     id: 6,
-    title: "Hội thảo về phát triển bền vững và vai trò của thế hệ trẻ",
-    imageUrl: "https://picsum.photos/100/100?random=106",
-    timestamp: "1 giờ trước • Sự kiện",
+    title:
+      "Minh chứng phản bác các nhận định sai lệch trong “Báo cáo tự do tôn giáo quốc tế 2024” của USCIRF",
+    imageUrl:
+      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/10/338545150_598961758949097_316580-1718410101106-300x208.jpg",
+    url: "http://thanhdoandanang.org.vn/archives/24026",
+    timestamp: "Chống luận điệu sai trái • 25/12/2024",
   },
+
+  // --- TOPIC: Thể thao - Giải trí ---
   {
     id: 7,
-    title: "Ra mắt nền tảng học tập trực tuyến dành cho thanh niên",
-    imageUrl: "https://picsum.photos/100/100?random=107",
-    timestamp: "2 giờ trước • Tin nóng",
+    title: "Xây dựng phố đi bộ Bạch Đằng an toàn, văn minh",
+    imageUrl:
+      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/07/images1743666_1-1-390x205.gif",
+    url: "http://thanhdoandanang.org.vn/archives/23549",
+    timestamp: "Thể thao - Giải trí • 23/07/2024",
   },
   {
     id: 8,
-    title: "Cuộc thi viết về tấm gương thanh niên tiêu biểu 2025",
-    imageUrl: "https://picsum.photos/100/100?random=108",
-    timestamp: "2 giờ trước • Hoạt động",
+    title: "Hấp dẫn từ cuộc thi Marathon quốc tế Đà Nẵng 2024",
+    imageUrl:
+      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/03/images1731174_marathon_1_logo-392x272.jpg",
+    url: "http://thanhdoandanang.org.vn/archives/22808",
+    timestamp: "Thể thao - Giải trí • 25/03/2024",
   },
   {
     id: 9,
-    title: "Chương trình đối thoại giữa thanh niên và lãnh đạo địa phương",
-    imageUrl: "https://picsum.photos/100/100?random=109",
-    timestamp: "3 giờ trước • Sự kiện",
+    title: "Du lịch Đà Nẵng phục hồi và tiếp tục phát triển mạnh mẽ",
+    imageUrl:
+      "http://thanhdoandanang.org.vn/wp-content/uploads/2023/12/images1721099_1-392x272.gif",
+    url: "http://thanhdoandanang.org.vn/archives/22135",
+    timestamp: "Thể thao - Giải trí • 18/12/2023",
   },
   {
     id: 10,
-    title: "Hội nghị kết nối doanh nghiệp và thanh niên khởi nghiệp",
-    imageUrl: "https://picsum.photos/100/100?random=110",
-    timestamp: "3 giờ trước • Tin nóng",
-  },
-  {
-    id: 11,
-    title: "Chương trình tư vấn hướng nghiệp cho học sinh cuối cấp",
-    imageUrl: "https://picsum.photos/100/100?random=111",
-    timestamp: "4 giờ trước • Hoạt động",
-  },
-  {
-    id: 12,
-    title: "Festival văn hóa thanh niên các dân tộc Việt Nam 2025",
-    imageUrl: "https://picsum.photos/100/100?random=112",
-    timestamp: "5 giờ trước • Sự kiện",
-  },
-  {
-    id: 13,
-    title: "Ra mắt ứng dụng quản lý hoạt động thanh niên số hóa",
-    imageUrl: "https://picsum.photos/100/100?random=113",
-    timestamp: "6 giờ trước • Tin nóng",
-  },
-  {
-    id: 14,
-    title: "Chiến dịch bảo vệ môi trường xanh của thanh niên",
-    imageUrl: "https://picsum.photos/100/100?random=114",
-    timestamp: "7 giờ trước • Hoạt động",
-  },
-  {
-    id: 15,
-    title: "Hội thảo về an toàn thông tin và bảo mật dữ liệu cho giới trẻ",
-    imageUrl: "https://picsum.photos/100/100?random=115",
-    timestamp: "8 giờ trước • Sự kiện",
-  },
-  {
-    id: 16,
-    title: "Cuộc thi tìm kiếm tài năng trẻ trong lĩnh vực công nghệ",
-    imageUrl: "https://picsum.photos/100/100?random=116",
-    timestamp: "9 giờ trước • Tin nóng",
-  },
-  {
-    id: 17,
-    title: "Chương trình giao lưu văn hóa thanh niên ASEAN 2025",
-    imageUrl: "https://picsum.photos/100/100?random=117",
-    timestamp: "10 giờ trước • Sự kiện",
-  },
-  {
-    id: 18,
-    title: "Workshop phát triển kỹ năng lãnh đạo cho thanh niên",
-    imageUrl: "https://picsum.photos/100/100?random=118",
-    timestamp: "11 giờ trước • Hoạt động",
-  },
-  {
-    id: 19,
-    title: "Chương trình tình nguyện dạy học cho trẻ em vùng khó khăn",
-    imageUrl: "https://picsum.photos/100/100?random=119",
-    timestamp: "12 giờ trước • Tin nóng",
-  },
-  {
-    id: 20,
-    title: "Hội nghị thanh niên với chủ đề 'Khởi nghiệp sáng tạo'",
-    imageUrl: "https://picsum.photos/100/100?random=120",
-    timestamp: "13 giờ trước • Sự kiện",
-  },
-  {
-    id: 21,
-    title: "Ra mắt chương trình đào tạo kỹ năng số cho 10.000 thanh niên",
-    imageUrl: "https://picsum.photos/100/100?random=121",
-    timestamp: "14 giờ trước • Tin nóng",
-  },
-  {
-    id: 22,
-    title: "Cuộc thi thiết kế sản phẩm sáng tạo phục vụ cộng đồng",
-    imageUrl: "https://picsum.photos/100/100?random=122",
-    timestamp: "15 giờ trước • Hoạt động",
-  },
-  {
-    id: 23,
-    title: "Chương trình hỗ trợ thanh niên khởi nghiệp với vốn ưu đãi",
-    imageUrl: "https://picsum.photos/100/100?random=123",
-    timestamp: "1 ngày trước • Tin nóng",
-  },
-  {
-    id: 24,
-    title: "Hội thảo về giáo dục giới tính và sức khỏe sinh sản cho thanh niên",
-    imageUrl: "https://picsum.photos/100/100?random=124",
-    timestamp: "1 ngày trước • Sự kiện",
-  },
-  {
-    id: 25,
-    title: "Chiến dịch hiến máu nhân đạo của thanh niên tình nguyện",
-    imageUrl: "https://picsum.photos/100/100?random=125",
-    timestamp: "1 ngày trước • Hoạt động",
+    title: "Đà Nẵng khẳng định điểm đến hấp dẫn để thu hút du khách",
+    imageUrl:
+      "http://thanhdoandanang.org.vn/wp-content/uploads/2023/11/images1719533_1-392x272.gif",
+    url: "http://thanhdoandanang.org.vn/archives/22068",
+    timestamp: "Thể thao - Giải trí • 30/11/2023",
   },
 ];
