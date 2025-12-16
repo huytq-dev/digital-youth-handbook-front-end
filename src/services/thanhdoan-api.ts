@@ -1,7 +1,13 @@
 /**
  * Service: dữ liệu Tiêu điểm nổi bật từ Thành Đoàn Đà Nẵng
  * Hiện tại dùng static mock 4 bài cố định (title + mô tả + ảnh + link).
+ * Ảnh được load từ thư mục local: src/assets/promotions-images
  */
+
+import highlightEnv from "@/assets/promotions-images/đề-tài-bảo-vệ-môi-trường-4.jpg";
+import highlightVolunteer from "@/assets/promotions-images/cong-trinh-.jpg";
+import highlightTraining from "@/assets/promotions-images/3-166-392x272.jpg";
+import highlightClub from "@/assets/promotions-images/1493694905650821010.jpg";
 
 export interface ThanhDoanArticle {
   id: number;
@@ -31,8 +37,7 @@ function getSampleArticles(): ThanhDoanArticle[] {
       category: "Hoạt Động",
       author: "Thành Đoàn Đà Nẵng",
       date: "13/11/2025",
-      imageUrl:
-        "http://thanhdoandanang.org.vn/wp-content/uploads/2025/11/%C4%91%E1%BB%81-t%C3%A0i-b%E1%BA%A3o-v%E1%BB%87-m%C3%B4i-tr%C6%B0%E1%BB%9Dng-4-1024x683.jpg",
+      imageUrl: highlightEnv,
       likes: 350,
       comments: 88,
       isHot: true,
@@ -47,8 +52,7 @@ function getSampleArticles(): ThanhDoanArticle[] {
       category: "Môi Trường",
       author: "Thành Đoàn Đà Nẵng",
       date: "07/07/2025",
-      imageUrl:
-        "http://thanhdoandanang.org.vn/wp-content/uploads/2025/08/cong-trinh-1-1.jpg",
+      imageUrl: highlightVolunteer,
       likes: 215,
       comments: 41,
       isHot: true,
@@ -63,8 +67,7 @@ function getSampleArticles(): ThanhDoanArticle[] {
       category: "Tập Huấn",
       author: "Thành Đoàn Đà Nẵng",
       date: "09/09/2024",
-      imageUrl:
-        "http://thanhdoandanang.org.vn/wp-content/uploads/2024/09/z5812747778795_1053b1d0a2548b7ebfb1c721c50ae154.jpg",
+      imageUrl: highlightTraining,
       likes: 190,
       comments: 30,
       isHot: false,
@@ -79,8 +82,7 @@ function getSampleArticles(): ThanhDoanArticle[] {
       category: "Hội Nghị",
       author: "Thành Đoàn Đà Nẵng",
       date: "20/11/2025",
-      imageUrl:
-        "http://thanhdoandanang.org.vn/wp-content/uploads/2025/11/1493694905650821010-1024x682.jpg",
+      imageUrl: highlightClub,
       likes: 150,
       comments: 25,
       isHot: false,

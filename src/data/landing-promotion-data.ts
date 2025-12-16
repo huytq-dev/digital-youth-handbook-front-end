@@ -1,4 +1,15 @@
 
+import snVolunteer1 from "@/assets/promotions-images/412034513_755665786594739_668777376406512372_n-390x205.jpg";
+import snVolunteer2 from "@/assets/promotions-images/130c1782506beb35b27a-392x272.jpg";
+import snVolunteer3 from "@/assets/promotions-images/images1755231_hieu-392x272.jpg";
+import snChong1 from "@/assets/promotions-images/6_viet-1728000710244-392x272.jpg";
+import snChong2 from "@/assets/promotions-images/ct-copy-2-392x272.jpg";
+import snChong3 from "@/assets/promotions-images/338545150_598961758949097_316580-1718410101106-300x208.jpg";
+import snSport1 from "@/assets/promotions-images/images1743666_1-1-390x205.gif";
+import snSport2 from "@/assets/promotions-images/images1731174_marathon_1_logo-392x272.jpg";
+import snSport3 from "@/assets/promotions-images/images1721099_1-392x272.gif";
+import snSport4 from "@/assets/promotions-images/images1719533_1-392x272.gif";
+
 /**
  * @typedef {object} Article
  * @property {number} id
@@ -89,24 +100,21 @@ export const SIDEBAR_NEWS = [
   {
     id: 1,
     title: "Đề xuất chính sách cho thanh niên tình nguyện tại diễn đàn quốc tế",
-    imageUrl:
-      "http://thanhdoandanang.org.vn/wp-content/uploads/2023/12/412034513_755665786594739_668777376406512372_n-390x205.jpg",
+    imageUrl: snVolunteer1,
     url: "http://thanhdoandanang.org.vn/archives/24594",
     timestamp: "Mạng lưới tình nguyện • 29/11/2024",
   },
   {
     id: 2,
     title: "Chương trình “Mỗi tháng một địa chỉ yêu thương”",
-    imageUrl:
-      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/11/130c1782506beb35b27a-392x272.jpg",
+    imageUrl: snVolunteer2,
     url: "http://thanhdoandanang.org.vn/archives/24465",
     timestamp: "Mạng lưới tình nguyện • 21/11/2024",
   },
   {
     id: 3,
     title: "Những ‘ngân hàng máu nóng’ tiếp sức bệnh nhân",
-    imageUrl:
-      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/09/images1755231_hieu-392x272.jpg",
+    imageUrl: snVolunteer3,
     url: "http://thanhdoandanang.org.vn/archives/24312",
     timestamp: "Mạng lưới tình nguyện • 07/11/2024",
   },
@@ -115,16 +123,14 @@ export const SIDEBAR_NEWS = [
   {
     id: 4,
     title: "Bài cuối: Lời cảnh báo từ chính “người trong cuộc”",
-    imageUrl:
-      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/10/6_viet-1728000710244-392x272.jpg",
+    imageUrl: snChong1,
     url: "http://thanhdoandanang.org.vn/archives/24017",
     timestamp: "Chống luận điệu sai trái • 12/10/2024",
   },
   {
     id: 5,
     title: "Lật tẩy chiêu trò đả kích, bôi nhọ của các thế lực thù địch",
-    imageUrl:
-      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/10/ct-copy-2-392x272.jpg",
+    imageUrl: snChong2,
     url: "http://thanhdoandanang.org.vn/archives/24023",
     timestamp: "Chống luận điệu sai trái • 22/12/2024",
   },
@@ -132,8 +138,7 @@ export const SIDEBAR_NEWS = [
     id: 6,
     title:
       "Minh chứng phản bác các nhận định sai lệch trong “Báo cáo tự do tôn giáo quốc tế 2024” của USCIRF",
-    imageUrl:
-      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/10/338545150_598961758949097_316580-1718410101106-300x208.jpg",
+    imageUrl: snChong3,
     url: "http://thanhdoandanang.org.vn/archives/24026",
     timestamp: "Chống luận điệu sai trái • 25/12/2024",
   },
@@ -142,32 +147,28 @@ export const SIDEBAR_NEWS = [
   {
     id: 7,
     title: "Xây dựng phố đi bộ Bạch Đằng an toàn, văn minh",
-    imageUrl:
-      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/07/images1743666_1-1-390x205.gif",
+    imageUrl: snSport1,
     url: "http://thanhdoandanang.org.vn/archives/23549",
     timestamp: "Thể thao - Giải trí • 23/07/2024",
   },
   {
     id: 8,
     title: "Hấp dẫn từ cuộc thi Marathon quốc tế Đà Nẵng 2024",
-    imageUrl:
-      "http://thanhdoandanang.org.vn/wp-content/uploads/2024/03/images1731174_marathon_1_logo-392x272.jpg",
+    imageUrl: snSport2,
     url: "http://thanhdoandanang.org.vn/archives/22808",
     timestamp: "Thể thao - Giải trí • 25/03/2024",
   },
   {
     id: 9,
     title: "Du lịch Đà Nẵng phục hồi và tiếp tục phát triển mạnh mẽ",
-    imageUrl:
-      "http://thanhdoandanang.org.vn/wp-content/uploads/2023/12/images1721099_1-392x272.gif",
+    imageUrl: snSport3,
     url: "http://thanhdoandanang.org.vn/archives/22135",
     timestamp: "Thể thao - Giải trí • 18/12/2023",
   },
   {
     id: 10,
     title: "Đà Nẵng khẳng định điểm đến hấp dẫn để thu hút du khách",
-    imageUrl:
-      "http://thanhdoandanang.org.vn/wp-content/uploads/2023/11/images1719533_1-392x272.gif",
+    imageUrl: snSport4,
     url: "http://thanhdoandanang.org.vn/archives/22068",
     timestamp: "Thể thao - Giải trí • 30/11/2023",
   },
