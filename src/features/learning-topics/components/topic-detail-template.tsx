@@ -5,7 +5,6 @@ import {
   BookOpen,
   Target,
   Video,
-  Image as ImageIcon,
   Star,
   Share2,
   List, // Thêm icon cho TableOfContents
@@ -17,13 +16,12 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useEffect, useState, useCallback } from "react";
 import { ChevronDown } from "lucide-react";
 import { showToast } from "@/lib/toast";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useDeviceType } from "@/hooks/use-device-type";
 
 interface TopicDetailTemplateProps {
   topic: LearningTopic;
@@ -284,6 +282,7 @@ const CollapsibleSubSections = ({
 export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
   const [activeSection, setActiveSection] = useState<string>("");
   const shouldReduceMotion = useReducedMotion();
+  const { isMobile } = useDeviceType();
 
   // Logic theo dõi cuộn trang (Scroll Spy)
   useEffect(() => {
@@ -610,35 +609,29 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
               <motion.section
                 id="section-infographic"
                 variants={sectionVariants}
-                className="rounded-xl border-2 border-black bg-white p-2 shadow-[6px_6px_0px_black] scroll-mt-28"
+                className="rounded-xl border-2 border-black bg-white shadow-[6px_6px_0px_black] scroll-mt-28"
                 {...(!shouldReduceMotion && {
                   viewport: { once: true },
                 })}
               >
-                <motion.div
-                  className="border-b-2 border-black bg-purple-100 p-3 mb-2 flex items-center justify-between rounded-t-lg"
-                  variants={textContainerVariants}
-                  initial="hidden"
-                  {...(!shouldReduceMotion && {
-                    whileInView: "visible",
-                    viewport: { once: true },
-                  })}
-                >
-                  <motion.h2
-                    variants={textH2Variants}
-                    className="text-lg font-black text-purple-900 uppercase flex items-center"
-                  >
-                    <ImageIcon className="mr-2" size={20} /> Infographic
-                  </motion.h2>
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full border-2 border-black bg-red-400" />
-                    <div className="w-3 h-3 rounded-full border-2 border-black bg-yellow-400" />
-                  </div>
-                </motion.div>
 
                 {(() => {
                   const infographicUrls = topic.infographicUrls;
                   if (infographicUrls && infographicUrls.length > 0) {
+                    // Filter ảnh dựa trên device type
+                    const filteredUrls = infographicUrls.filter(url => {
+                      // Kiểm tra tên file có chứa "desktop" hay "mobile"
+                      const fileName = url.split('/').pop()?.toLowerCase() || '';
+                      if (isMobile) {
+                        return fileName.includes('mobile');
+                      } else {
+                        return fileName.includes('desktop');
+                      }
+                    });
+
+                    // Nếu không có ảnh phù hợp với device type, hiển thị tất cả
+                    const displayUrls = filteredUrls.length > 0 ? filteredUrls : infographicUrls;
+
                     return (
                       <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
                         <Carousel
@@ -646,7 +639,7 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                           className="w-full"
                         >
                           <CarouselContent className="ml-0">
-                            {infographicUrls.map((url, index) => (
+                            {displayUrls.map((url, index) => (
                               <CarouselItem
                                 key={index}
                                 className="pl-0 basis-full"
@@ -662,14 +655,7 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                                     />
                                   </div>
 
-                                  {/* BADGE */}
-                                  <div className="absolute top-2 right-2 bg-yellow-300 text-black text-xs font-black px-2 py-1 rounded-md border-2 border-black z-10">
-                                    Ảnh {index + 1}/{infographicUrls.length}
-                                  </div>
 
-                                  {/* NÚT PREV/NEXT ĐÈ LÊN ẢNH */}
-                                  <CarouselPrevious className="absolute left-3 top-1/2 -translate-y-1/2 border-2 border-black bg-white hover:bg-yellow-300 text-black disabled:opacity-0" />
-                                  <CarouselNext className="absolute right-3 top-1/2 -translate-y-1/2 border-2 border-black bg-white hover:bg-yellow-300 text-black disabled:opacity-0" />
                                 </div>
                               </CarouselItem>
                             ))}

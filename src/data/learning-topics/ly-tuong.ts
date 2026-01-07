@@ -1,6 +1,7 @@
 import type { LearningTopic } from "@/features/learning-topics/learning-topics.type";
-import lyTuongImage1 from "@/assets/infographic_chu_de/chu_de_1/Gemini_Generated_Image_dqjgtpdqjgtpdqjg.png";
-import lyTuongImage2 from "@/assets/infographic_chu_de/chu_de_1/Gemini_Generated_Image_rbv1zyrbv1zyrbv1.png";
+import lyTuongImage1 from "@/assets/infographic_chu_de/chu_de_1/desktop_1.png";
+import lyTuongImage2 from "@/assets/infographic_chu_de/chu_de_1/desktop_2.png";
+import lyTuongImage3 from "@/assets/infographic_chu_de/chu_de_1/mobile_1.png";
 
 export const lyTuongTopic: LearningTopic = {
   id: "ly-tuong",
@@ -121,6 +122,7 @@ Giữ vững lý tưởng cách mạng và phát triển hoài bão là nhiệm 
   infographicUrls: [
     lyTuongImage1,
     lyTuongImage2,
+    lyTuongImage3,
   ],
   quiz: [
     {
