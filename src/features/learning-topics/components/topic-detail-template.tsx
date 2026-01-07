@@ -4,14 +4,13 @@ import { QuizSection } from "./quiz-section";
 import {
   BookOpen,
   Target,
-  Video,
   Star,
   Share2,
   List, // Thêm icon cho TableOfContents
   CheckCircle2, // Thêm icon cho TableOfContents
 } from "lucide-react";
 // Bỏ import TableOfContents từ topic-widgets vì ta sẽ định nghĩa lại ở đây để tùy biến
-import { FunFactCard, ResourceCard } from "./topic-widgets";
+import { FunFactCard } from "./topic-widgets";
 import {
   Carousel,
   CarouselContent,
@@ -597,9 +596,6 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                           allowFullScreen
                         />
                       </div>
-                      <div className="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded border-2 border-black shadow-[2px_2px_0px_black] flex items-center gap-1 animate-pulse">
-                        <Video size={12} /> LIVE
-                      </div>
                     </div>
                   </motion.div>
                 )}
@@ -614,23 +610,19 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                   viewport: { once: true },
                 })}
               >
-
                 {(() => {
                   const infographicUrls = topic.infographicUrls;
+
                   if (infographicUrls && infographicUrls.length > 0) {
-                    // Filter ảnh dựa trên device type
-                    const filteredUrls = infographicUrls.filter(url => {
-                      // Kiểm tra tên file có chứa "desktop" hay "mobile"
-                      const fileName = url.split('/').pop()?.toLowerCase() || '';
-                      if (isMobile) {
-                        return fileName.includes('mobile');
-                      } else {
-                        return fileName.includes('desktop');
-                      }
+                    const filteredUrls = infographicUrls.filter((url) => {
+                      const fileName =
+                        url.split("/").pop()?.toLowerCase() || "";
+                      if (isMobile) return fileName.includes("mobile");
+                      return fileName.includes("desktop");
                     });
 
-                    // Nếu không có ảnh phù hợp với device type, hiển thị tất cả
-                    const displayUrls = filteredUrls.length > 0 ? filteredUrls : infographicUrls;
+                    const displayUrls =
+                      filteredUrls.length > 0 ? filteredUrls : infographicUrls;
 
                     return (
                       <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
@@ -644,18 +636,21 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                                 key={index}
                                 className="pl-0 basis-full"
                               >
-                                <div className="relative overflow-hidden rounded-lg border-2 border-black bg-white shadow-[2px_2px_0px_black] h-[520px] sm:h-[600px]">
-                                  {/* KHUNG ẢNH FULL */}
-                                  <div className="w-full h-full bg-slate-100">
-                                    <img
-                                      src={url}
-                                      alt={`${topic.title} - Ảnh ${index + 1}`}
-                                      className="w-full h-full object-contain"
-                                      // nếu bạn muốn full kín khung (có thể crop) thì đổi object-contain -> object-cover
-                                    />
-                                  </div>
-
-
+                                {/* ✅ STYLE RIÊNG MOBILE / DESKTOP */}
+                                <div
+                                  className="
+                      relative overflow-hidden
+                      rounded-lg border-2 border-black
+                      bg-white shadow-[2px_2px_0px_black]
+                      w-full
+                      aspect-[9/16] sm:aspect-[16/9]
+                    "
+                                >
+                                  <img
+                                    src={url}
+                                    alt={`${topic.title} - Ảnh ${index + 1}`}
+                                    className="w-full h-full object-contain"
+                                  />
                                 </div>
                               </CarouselItem>
                             ))}
@@ -663,17 +658,31 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                         </Carousel>
                       </div>
                     );
-                  } else if (topic.infographicUrl) {
+                  }
+
+                  // fallback 1 ảnh
+                  if (topic.infographicUrl) {
                     return (
-                      <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50 min-h-[300px] flex items-center justify-center">
-                        <img
-                          src={topic.infographicUrl}
-                          alt={topic.title}
-                          className="h-full w-full object-contain max-h-[500px]"
-                        />
+                      <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <div
+                          className="
+              relative overflow-hidden
+              rounded-lg border-2 border-black
+              bg-white shadow-[2px_2px_0px_black]
+              w-full
+              aspect-[9/16] sm:aspect-[16/9]
+            "
+                        >
+                          <img
+                            src={topic.infographicUrl}
+                            alt={topic.title}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
                       </div>
                     );
                   }
+
                   return null;
                 })()}
               </motion.section>
@@ -740,7 +749,6 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                   {/* Truyền activeSection vào TableOfContents */}
                   <TableOfContents activeId={activeSection} />
                   <FunFactCard />
-                  <ResourceCard />
 
                   <motion.button
                     onClick={handleShare}
