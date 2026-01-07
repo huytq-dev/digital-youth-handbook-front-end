@@ -4,26 +4,23 @@ import { QuizSection } from "./quiz-section";
 import {
   BookOpen,
   Target,
-  Video,
-  Image as ImageIcon,
   Star,
   Share2,
   List, // Thêm icon cho TableOfContents
   CheckCircle2, // Thêm icon cho TableOfContents
 } from "lucide-react";
 // Bỏ import TableOfContents từ topic-widgets vì ta sẽ định nghĩa lại ở đây để tùy biến
-import { FunFactCard, ResourceCard } from "./topic-widgets";
+import { FunFactCard } from "./topic-widgets";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useEffect, useState, useCallback } from "react";
 import { ChevronDown } from "lucide-react";
 import { showToast } from "@/lib/toast";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useDeviceType } from "@/hooks/use-device-type";
 
 interface TopicDetailTemplateProps {
   topic: LearningTopic;
@@ -284,6 +281,7 @@ const CollapsibleSubSections = ({
 export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
   const [activeSection, setActiveSection] = useState<string>("");
   const shouldReduceMotion = useReducedMotion();
+  const { isMobile } = useDeviceType();
 
   // Logic theo dõi cuộn trang (Scroll Spy)
   useEffect(() => {
@@ -598,9 +596,6 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                           allowFullScreen
                         />
                       </div>
-                      <div className="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded border-2 border-black shadow-[2px_2px_0px_black] flex items-center gap-1 animate-pulse">
-                        <Video size={12} /> LIVE
-                      </div>
                     </div>
                   </motion.div>
                 )}
@@ -610,35 +605,25 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
               <motion.section
                 id="section-infographic"
                 variants={sectionVariants}
-                className="rounded-xl border-2 border-black bg-white p-2 shadow-[6px_6px_0px_black] scroll-mt-28"
+                className="rounded-xl border-2 border-black bg-white shadow-[6px_6px_0px_black] scroll-mt-28"
                 {...(!shouldReduceMotion && {
                   viewport: { once: true },
                 })}
               >
-                <motion.div
-                  className="border-b-2 border-black bg-purple-100 p-3 mb-2 flex items-center justify-between rounded-t-lg"
-                  variants={textContainerVariants}
-                  initial="hidden"
-                  {...(!shouldReduceMotion && {
-                    whileInView: "visible",
-                    viewport: { once: true },
-                  })}
-                >
-                  <motion.h2
-                    variants={textH2Variants}
-                    className="text-lg font-black text-purple-900 uppercase flex items-center"
-                  >
-                    <ImageIcon className="mr-2" size={20} /> Infographic
-                  </motion.h2>
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full border-2 border-black bg-red-400" />
-                    <div className="w-3 h-3 rounded-full border-2 border-black bg-yellow-400" />
-                  </div>
-                </motion.div>
-
                 {(() => {
                   const infographicUrls = topic.infographicUrls;
+
                   if (infographicUrls && infographicUrls.length > 0) {
+                    const filteredUrls = infographicUrls.filter((url) => {
+                      const fileName =
+                        url.split("/").pop()?.toLowerCase() || "";
+                      if (isMobile) return fileName.includes("mobile");
+                      return fileName.includes("desktop");
+                    });
+
+                    const displayUrls =
+                      filteredUrls.length > 0 ? filteredUrls : infographicUrls;
+
                     return (
                       <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
                         <Carousel
@@ -646,30 +631,26 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                           className="w-full"
                         >
                           <CarouselContent className="ml-0">
-                            {infographicUrls.map((url, index) => (
+                            {displayUrls.map((url, index) => (
                               <CarouselItem
                                 key={index}
                                 className="pl-0 basis-full"
                               >
-                                <div className="relative overflow-hidden rounded-lg border-2 border-black bg-white shadow-[2px_2px_0px_black] h-[520px] sm:h-[600px]">
-                                  {/* KHUNG ẢNH FULL */}
-                                  <div className="w-full h-full bg-slate-100">
-                                    <img
-                                      src={url}
-                                      alt={`${topic.title} - Ảnh ${index + 1}`}
-                                      className="w-full h-full object-contain"
-                                      // nếu bạn muốn full kín khung (có thể crop) thì đổi object-contain -> object-cover
-                                    />
-                                  </div>
-
-                                  {/* BADGE */}
-                                  <div className="absolute top-2 right-2 bg-yellow-300 text-black text-xs font-black px-2 py-1 rounded-md border-2 border-black z-10">
-                                    Ảnh {index + 1}/{infographicUrls.length}
-                                  </div>
-
-                                  {/* NÚT PREV/NEXT ĐÈ LÊN ẢNH */}
-                                  <CarouselPrevious className="absolute left-3 top-1/2 -translate-y-1/2 border-2 border-black bg-white hover:bg-yellow-300 text-black disabled:opacity-0" />
-                                  <CarouselNext className="absolute right-3 top-1/2 -translate-y-1/2 border-2 border-black bg-white hover:bg-yellow-300 text-black disabled:opacity-0" />
+                                {/* ✅ STYLE RIÊNG MOBILE / DESKTOP */}
+                                <div
+                                  className="
+                      relative overflow-hidden
+                      rounded-lg border-2 border-black
+                      bg-white shadow-[2px_2px_0px_black]
+                      w-full
+                      aspect-[9/16] sm:aspect-[16/9]
+                    "
+                                >
+                                  <img
+                                    src={url}
+                                    alt={`${topic.title} - Ảnh ${index + 1}`}
+                                    className="w-full h-full object-contain"
+                                  />
                                 </div>
                               </CarouselItem>
                             ))}
@@ -677,17 +658,31 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                         </Carousel>
                       </div>
                     );
-                  } else if (topic.infographicUrl) {
+                  }
+
+                  // fallback 1 ảnh
+                  if (topic.infographicUrl) {
                     return (
-                      <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50 min-h-[300px] flex items-center justify-center">
-                        <img
-                          src={topic.infographicUrl}
-                          alt={topic.title}
-                          className="h-full w-full object-contain max-h-[500px]"
-                        />
+                      <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <div
+                          className="
+              relative overflow-hidden
+              rounded-lg border-2 border-black
+              bg-white shadow-[2px_2px_0px_black]
+              w-full
+              aspect-[9/16] sm:aspect-[16/9]
+            "
+                        >
+                          <img
+                            src={topic.infographicUrl}
+                            alt={topic.title}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
                       </div>
                     );
                   }
+
                   return null;
                 })()}
               </motion.section>
@@ -754,7 +749,6 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                   {/* Truyền activeSection vào TableOfContents */}
                   <TableOfContents activeId={activeSection} />
                   <FunFactCard />
-                  <ResourceCard />
 
                   <motion.button
                     onClick={handleShare}

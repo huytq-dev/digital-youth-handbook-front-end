@@ -1,4 +1,4 @@
-import { Lightbulb, Download, FileText, List, CheckCircle2 } from "lucide-react";
+import { Lightbulb, List, CheckCircle2 } from "lucide-react";
 
 // --- Dữ liệu Mục lục (Label + ID tương ứng) ---
 export const TOC_ITEMS = [
@@ -21,31 +21,6 @@ export const FunFactCard = () => (
       <p className="text-sm font-bold text-slate-800 leading-snug">
         Bạn có biết? Kỹ năng số không chỉ là biết dùng máy tính, mà còn là tư duy phản biện khi tiếp nhận thông tin trên mạng xã hội đấy!
       </p>
-    </div>
-  </div>
-);
-
-// 2. Component "Tài liệu đính kèm" (Downloads)
-export const ResourceCard = () => (
-  <div className="bg-white border-2 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_black] hover:-translate-y-1 transition-transform">
-    <div className="bg-blue-600 p-3 border-b-2 border-black flex justify-between items-center text-white">
-      <span className="font-black uppercase text-sm flex items-center gap-2">
-        <Download size={16} /> Tài liệu
-      </span>
-      <div className="flex gap-1">
-        <div className="w-2 h-2 bg-white rounded-full" />
-        <div className="w-2 h-2 bg-white/50 rounded-full" />
-      </div>
-    </div>
-    <div className="p-4 space-y-3">
-      {['Slide bài giảng.pdf', 'Sổ tay hướng dẫn.docx'].map((file, i) => (
-        <button key={i} className="flex items-center gap-3 w-full p-2 hover:bg-blue-50 rounded-lg border-2 border-transparent hover:border-black/10 transition-all group">
-          <div className="w-8 h-8 bg-slate-100 rounded border border-black flex items-center justify-center group-hover:bg-white">
-            <FileText size={16} className="text-slate-600" />
-          </div>
-          <span className="text-sm font-bold text-slate-700 truncate">{file}</span>
-        </button>
-      ))}
     </div>
   </div>
 );
