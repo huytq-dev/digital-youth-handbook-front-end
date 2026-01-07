@@ -1,4 +1,6 @@
 import type { LearningTopic } from "@/features/learning-topics/learning-topics.type";
+import lyTuongImage1 from "@/assets/infographic_chu_de/chu_de_1/Gemini_Generated_Image_dqjgtpdqjgtpdqjg.png";
+import lyTuongImage2 from "@/assets/infographic_chu_de/chu_de_1/Gemini_Generated_Image_rbv1zyrbv1zyrbv1.png";
 
 export const lyTuongTopic: LearningTopic = {
   id: "ly-tuong",
@@ -12,7 +14,7 @@ export const lyTuongTopic: LearningTopic = {
   content: {
     summary:
       "Chủ đề tập trung làm rõ thế nào là lý tưởng cách mạng của thanh niên Việt Nam thời kỳ mới, vì sao thanh niên cần có hoài bão lớn, và cách biến lý tưởng thành những hành động, việc làm cụ thể trong học tập, lao động và tham gia các hoạt động xã hội.",
-    videoUrl: "https://www.youtube.com/embed/PXZc5sJq9KU",
+    videoUrl: "https://www.youtube.com/embed/9-zZYJOT2MM",
     sections: [
       {
         title: "Giới thiệu",
@@ -117,16 +119,8 @@ Giữ vững lý tưởng cách mạng và phát triển hoài bão là nhiệm 
   },
   infographicUrl: "/images/learning-topics/ly-tuong-hoai-bao.jpg",
   infographicUrls: [
-    "https://picsum.photos/seed/ly-tuong-1/800/1000",
-    "https://picsum.photos/seed/ly-tuong-2/800/1000",
-    "https://picsum.photos/seed/ly-tuong-3/800/1000",
-    "https://picsum.photos/seed/ly-tuong-4/800/1000",
-    "https://picsum.photos/seed/ly-tuong-5/800/1000",
-    "https://picsum.photos/seed/ly-tuong-6/800/1000",
-    "https://picsum.photos/seed/ly-tuong-7/800/1000",
-    "https://picsum.photos/seed/ly-tuong-8/800/1000",
-    "https://picsum.photos/seed/ly-tuong-9/800/1000",
-    "https://picsum.photos/seed/ly-tuong-10/800/1000",
+    lyTuongImage1,
+    lyTuongImage2,
   ],
   quiz: [
     {

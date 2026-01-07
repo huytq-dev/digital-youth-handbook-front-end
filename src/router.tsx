@@ -4,7 +4,6 @@ import { ScrollToTop } from "@/components/scroll-to-top";
 import { publicRoutes, protectedRoutes } from "./routes/appRoute";
 import PublicRouteGuard from "@/middleware/PublicRouteGuard";
 import AuthGuard from "@/middleware/AuthGuard";
-import { ROUTE_PATH } from "./routes/routePath";
 
 // Optimized PageLoader với skeleton loading
 const PageLoader = () => (
@@ -28,22 +27,14 @@ export const Router = () => {
     <Suspense fallback={<PageLoader />}>
       <ScrollToTop />
       <Routes>
-        
         {/* 1. Map Public Routes */}
         {publicRoutes.map((route, index) => {
-          // Error pages được phép truy cập ngay cả khi đã đăng nhập
-          const isErrorPage =
-            route.path === ROUTE_PATH.SERVER_ERROR ||
-            route.path === ROUTE_PATH.DISCONNECTED ||
-            route.path === ROUTE_PATH.NOT_FOUND ||
-            route.path === ROUTE_PATH.UNAUTHORIZED;
-
           return (
-            <Route 
-              key={`public-${index}`} 
-              path={route.path} 
+            <Route
+              key={`public-${index}`}
+              path={route.path}
               element={
-                <PublicRouteGuard allowWhenAuthenticated={isErrorPage}>
+                <PublicRouteGuard>
                   <route.component />
                 </PublicRouteGuard>
               }
@@ -53,11 +44,20 @@ export const Router = () => {
 
         {/* 2. Map Protected Routes */}
         {Object.entries(protectedRoutes).map(([key, group]) => {
-          const Layout = group.layout as ComponentType<{ children: ReactNode }> | null;
+          const Layout = group.layout as ComponentType<{
+            children: ReactNode;
+          }> | null;
 
           if (Layout) {
             return (
-              <Route key={key} element={<Layout><Outlet /></Layout>}>
+              <Route
+                key={key}
+                element={
+                  <Layout>
+                    <Outlet />
+                  </Layout>
+                }
+              >
                 {group.routes.map((route, idx) => (
                   <Route
                     key={`${key}-${idx}`}
@@ -86,7 +86,6 @@ export const Router = () => {
             />
           ));
         })}
-
       </Routes>
     </Suspense>
   );

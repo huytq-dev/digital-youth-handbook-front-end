@@ -8,11 +8,11 @@ import {
   Image as ImageIcon,
   Star,
   Share2,
-  List,          // Thêm icon cho TableOfContents
-  CheckCircle2,  // Thêm icon cho TableOfContents
+  List, // Thêm icon cho TableOfContents
+  CheckCircle2, // Thêm icon cho TableOfContents
 } from "lucide-react";
 // Bỏ import TableOfContents từ topic-widgets vì ta sẽ định nghĩa lại ở đây để tùy biến
-import { FunFactCard, ResourceCard } from "./topic-widgets"; 
+import { FunFactCard, ResourceCard } from "./topic-widgets";
 import {
   Carousel,
   CarouselContent,
@@ -34,10 +34,10 @@ const doodleDotPattern =
 
 // --- Dữ liệu Mục lục (Label + ID tương ứng) ---
 const TOC_ITEMS = [
-  { label: 'Mục tiêu chủ đề', id: 'section-objectives' },
-  { label: 'Nội dung trọng tâm', id: 'section-content' },
-  { label: 'Infographic ghi nhớ', id: 'section-infographic' },
-  { label: 'Trắc nghiệm', id: 'section-quiz' },
+  { label: "Mục tiêu chủ đề", id: "section-objectives" },
+  { label: "Nội dung trọng tâm", id: "section-content" },
+  { label: "Infographic ghi nhớ", id: "section-infographic" },
+  { label: "Trắc nghiệm", id: "section-quiz" },
 ];
 
 // --- Component Mục lục (Đã tích hợp Active State) ---
@@ -50,7 +50,7 @@ const TableOfContents = ({ activeId }: { activeId: string }) => {
       const offsetPosition = elementPosition + window.scrollY - headerOffset;
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
@@ -64,20 +64,22 @@ const TableOfContents = ({ activeId }: { activeId: string }) => {
         {TOC_ITEMS.map((item, i) => {
           const isActive = activeId === item.id;
           return (
-            <li 
-              key={i} 
+            <li
+              key={i}
               onClick={() => scrollToSection(item.id)}
               className={`flex items-center gap-2 text-sm font-bold cursor-pointer transition-all duration-300 group ${
-                isActive 
+                isActive
                   ? "text-emerald-700 translate-x-2"
                   : "text-slate-600 hover:text-emerald-600 hover:translate-x-1"
               }`}
             >
-              <CheckCircle2 
-                size={14} 
+              <CheckCircle2
+                size={14}
                 className={`transition-colors duration-300 ${
-                  isActive ? "text-emerald-600 fill-emerald-100" : "text-slate-300 group-hover:text-emerald-400"
-                }`} 
+                  isActive
+                    ? "text-emerald-600 fill-emerald-100"
+                    : "text-slate-300 group-hover:text-emerald-400"
+                }`}
               />
               {item.label}
             </li>
@@ -100,32 +102,59 @@ export const textContainerVariants = {
 export const textH1Variants = {
   hidden: { y: 30, opacity: 0, scale: 0.95 },
   visible: {
-    y: 0, opacity: 1, scale: 1,
-    transition: { type: "spring" as const, stiffness: 200, damping: 15, bounce: 0.4 },
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 200,
+      damping: 15,
+      bounce: 0.4,
+    },
   },
 };
 
 export const textH2Variants = {
   hidden: { y: 25, opacity: 0, x: -10 },
   visible: {
-    y: 0, x: 0, opacity: 1,
-    transition: { type: "spring" as const, stiffness: 180, damping: 14, bounce: 0.35 },
+    y: 0,
+    x: 0,
+    opacity: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 180,
+      damping: 14,
+      bounce: 0.35,
+    },
   },
 };
 
 export const textPVariants = {
   hidden: { y: 20, opacity: 0 },
   visible: {
-    y: 0, opacity: 1,
-    transition: { type: "spring" as const, stiffness: 150, damping: 12, bounce: 0.3 },
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 150,
+      damping: 12,
+      bounce: 0.3,
+    },
   },
 };
 
 export const textSpanVariants = {
   hidden: { y: 15, opacity: 0, scale: 0.98 },
   visible: {
-    y: 0, opacity: 1, scale: 1,
-    transition: { type: "spring" as const, stiffness: 160, damping: 13, bounce: 0.25 },
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 160,
+      damping: 13,
+      bounce: 0.25,
+    },
   },
 };
 
@@ -140,7 +169,8 @@ const containerVariants = {
 const sectionVariants = {
   hidden: { y: 50, opacity: 0 },
   visible: {
-    y: 0, opacity: 1,
+    y: 0,
+    opacity: 1,
     transition: { type: "spring" as const, stiffness: 100, damping: 15 },
   },
 };
@@ -153,12 +183,15 @@ interface CollapsibleSubSectionsProps {
   parentIndex: number;
 }
 
-const CollapsibleSubSections = ({ subSections, parentIndex }: CollapsibleSubSectionsProps) => {
+const CollapsibleSubSections = ({
+  subSections,
+  parentIndex,
+}: CollapsibleSubSectionsProps) => {
   // State lưu trữ các mục đang mở (mặc định mở mục đầu tiên)
   const [openItems, setOpenItems] = useState<Set<number>>(new Set([0]));
 
   const toggleItem = useCallback((index: number) => {
-    setOpenItems(prev => {
+    setOpenItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(index)) {
         newSet.delete(index);
@@ -200,7 +233,7 @@ const CollapsibleSubSections = ({ subSections, parentIndex }: CollapsibleSubSect
       {subSections.map((subSection, subIndex) => {
         const isOpen = openItems.has(subIndex);
         return (
-          <div 
+          <div
             key={subIndex}
             className="border-2 border-sky-200 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
           >
@@ -217,8 +250,8 @@ const CollapsibleSubSections = ({ subSections, parentIndex }: CollapsibleSubSect
                   {subSection.title}
                 </h4>
               </div>
-              <ChevronDown 
-                size={20} 
+              <ChevronDown
+                size={20}
                 className={`text-sky-600 transition-transform duration-300 flex-shrink-0 ${
                   isOpen ? "rotate-180" : "rotate-0"
                 }`}
@@ -255,20 +288,20 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
   // Logic theo dõi cuộn trang (Scroll Spy)
   useEffect(() => {
     const handleScroll = () => {
-      const sectionIds = TOC_ITEMS.map(item => item.id);
+      const sectionIds = TOC_ITEMS.map((item) => item.id);
       const headerOffset = 200; // Offset cho header + margin
-      
+
       // Tìm section đang hiển thị nhiều nhất trong viewport
       let currentSection = "";
       let minDistance = Infinity;
-      
+
       for (const id of sectionIds) {
         const element = document.getElementById(id);
         if (element) {
           const rect = element.getBoundingClientRect();
           // Tính khoảng cách từ top của element đến vùng trigger (headerOffset)
           const distance = Math.abs(rect.top - headerOffset);
-          
+
           // Nếu element đang trong viewport (top < headerOffset và bottom > 0)
           if (rect.top <= headerOffset && rect.bottom > 100) {
             // Chọn section có top gần với headerOffset nhất
@@ -279,7 +312,7 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
           }
         }
       }
-      
+
       // Fallback: nếu không tìm thấy, lấy section đầu tiên có trong viewport
       if (!currentSection) {
         for (const id of sectionIds) {
@@ -293,7 +326,7 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
           }
         }
       }
-      
+
       if (currentSection) {
         setActiveSection(currentSection);
       }
@@ -301,7 +334,7 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
 
     // Gọi ngay khi mount để set initial state
     handleScroll();
-    
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -311,7 +344,10 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
     try {
       const currentUrl = window.location.href;
       await navigator.clipboard.writeText(currentUrl);
-      showToast.success("Đã sao chép link!", "Link đã được sao chép vào clipboard.");
+      showToast.success(
+        "Đã sao chép link!",
+        "Link đã được sao chép vào clipboard."
+      );
     } catch (error) {
       // Fallback cho các trình duyệt không hỗ trợ clipboard API
       const currentUrl = window.location.href;
@@ -323,9 +359,15 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
       textArea.select();
       try {
         document.execCommand("copy");
-        showToast.success("Đã sao chép link!", "Link đã được sao chép vào clipboard.");
+        showToast.success(
+          "Đã sao chép link!",
+          "Link đã được sao chép vào clipboard."
+        );
       } catch (err) {
-        showToast.error("Không thể sao chép link", "Vui lòng sao chép thủ công.");
+        showToast.error(
+          "Không thể sao chép link",
+          "Vui lòng sao chép thủ công."
+        );
       }
       document.body.removeChild(textArea);
     }
@@ -363,10 +405,14 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
             <motion.div
               initial={{ scale: 0, rotate: -10 }}
               animate={{ scale: 1, rotate: -2 }}
-              transition={{ type: "spring" as const, stiffness: 200, damping: 12 }}
+              transition={{
+                type: "spring" as const,
+                stiffness: 200,
+                damping: 12,
+              }}
               className="inline-block bg-yellow-300 border-2 border-black px-4 py-1.5 rounded-sm shadow-[4px_4px_0px_black] mb-6 cursor-default hover:rotate-0 transition-transform"
             >
-              <motion.p 
+              <motion.p
                 variants={textSpanVariants}
                 className="text-xs font-black uppercase tracking-widest text-black"
               >
@@ -381,342 +427,349 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
             </motion.h1>
           </motion.header>
 
-        {/* --- MAIN LAYOUT GRID --- */}
-        {/* Mobile/Tablet: 1 cột full width | Desktop: 12 cols grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* === LEFT CONTENT === */}
-          {/* Mobile/Tablet: full width | Desktop: 8 cols */}
-          <motion.div
-            className="col-span-1 lg:col-span-8 space-y-12"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {/* 1. OBJECTIVES - Màu Emerald (Xanh lá) */}
-            <motion.section
-              id="section-objectives"
-              variants={sectionVariants}
-              className="relative group scroll-mt-28"
+          {/* --- MAIN LAYOUT GRID --- */}
+          {/* Mobile/Tablet: 1 cột full width | Desktop: 12 cols grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* === LEFT CONTENT === */}
+            {/* Mobile/Tablet: full width | Desktop: 8 cols */}
+            <motion.div
+              className="col-span-1 lg:col-span-8 space-y-12"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
             >
-              <div className="absolute inset-0 bg-emerald-500 rounded-xl translate-x-2 translate-y-2 border-2 border-black transition-transform group-hover:translate-x-3 group-hover:translate-y-3" />
-              <motion.div 
-                className="relative rounded-xl border-2 border-black bg-white p-8"
-                variants={textContainerVariants}
-                initial="hidden"
-                animate="visible"
+              {/* 1. OBJECTIVES - Màu Emerald (Xanh lá) */}
+              <motion.section
+                id="section-objectives"
+                variants={sectionVariants}
+                className="relative group scroll-mt-28"
               >
-                <motion.h2 
-                  variants={textH2Variants}
-                  className="mb-6 flex items-center text-2xl font-black text-emerald-700 uppercase border-b-2 border-dashed border-emerald-200 pb-2 w-fit"
-                >
-                  <Target className="mr-3" size={28} strokeWidth={2.5} />
-                  Mục tiêu
-                </motion.h2>
-                <motion.ul 
-                  className="space-y-4"
-                  variants={textContainerVariants}
-                >
-                  {topic.objectives.map((obj, index) => (
-                    <motion.li
-                      key={index}
-                      variants={textSpanVariants}
-                      className="flex items-start text-base font-bold text-slate-700"
-                    >
-                      <span className="mr-4 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-sm font-black text-emerald-800 border-2 border-black shadow-[2px_2px_0px_black]">
-                        {index + 1}
-                      </span>
-                      <span className="mt-1">{obj}</span>
-                    </motion.li>
-                  ))}
-                </motion.ul>
-              </motion.div>
-            </motion.section>
-
-            {/* 2. CONTENT TEXT & VIDEO - Màu Sky Blue */}
-            <motion.section
-              id="section-content"
-              variants={sectionVariants}
-              className="space-y-6 scroll-mt-28"
-              {...(!shouldReduceMotion && {
-                viewport: { once: true, margin: "-100px" },
-              })}
-            >
-              {/* Header chung cho phần Nội dung trọng tâm */}
-              <motion.div
-                variants={textContainerVariants}
-                initial="hidden"
-                {...(!shouldReduceMotion && {
-                  whileInView: "visible",
-                  viewport: { once: true, margin: "-50px" },
-                })}
-                className="flex items-center gap-3"
-              >
-                <motion.h2 
-                  variants={textH2Variants}
-                  className="flex items-center text-xl font-black text-black uppercase bg-sky-300 w-fit px-3 py-1 border-2 border-black rounded-lg -rotate-1"
-                >
-                  <BookOpen className="mr-2" size={20} strokeWidth={2.5} />
-                  Nội dung trọng tâm
-                </motion.h2>
-              </motion.div>
-
-              {/* Hiển thị các section nội dung chi tiết (nếu có) */}
-              {topic.content.sections && topic.content.sections.length > 0 ? (
-                <div className="space-y-5">
-                  {topic.content.sections.map((section, index) => (
-                    <motion.div
-                      key={index}
-                      variants={sectionVariants}
-                      initial="hidden"
-                      {...(!shouldReduceMotion && {
-                        whileInView: "visible",
-                        viewport: { once: true, margin: "-50px" },
-                      })}
-                      className="group relative"
-                    >
-                      {/* Shadow layer - Sky Blue */}
-                      <div className="absolute inset-0 bg-sky-500 rounded-xl translate-x-2 translate-y-2 border-2 border-black transition-transform group-hover:translate-x-3 group-hover:translate-y-3" />
-                      
-                      {/* Main card */}
-                      <div className="relative rounded-xl border-2 border-black bg-white overflow-hidden">
-                        {/* Section header - Sky Blue */}
-                        <div className="bg-sky-100 border-b-2 border-black px-5 py-3 flex items-center gap-3">
-                          <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-sky-500 text-sm font-black text-white border-2 border-black shadow-[2px_2px_0px_black]">
-                            {index + 1}
-                          </span>
-                          <h3 className="text-base font-black text-sky-900 leading-tight">
-                            {section.title}
-                          </h3>
-                        </div>
-                        
-                        {/* Section content */}
-                        <div className="p-5">
-                          {/* Nếu có content trực tiếp */}
-                          {section.content && (
-                            <p className="text-sm font-medium leading-relaxed text-slate-700 whitespace-pre-line">
-                              {section.content}
-                            </p>
-                          )}
-                          
-                          {/* Nếu có subSections (mục con 4.1, 4.2...) - Collapsible */}
-                          {section.subSections && section.subSections.length > 0 && (
-                            <CollapsibleSubSections 
-                              subSections={section.subSections} 
-                              parentIndex={index} 
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              ) : (
-                /* Fallback: hiển thị summary nếu không có sections */
+                <div className="absolute inset-0 bg-emerald-500 rounded-xl translate-x-2 translate-y-2 border-2 border-black transition-transform group-hover:translate-x-3 group-hover:translate-y-3" />
                 <motion.div
+                  className="relative rounded-xl border-2 border-black bg-white p-8"
                   variants={textContainerVariants}
                   initial="hidden"
-                  {...(!shouldReduceMotion && {
-                    whileInView: "visible",
-                    viewport: { once: true, margin: "-50px" },
-                  })}
-                  className="rounded-xl border-2 border-black bg-white p-6 shadow-[6px_6px_0px_black]"
+                  animate="visible"
                 >
-                  <motion.p 
-                    variants={textPVariants}
-                    className="text-sm font-medium leading-relaxed text-slate-700 border-l-4 border-sky-200 pl-4"
+                  <motion.h2
+                    variants={textH2Variants}
+                    className="mb-6 flex items-center text-2xl font-black text-emerald-700 uppercase border-b-2 border-dashed border-emerald-200 pb-2 w-fit"
                   >
-                    {topic.content.summary}
-                  </motion.p>
+                    <Target className="mr-3" size={28} strokeWidth={2.5} />
+                    Mục tiêu
+                  </motion.h2>
+                  <motion.ul
+                    className="space-y-4"
+                    variants={textContainerVariants}
+                  >
+                    {topic.objectives.map((obj, index) => (
+                      <motion.li
+                        key={index}
+                        variants={textSpanVariants}
+                        className="flex items-start text-base font-bold text-slate-700"
+                      >
+                        <span className="mr-4 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-sm font-black text-emerald-800 border-2 border-black shadow-[2px_2px_0px_black]">
+                          {index + 1}
+                        </span>
+                        <span className="mt-1">{obj}</span>
+                      </motion.li>
+                    ))}
+                  </motion.ul>
                 </motion.div>
-              )}
+              </motion.section>
 
-              {/* Video section */}
-              {topic.content.videoUrl && (
+              {/* 2. CONTENT TEXT & VIDEO - Màu Sky Blue */}
+              <motion.section
+                id="section-content"
+                variants={sectionVariants}
+                className="space-y-6 scroll-mt-28"
+                {...(!shouldReduceMotion && {
+                  viewport: { once: true, margin: "-100px" },
+                })}
+              >
+                {/* Header chung cho phần Nội dung trọng tâm */}
                 <motion.div
-                  variants={sectionVariants}
+                  variants={textContainerVariants}
                   initial="hidden"
                   {...(!shouldReduceMotion && {
                     whileInView: "visible",
                     viewport: { once: true, margin: "-50px" },
                   })}
-                  className="rounded-xl border-2 border-black bg-white p-4 shadow-[6px_6px_0px_black]"
+                  className="flex items-center gap-3"
                 >
-                  <div className="group relative overflow-hidden rounded-lg border-2 border-black bg-black ring-offset-2 ring-black hover:ring-2 transition-all">
-                    <div className="aspect-video">
-                      <iframe
-                        src={topic.content.videoUrl}
-                        title="Video bài giảng"
-                        className="h-full w-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    </div>
-                    <div className="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded border-2 border-black shadow-[2px_2px_0px_black] flex items-center gap-1 animate-pulse">
-                      <Video size={12} /> LIVE
-                    </div>
-                  </div>
+                  <motion.h2
+                    variants={textH2Variants}
+                    className="flex items-center text-xl font-black text-black uppercase bg-sky-300 w-fit px-3 py-1 border-2 border-black rounded-lg -rotate-1"
+                  >
+                    <BookOpen className="mr-2" size={20} strokeWidth={2.5} />
+                    Nội dung trọng tâm
+                  </motion.h2>
                 </motion.div>
-              )}
-            </motion.section>
 
-            {/* 3. INFOGRAPHIC */}
-            <motion.section
-              id="section-infographic"
-              variants={sectionVariants}
-              className="rounded-xl border-2 border-black bg-white p-2 shadow-[6px_6px_0px_black] scroll-mt-28"
-              {...(!shouldReduceMotion && {
-                viewport: { once: true },
-              })}
-            >
-              <motion.div
-                className="border-b-2 border-black bg-purple-100 p-3 mb-2 flex items-center justify-between rounded-t-lg"
-                variants={textContainerVariants}
-                initial="hidden"
+                {/* Hiển thị các section nội dung chi tiết (nếu có) */}
+                {topic.content.sections && topic.content.sections.length > 0 ? (
+                  <div className="space-y-5">
+                    {topic.content.sections.map((section, index) => (
+                      <motion.div
+                        key={index}
+                        variants={sectionVariants}
+                        initial="hidden"
+                        {...(!shouldReduceMotion && {
+                          whileInView: "visible",
+                          viewport: { once: true, margin: "-50px" },
+                        })}
+                        className="group relative"
+                      >
+                        {/* Shadow layer - Sky Blue */}
+                        <div className="absolute inset-0 bg-sky-500 rounded-xl translate-x-2 translate-y-2 border-2 border-black transition-transform group-hover:translate-x-3 group-hover:translate-y-3" />
+
+                        {/* Main card */}
+                        <div className="relative rounded-xl border-2 border-black bg-white overflow-hidden">
+                          {/* Section header - Sky Blue */}
+                          <div className="bg-sky-100 border-b-2 border-black px-5 py-3 flex items-center gap-3">
+                            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-sky-500 text-sm font-black text-white border-2 border-black shadow-[2px_2px_0px_black]">
+                              {index + 1}
+                            </span>
+                            <h3 className="text-base font-black text-sky-900 leading-tight">
+                              {section.title}
+                            </h3>
+                          </div>
+
+                          {/* Section content */}
+                          <div className="p-5">
+                            {/* Nếu có content trực tiếp */}
+                            {section.content && (
+                              <p className="text-sm font-medium leading-relaxed text-slate-700 whitespace-pre-line">
+                                {section.content}
+                              </p>
+                            )}
+
+                            {/* Nếu có subSections (mục con 4.1, 4.2...) - Collapsible */}
+                            {section.subSections &&
+                              section.subSections.length > 0 && (
+                                <CollapsibleSubSections
+                                  subSections={section.subSections}
+                                  parentIndex={index}
+                                />
+                              )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  /* Fallback: hiển thị summary nếu không có sections */
+                  <motion.div
+                    variants={textContainerVariants}
+                    initial="hidden"
+                    {...(!shouldReduceMotion && {
+                      whileInView: "visible",
+                      viewport: { once: true, margin: "-50px" },
+                    })}
+                    className="rounded-xl border-2 border-black bg-white p-6 shadow-[6px_6px_0px_black]"
+                  >
+                    <motion.p
+                      variants={textPVariants}
+                      className="text-sm font-medium leading-relaxed text-slate-700 border-l-4 border-sky-200 pl-4"
+                    >
+                      {topic.content.summary}
+                    </motion.p>
+                  </motion.div>
+                )}
+
+                {/* Video section */}
+                {topic.content.videoUrl && (
+                  <motion.div
+                    variants={sectionVariants}
+                    initial="hidden"
+                    {...(!shouldReduceMotion && {
+                      whileInView: "visible",
+                      viewport: { once: true, margin: "-50px" },
+                    })}
+                    className="rounded-xl border-2 border-black bg-white p-4 shadow-[6px_6px_0px_black]"
+                  >
+                    <div className="group relative overflow-hidden rounded-lg border-2 border-black bg-black ring-offset-2 ring-black hover:ring-2 transition-all">
+                      <div className="aspect-video">
+                        <iframe
+                          src={topic.content.videoUrl}
+                          title="Video bài giảng"
+                          className="h-full w-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                      <div className="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded border-2 border-black shadow-[2px_2px_0px_black] flex items-center gap-1 animate-pulse">
+                        <Video size={12} /> LIVE
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </motion.section>
+
+              {/* 3. INFOGRAPHIC */}
+              <motion.section
+                id="section-infographic"
+                variants={sectionVariants}
+                className="rounded-xl border-2 border-black bg-white p-2 shadow-[6px_6px_0px_black] scroll-mt-28"
                 {...(!shouldReduceMotion && {
-                  whileInView: "visible",
                   viewport: { once: true },
                 })}
               >
-                <motion.h2 
-                  variants={textH2Variants}
-                  className="text-lg font-black text-purple-900 uppercase flex items-center"
+                <motion.div
+                  className="border-b-2 border-black bg-purple-100 p-3 mb-2 flex items-center justify-between rounded-t-lg"
+                  variants={textContainerVariants}
+                  initial="hidden"
+                  {...(!shouldReduceMotion && {
+                    whileInView: "visible",
+                    viewport: { once: true },
+                  })}
                 >
-                  <ImageIcon className="mr-2" size={20} /> Infographic
-                </motion.h2>
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full border-2 border-black bg-red-400" />
-                  <div className="w-3 h-3 rounded-full border-2 border-black bg-yellow-400" />
-                </div>
-              </motion.div>
+                  <motion.h2
+                    variants={textH2Variants}
+                    className="text-lg font-black text-purple-900 uppercase flex items-center"
+                  >
+                    <ImageIcon className="mr-2" size={20} /> Infographic
+                  </motion.h2>
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full border-2 border-black bg-red-400" />
+                    <div className="w-3 h-3 rounded-full border-2 border-black bg-yellow-400" />
+                  </div>
+                </motion.div>
 
-              {(() => {
-                const infographicUrls = topic.infographicUrls;
-                if (infographicUrls && infographicUrls.length > 0) {
-                  return (
-                    <div className="px-4 py-4 bg-slate-50 rounded-lg border border-slate-200">
-                      <Carousel
-                        opts={{ align: "start", loop: true }}
-                        className="w-full"
-                      >
-                        <CarouselContent className="-ml-2 md:-ml-4">
-                          {infographicUrls.map((url, index) => (
-                            <CarouselItem
-                              key={index}
-                              className="pl-2 md:pl-4 basis-full md:basis-1/2 lg:basis-1/3"
-                            >
-                              <div className="relative overflow-hidden rounded-lg border-2 border-black bg-white shadow-[2px_2px_0px_black] hover:-translate-y-1 hover:shadow-[4px_4px_0px_black] transition-all h-full group cursor-pointer">
-                                <div className="aspect-[3/4] flex items-center justify-center bg-slate-100 overflow-hidden">
-                                  <img
-                                    src={url}
-                                    alt={`${topic.title} - Ảnh ${index + 1}`}
-                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                  />
+                {(() => {
+                  const infographicUrls = topic.infographicUrls;
+                  if (infographicUrls && infographicUrls.length > 0) {
+                    return (
+                      <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <Carousel
+                          opts={{ align: "start", loop: true }}
+                          className="w-full"
+                        >
+                          <CarouselContent className="ml-0">
+                            {infographicUrls.map((url, index) => (
+                              <CarouselItem
+                                key={index}
+                                className="pl-0 basis-full"
+                              >
+                                <div className="relative overflow-hidden rounded-lg border-2 border-black bg-white shadow-[2px_2px_0px_black] h-[520px] sm:h-[600px]">
+                                  {/* KHUNG ẢNH FULL */}
+                                  <div className="w-full h-full bg-slate-100">
+                                    <img
+                                      src={url}
+                                      alt={`${topic.title} - Ảnh ${index + 1}`}
+                                      className="w-full h-full object-contain"
+                                      // nếu bạn muốn full kín khung (có thể crop) thì đổi object-contain -> object-cover
+                                    />
+                                  </div>
+
+                                  {/* BADGE */}
+                                  <div className="absolute top-2 right-2 bg-yellow-300 text-black text-xs font-black px-2 py-1 rounded-md border-2 border-black z-10">
+                                    Ảnh {index + 1}/{infographicUrls.length}
+                                  </div>
+
+                                  {/* NÚT PREV/NEXT ĐÈ LÊN ẢNH */}
+                                  <CarouselPrevious className="absolute left-3 top-1/2 -translate-y-1/2 border-2 border-black bg-white hover:bg-yellow-300 text-black disabled:opacity-0" />
+                                  <CarouselNext className="absolute right-3 top-1/2 -translate-y-1/2 border-2 border-black bg-white hover:bg-yellow-300 text-black disabled:opacity-0" />
                                 </div>
-                                <div className="absolute top-2 right-2 bg-yellow-300 text-black text-xs font-black px-2 py-1 rounded-md border-2 border-black z-10">
-                                  Ảnh {index + 1}/{infographicUrls.length}
-                                </div>
-                              </div>
-                            </CarouselItem>
-                          ))}
-                        </CarouselContent>
-                        <CarouselPrevious className="border-2 border-black bg-white hover:bg-yellow-300 text-black -left-4 disabled:opacity-0" />
-                        <CarouselNext className="border-2 border-black bg-white hover:bg-yellow-300 text-black -right-4 disabled:opacity-0" />
-                      </Carousel>
-                    </div>
-                  );
-                } else if (topic.infographicUrl) {
-                  return (
-                    <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50 min-h-[300px] flex items-center justify-center">
-                      <img
-                        src={topic.infographicUrl}
-                        alt={topic.title}
-                        className="h-full w-full object-contain max-h-[500px]"
-                      />
-                    </div>
-                  );
-                }
-                return null;
-              })()}
-            </motion.section>
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                        </Carousel>
+                      </div>
+                    );
+                  } else if (topic.infographicUrl) {
+                    return (
+                      <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50 min-h-[300px] flex items-center justify-center">
+                        <img
+                          src={topic.infographicUrl}
+                          alt={topic.title}
+                          className="h-full w-full object-contain max-h-[500px]"
+                        />
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+              </motion.section>
 
-            {/* 4. QUIZ */}
-            <motion.section
-              id="section-quiz"
-              variants={sectionVariants}
-              viewport={{ once: true }}
-              className="scroll-mt-28"
-            >
-              <QuizSection questions={topic.quiz} quizId={topic.quizId} />
-            </motion.section>
-
-            {/* 5. TÀI LIỆU THAM KHẢO */}
-            {topic.references && topic.references.length > 0 && (
+              {/* 4. QUIZ */}
               <motion.section
-                id="section-references"
+                id="section-quiz"
                 variants={sectionVariants}
                 viewport={{ once: true }}
                 className="scroll-mt-28"
               >
-                <div className="rounded-xl border-2 border-black bg-white overflow-hidden shadow-[4px_4px_0px_black]">
-                  {/* Header */}
-                  <div className="bg-slate-100 border-b-2 border-black px-5 py-3 flex items-center gap-2">
-                    <BookOpen size={20} className="text-slate-700" />
-                    <h2 className="text-lg font-black text-slate-800 uppercase">
-                      Tài liệu tham khảo
-                    </h2>
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="p-5">
-                    <ol className="space-y-3 list-none">
-                      {topic.references.map((ref) => (
-                        <li 
-                          key={ref.id}
-                          className="flex items-start gap-3 text-sm text-slate-600 leading-relaxed"
-                        >
-                          <span className="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700 border border-slate-300 mt-0.5">
-                            {ref.id}
-                          </span>
-                          <span className="italic">{ref.text}</span>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                </div>
+                <QuizSection questions={topic.quiz} quizId={topic.quizId} />
               </motion.section>
-            )}
-          </motion.div>
 
-          {/* === RIGHT SIDEBAR (4 cols) - Sticky === */}
-          {/* Ẩn trên mobile và tablet, chỉ hiển thị trên desktop (lg trở lên) */}
-          <aside className="hidden lg:block lg:col-span-4 h-full">
-            {/* Sticky wrapper */}
-            <div className="sticky top-24 space-y-8 h-fit">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.3 }}
-                className="space-y-8"
-              >
-                {/* Truyền activeSection vào TableOfContents */}
-                <TableOfContents activeId={activeSection} />
-                <FunFactCard />
-                <ResourceCard />
-
-                <motion.button
-                  onClick={handleShare}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-full flex items-center justify-center gap-2 bg-black text-white font-black text-base uppercase py-3 rounded-xl border-2 border-black shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] hover:bg-slate-800 active:translate-y-1 active:translate-x-1 active:shadow-none"
+              {/* 5. TÀI LIỆU THAM KHẢO */}
+              {topic.references && topic.references.length > 0 && (
+                <motion.section
+                  id="section-references"
+                  variants={sectionVariants}
+                  viewport={{ once: true }}
+                  className="scroll-mt-28"
                 >
-                  <Share2 size={18} /> CHIA SẺ CHỦ ĐỀ NÀY
-                </motion.button>
-              </motion.div>
-            </div>
-          </aside>
+                  <div className="rounded-xl border-2 border-black bg-white overflow-hidden shadow-[4px_4px_0px_black]">
+                    {/* Header */}
+                    <div className="bg-slate-100 border-b-2 border-black px-5 py-3 flex items-center gap-2">
+                      <BookOpen size={20} className="text-slate-700" />
+                      <h2 className="text-lg font-black text-slate-800 uppercase">
+                        Tài liệu tham khảo
+                      </h2>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-5">
+                      <ol className="space-y-3 list-none">
+                        {topic.references.map((ref) => (
+                          <li
+                            key={ref.id}
+                            className="flex items-start gap-3 text-sm text-slate-600 leading-relaxed"
+                          >
+                            <span className="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700 border border-slate-300 mt-0.5">
+                              {ref.id}
+                            </span>
+                            <span className="italic">{ref.text}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  </div>
+                </motion.section>
+              )}
+            </motion.div>
+
+            {/* === RIGHT SIDEBAR (4 cols) - Sticky === */}
+            {/* Ẩn trên mobile và tablet, chỉ hiển thị trên desktop (lg trở lên) */}
+            <aside className="hidden lg:block lg:col-span-4 h-full">
+              {/* Sticky wrapper */}
+              <div className="sticky top-24 space-y-8 h-fit">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 0.3 }}
+                  className="space-y-8"
+                >
+                  {/* Truyền activeSection vào TableOfContents */}
+                  <TableOfContents activeId={activeSection} />
+                  <FunFactCard />
+                  <ResourceCard />
+
+                  <motion.button
+                    onClick={handleShare}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-full flex items-center justify-center gap-2 bg-black text-white font-black text-base uppercase py-3 rounded-xl border-2 border-black shadow-[4px_4px_0px_black] transition-all hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[6px_6px_0px_black] hover:bg-slate-800 active:translate-y-1 active:translate-x-1 active:shadow-none"
+                  >
+                    <Share2 size={18} /> CHIA SẺ CHỦ ĐỀ NÀY
+                  </motion.button>
+                </motion.div>
+              </div>
+            </aside>
+          </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
     </AnimatePresence>
   );
 };
