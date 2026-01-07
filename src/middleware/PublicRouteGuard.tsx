@@ -1,41 +1,30 @@
-import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectCurrentUser, selectIsAuthenticated } from "@/features/auth/auth.slice";
-import { ROLES } from "@/config/system-roles";
-import { ROUTE_PATH } from "@/routes/routePath";
+import {
+  selectCurrentUser,
+  selectIsAuthenticated,
+} from "@/features/auth/auth.slice";
 
 interface PublicRouteGuardProps {
   children: React.ReactNode;
-  /**
-   * Nếu true, cho phép truy cập ngay cả khi đã đăng nhập (dùng cho error pages)
-   */
-  allowWhenAuthenticated?: boolean;
 }
 
 /**
  * PublicRouteGuard
- * 
+ *
  * Logic:
  * - Nếu CHƯA đăng nhập: Cho phép truy cập (render children)
- * - Nếu ĐÃ đăng nhập:
- *   - Nếu allowWhenAuthenticated = true: Cho phép truy cập (dùng cho error pages)
- *   - Nếu allowWhenAuthenticated = false: Redirect về trang home dựa trên role
+ * - Nếu ĐÃ đăng nhập: Luôn cho phép truy cập tất cả trang public (không redirect)
  */
-const PublicRouteGuard = ({ children, allowWhenAuthenticated = false }: PublicRouteGuardProps) => {
+const PublicRouteGuard = ({ children }: PublicRouteGuardProps) => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const user = useSelector(selectCurrentUser);
 
-  // Nếu đã đăng nhập và không cho phép truy cập khi authenticated
-  if (isAuthenticated && user && !allowWhenAuthenticated) {
-    // Redirect về trang home dựa trên role
-    if (user.roleName === ROLES.ADMIN) {
-      return <Navigate to={ROUTE_PATH.ADMIN} replace />;
-    }
-
-    return <Navigate to={ROUTE_PATH.HOME} replace />;
+  // Nếu đã đăng nhập, cho phép truy cập tất cả trang public (không redirect)
+  if (isAuthenticated && user) {
+    return <>{children}</>;
   }
 
-  // Cho phép truy cập
+  // Nếu chưa đăng nhập, cho phép truy cập
   return <>{children}</>;
 };
 
