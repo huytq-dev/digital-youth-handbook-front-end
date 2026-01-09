@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { ArrowRight, Star, Sun, Laptop, Rocket, Sparkles } from "lucide-react";
-import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/primitives";
+import heroImageDesktop from "@/assets/landing-images/hero_desktop.png";
+import heroImageMobile from "@/assets/landing-images/hero_mobile.jpg";
 
 // --- CÁC COMPONENT PHỤ (Giữ nguyên) ---
 const PaperPlaneSVG = React.memo(() => (
@@ -151,44 +153,36 @@ const CartoonCloud = ({
   </motion.div>
 );
 
-// --- CAROUSEL ---
-const carouselImages = [
-  "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-  "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-  "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-  "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-];
-
-const DoodleCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % carouselImages.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
-
+// --- HERO IMAGE ---
+const HeroImage = () => {
   return (
-    <div className="relative w-full aspect-video overflow-hidden rounded-xl border-4 border-black bg-slate-200 shadow-[6px_6px_0px_black] group-hover:shadow-[8px_8px_0px_black] group-hover:-translate-y-1 transition-all">
-      <AnimatePresence initial={false} mode="popLayout">
+    // Thêm padding y để tránh bị cắt bóng đổ khi thu nhỏ trên mobile
+    <div className="flex justify-center py-2">
+      <div
+        className="relative w-[85%] sm:w-[80%] md:w-full max-w-4xl overflow-hidden rounded-xl border-4 border-black bg-slate-200 shadow-[6px_6px_0px_black] group-hover:shadow-[8px_8px_0px_black] group-hover:-translate-y-1 transition-all"
+      >
+        {/* Desktop Image - giữ nguyên */}
         <motion.img
-          key={currentIndex}
-          src={carouselImages[currentIndex]}
-          initial={{ x: "100%", opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: "-100%", opacity: 0 }}
-          transition={{ type: "tween", ease: "easeInOut", duration: 0.8 }}
-          className="absolute inset-0 w-full h-full object-cover"
+          src={heroImageDesktop}
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="hidden md:block relative w-full h-auto object-contain"
+          alt="Hành trang số cho thanh thiếu niên"
         />
-      </AnimatePresence>
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10 p-1 bg-white/30 backdrop-blur-sm rounded-full border border-black/50">
-        {carouselImages.map((_, index) => (
-          <div
-            key={index}
-            className={`w-2.5 h-2.5 rounded-full border-2 border-black ${index === currentIndex ? "bg-yellow-400" : "bg-white"}`}
-          />
-        ))}
+
+        {/* Mobile Image - giữ nguyên */}
+        <motion.img
+          src={heroImageMobile}
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          // Ảnh bên trong vẫn là w-full để nó lấp đầy cái khung đã bị thu nhỏ
+          className="block md:hidden relative w-full h-auto object-contain"
+          alt="Hành trang số cho thanh thiếu niên"
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent rounded-xl pointer-events-none" />
       </div>
     </div>
   );
@@ -329,14 +323,14 @@ export const LandingHero = () => {
           </FloatingIcon>
 
           <div className="flex flex-col gap-6 items-center text-center">
-            {/* Carousel */}
+            {/* Hero Image */}
             <div className="relative w-full group">
               <div className="absolute top-2 left-1/2 -translate-x-1/2 w-32 md:w-40 h-7 md:h-8 bg-blue-200/80 border-2 border-blue-400 rotate-[-2deg] z-20 backdrop-blur-sm shadow-[2px_2px_0px_black] flex items-center justify-center">
                 <span className="font-handwriting font-bold text-blue-900 text-xs md:text-sm flex items-center gap-1">
                   <Laptop size={14} /> E-Learning
                 </span>
               </div>
-              <DoodleCarousel />
+              <HeroImage />
             </div>
 
             {/* Text Section */}
