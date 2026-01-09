@@ -1,5 +1,11 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { LEARNING_TOPICS } from "@/data/learning-topics";
+import type { LearningTopic } from "@/features/learning-topics/learning-topics.type";
+import {
+  loadLearningTopicById,
+  loadLearningTopics,
+  prefetchLearningTopic,
+} from "@/data/learning-topics";
 import { UnifiedHeader } from "@/components/layout/unified-header";
 import { TopicDetailTemplate } from "@/features/learning-topics/components/topic-detail-template";
 import { BookOpen, ArrowRight, Frown, Sparkles, Star, Zap } from "lucide-react";
@@ -58,9 +64,37 @@ const LearningTopicsPage = () => {
   const navigate = useNavigate();
   const shouldReduceMotion = useReducedMotion();
 
-  const topic = slug
-    ? LEARNING_TOPICS.find((t) => t.id === slug)
-    : undefined;
+  const [topics, setTopics] = useState<LearningTopic[]>([]);
+  const [topic, setTopic] = useState<LearningTopic | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const load = async () => {
+      setIsLoading(true);
+
+      if (slug) {
+        const data = await loadLearningTopicById(slug);
+        if (!isActive) return;
+        setTopic(data);
+        setTopics([]);
+        setIsLoading(false);
+        return;
+      }
+
+      const data = await loadLearningTopics();
+      if (!isActive) return;
+      setTopics(data);
+      setTopic(undefined);
+      setIsLoading(false);
+    };
+
+    load();
+    return () => {
+      isActive = false;
+    };
+  }, [slug]);
 
   const isDetail = !!slug;
 
@@ -121,64 +155,96 @@ const LearningTopicsPage = () => {
               </motion.p>
             </header>
 
-            {/* 3. Grid Topics với Animation */}
-            <motion.section
-              className="grid gap-8 md:grid-cols-2 lg:gap-10"
-              variants={containerVariants}
-              initial="hidden"
-              {...(!shouldReduceMotion && {
-                whileInView: "visible",
-                viewport: { once: true, margin: "-100px" },
-              })}
-            >
-              {LEARNING_TOPICS.map((topicItem, index) => (
-                // Bọc Link trong motion.div để áp dụng animation cho từng item
-                <motion.div key={topicItem.id} variants={cardVariants} className="h-full">
-                    <Link
-                      to={`/learning-topics/${topicItem.id}`}
-                      className="group relative block h-full"
-                    >
-                      {/* Shadow Layer (Nét vẽ cứng) */}
-                      <div className="absolute inset-0 bg-black rounded-2xl translate-x-3 translate-y-3 transition-transform group-hover:translate-x-4 group-hover:translate-y-4 border-2 border-black" />
-                      
-                      {/* Main Card */}
-                      <div className="relative h-full flex flex-col rounded-2xl border-2 border-black bg-white p-6 transition-transform group-hover:-translate-y-1 group-hover:-translate-x-1 overflow-hidden">
-                        
-                        {/* Doodle Decor góc thẻ */}
-                        <div className="absolute top-0 right-0 w-16 h-16 bg-blue-100 rounded-bl-full border-l-2 border-b-2 border-black -z-10 group-hover:bg-yellow-200 transition-colors" />
+            {/* 3. Grid Topics v?i Animation */}
+            {isLoading ? (
+              <div className="grid gap-8 md:grid-cols-2 lg:gap-10">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="relative h-full">
+                    <div className="absolute inset-0 bg-black rounded-2xl translate-x-3 translate-y-3 border-2 border-black" />
+                    <div className="relative h-full flex flex-col rounded-2xl border-2 border-black bg-white p-6 overflow-hidden">
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-blue-100 rounded-bl-full border-l-2 border-b-2 border-black -z-10" />
 
-                        {/* Header Card */}
-                        <div className="mb-5 flex items-start justify-between">
-                            <span className="inline-flex items-center justify-center bg-blue-200 border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black uppercase tracking-widest text-black shadow-[2px_2px_0px_black] rotate-[-2deg] group-hover:rotate-0 transition-all">
-                                Chủ đề {index + 1}
-                            </span>
-                            <BookOpen className="text-slate-900 group-hover:text-blue-600 transition-colors" size={28} strokeWidth={2.5} />
-                        </div>
-
-                        {/* Content */}
-                        <h2 className="mb-3 text-2xl font-black text-slate-900 leading-tight group-hover:text-blue-700 transition-colors flex items-center gap-2">
-                          <AnimatedText>{topicItem.title}</AnimatedText>
-                          <Star size={20} className="fill-yellow-400 text-black hidden group-hover:block animate-spin-slow" />
-                        </h2>
-                        <p className="mb-6 line-clamp-3 text-sm font-bold text-slate-600 leading-relaxed flex-1 border-l-4 border-blue-200 pl-3">
-                          {topicItem.content.summary}
-                        </p>
-
-                        {/* Footer Card */}
-                        <div className="mt-auto flex items-center justify-between border-t-2 border-black bg-slate-50 -mx-6 -mb-6 px-6 py-4 group-hover:bg-blue-50 transition-colors">
-                          <span className="text-sm font-black text-slate-700 flex items-center gap-2">
-                            <Star size={16} className="fill-yellow-400 text-black" strokeWidth={2} />
-                            {topicItem.objectives.length} MỤC TIÊU
-                          </span>
-                          <span className="flex items-center text-base font-black text-blue-700 group-hover:underline decoration-4 underline-offset-4">
-                            XEM NGAY <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" strokeWidth={3} />
-                          </span>
-                        </div>
+                      <div className="mb-5 flex items-start justify-between">
+                        <span className="inline-flex items-center justify-center bg-blue-200 border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black uppercase tracking-widest text-black shadow-[2px_2px_0px_black]">
+                          Ch? d? {index + 1}
+                        </span>
+                        <div className="h-7 w-7 rounded bg-slate-200 animate-pulse" />
                       </div>
-                    </Link>
-                </motion.div>
-              ))}
-            </motion.section>
+
+                      <div className="mb-3 h-7 w-4/5 rounded bg-slate-200 animate-pulse" />
+                      <div className="mb-2 h-4 w-full rounded bg-slate-200 animate-pulse" />
+                      <div className="mb-6 h-4 w-5/6 rounded bg-slate-200 animate-pulse" />
+
+                      <div className="mt-auto flex items-center justify-between border-t-2 border-black bg-slate-50 -mx-6 -mb-6 px-6 py-4">
+                        <div className="h-5 w-32 rounded bg-slate-200 animate-pulse" />
+                        <div className="h-5 w-24 rounded bg-slate-200 animate-pulse" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <motion.section
+                className="grid gap-8 md:grid-cols-2 lg:gap-10"
+                variants={containerVariants}
+                initial="hidden"
+                {...(!shouldReduceMotion && {
+                  whileInView: "visible",
+                  viewport: { once: true, margin: "-100px" },
+                })}
+              >
+                {topics.map((topicItem, index) => (
+                  // B?c Link trong motion.div d?  p d?ng animation cho t?ng item
+                  <motion.div key={topicItem.id} variants={cardVariants} className="h-full">
+                      <Link
+                        to={`/learning-topics/${topicItem.id}`}
+                        className="group relative block h-full"
+                        onMouseEnter={() => prefetchLearningTopic(topicItem.id)}
+                        onFocus={() => prefetchLearningTopic(topicItem.id)}
+                        onTouchStart={() => prefetchLearningTopic(topicItem.id)}
+                      >
+                        {/* Shadow Layer (N‚t v? c?ng) */}
+                        <div className="absolute inset-0 bg-black rounded-2xl translate-x-3 translate-y-3 transition-transform group-hover:translate-x-4 group-hover:translate-y-4 border-2 border-black" />
+                        
+                        {/* Main Card */}
+                        <div className="relative h-full flex flex-col rounded-2xl border-2 border-black bg-white p-6 transition-transform group-hover:-translate-y-1 group-hover:-translate-x-1 overflow-hidden">
+                          
+                          {/* Doodle Decor g¢c th? */}
+                          <div className="absolute top-0 right-0 w-16 h-16 bg-blue-100 rounded-bl-full border-l-2 border-b-2 border-black -z-10 group-hover:bg-yellow-200 transition-colors" />
+
+                          {/* Header Card */}
+                          <div className="mb-5 flex items-start justify-between">
+                              <span className="inline-flex items-center justify-center bg-blue-200 border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black uppercase tracking-widest text-black shadow-[2px_2px_0px_black] rotate-[-2deg] group-hover:rotate-0 transition-all">
+                                  Ch? d? {index + 1}
+                              </span>
+                              <BookOpen className="text-slate-900 group-hover:text-blue-600 transition-colors" size={28} strokeWidth={2.5} />
+                          </div>
+
+                          {/* Content */}
+                          <h2 className="mb-3 text-2xl font-black text-slate-900 leading-tight group-hover:text-blue-700 transition-colors flex items-center gap-2">
+                            <AnimatedText>{topicItem.title}</AnimatedText>
+                            <Star size={20} className="fill-yellow-400 text-black hidden group-hover:block animate-spin-slow" />
+                          </h2>
+                          <p className="mb-6 line-clamp-3 text-sm font-bold text-slate-600 leading-relaxed flex-1 border-l-4 border-blue-200 pl-3">
+                            {topicItem.content.summary}
+                          </p>
+
+                          {/* Footer Card */}
+                          <div className="mt-auto flex items-center justify-between border-t-2 border-black bg-slate-50 -mx-6 -mb-6 px-6 py-4 group-hover:bg-blue-50 transition-colors">
+                            <span className="text-sm font-black text-slate-700 flex items-center gap-2">
+                              <Star size={16} className="fill-yellow-400 text-black" strokeWidth={2} />
+                              {topicItem.objectives.length} M?C TIEU
+                            </span>
+                            <span className="flex items-center text-base font-black text-blue-700 group-hover:underline decoration-4 underline-offset-4">
+                              XEM NGAY <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" strokeWidth={3} />
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                  </motion.div>
+                ))}
+              </motion.section>
+            )}
           </div>
         </main>
       )}
@@ -188,7 +254,11 @@ const LearningTopicsPage = () => {
           className="min-h-screen bg-[#fff9f0] pb-12 pt-24 font-sans relative"
           style={{ backgroundImage: `url("${doodleDotPattern}")` }}
         >
-          {!topic ? (
+          {isLoading ? (
+            <div className="flex min-h-[60vh] items-center justify-center px-4 text-center relative z-10">
+              <p className="text-lg font-black text-slate-700">Dang tai...</p>
+            </div>
+          ) : !topic ? (
             // Not Found State Style Cartoon
             <motion.div 
               initial={{ scale: 0.8, opacity: 0 }}

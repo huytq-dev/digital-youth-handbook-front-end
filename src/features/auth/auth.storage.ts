@@ -48,7 +48,7 @@ export const authStorage = {
 
   // --- User Operations ---
   setUser: (user: UserDomainModel): void => {
-    console.log('💾 [AUTH STORAGE] Saving user to localStorage:', { id: user.id, name: user.name, username: user.username, email: user.email });
+    import.meta.env.DEV && console.log('💾 [AUTH STORAGE] Saving user to localStorage:', { id: user.id, name: user.name, username: user.username, email: user.email });
     localStorage.setItem(USER_KEY, JSON.stringify(user));
   },
 
@@ -57,7 +57,7 @@ export const authStorage = {
     if (!userStr) return null;
     try {
       const user = JSON.parse(userStr) as UserDomainModel;
-      console.log('📖 [AUTH STORAGE] Loading user from localStorage:', { id: user.id, name: user.name, username: user.username, email: user.email });
+      import.meta.env.DEV && console.log('📖 [AUTH STORAGE] Loading user from localStorage:', { id: user.id, name: user.name, username: user.username, email: user.email });
       return user;
     } catch {
       return null;

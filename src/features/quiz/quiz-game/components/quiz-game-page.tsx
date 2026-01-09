@@ -90,7 +90,7 @@ export const QuizGamePage = ({ currentAttempt }: QuizGamePageProps) => {
         navigate(`/quizzes/${currentAttempt.quizId}/result`);
       }
     } catch (error) {
-      console.error("Error submitting quiz:", error);
+      import.meta.env.DEV && console.error("Error submitting quiz:", error);
       alert("Có lỗi khi nộp bài. Vui lòng thử lại.");
     }
   };

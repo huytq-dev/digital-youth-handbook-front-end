@@ -76,7 +76,7 @@ const QuizGamePageWrapper = () => {
         navigate(`/quizzes/${currentAttempt.quizId}/result`);
       }
     } catch (err) {
-      console.error("Failed to submit quiz:", err);
+      import.meta.env.DEV && console.error("Failed to submit quiz:", err);
       alert("Không thể nộp bài. Vui lòng thử lại.");
     } finally {
       setIsSubmitting(false);

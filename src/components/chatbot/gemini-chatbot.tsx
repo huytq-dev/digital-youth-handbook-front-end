@@ -78,7 +78,7 @@ ${SYSTEM_DATA}
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      console.error("Groq HTTP error:", errorData);
+      import.meta.env.DEV && console.error("Groq HTTP error:", errorData);
       throw new Error(
         (errorData as any)?.error?.message ||
           `HTTP error! status: ${response.status}`
@@ -89,7 +89,7 @@ ${SYSTEM_DATA}
     const text = data.choices?.[0]?.message?.content;
     return text || "Xin lỗi, mình không thể phản hồi tin nhắn này.";
   } catch (error: any) {
-    console.error("Groq API error:", error);
+    import.meta.env.DEV && console.error("Groq API error:", error);
     return `❌ Lỗi kết nối: ${error.message || "Không thể kết nối với API"}`;
   }
 };
@@ -249,7 +249,7 @@ export const GeminiChatbot = () => {
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error("Chat error:", error);
+      import.meta.env.DEV && console.error("Chat error:", error);
     } finally {
       setIsLoading(false);
     }

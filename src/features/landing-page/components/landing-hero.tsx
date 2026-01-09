@@ -1,8 +1,10 @@
 import React from "react";
 import { ArrowRight, Star, Sun, Laptop, Rocket, Sparkles } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/primitives";
-import heroImageDesktop from "@/assets/landing-images/hero_desktop.png";
+import { ROUTE_PATH } from "@/routes/routePath";
+import heroImageDesktop from "@/assets/landing-images/hero_desktop.jpg";
 import heroImageMobile from "@/assets/landing-images/hero_mobile.jpg";
 
 // --- CÁC COMPONENT PHỤ (Giữ nguyên) ---
@@ -191,6 +193,12 @@ const HeroImage = () => {
 // --- MAIN COMPONENT ---
 
 export const LandingHero = () => {
+  const navigate = useNavigate();
+
+  const handleJoinClick = () => {
+    navigate(ROUTE_PATH.LEARNING.INDEX);
+  };
+
   return (
     <section
       className="relative overflow-x-hidden bg-[#87CEEB] 
@@ -365,6 +373,7 @@ export const LandingHero = () => {
               >
                 <Button
                   size="lg"
+                  onClick={handleJoinClick}
                   className="bg-blue-600 text-white font-black uppercase rounded-lg border-2 border-black shadow-[4px_4px_0px_black] hover:bg-blue-700 hover:shadow-[6px_6px_0px_black] hover:-translate-y-0.5 transition-all gap-2 text-sm md:text-base px-6 py-3"
                 >
                   Tham Gia Ngay <ArrowRight size={18} strokeWidth={3} />

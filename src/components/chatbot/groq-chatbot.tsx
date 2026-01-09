@@ -59,7 +59,7 @@ const callGroqAPI = async (
   chatHistory: Message[]
 ): Promise<string> => {
   if (!GROQ_API_KEY) {
-    console.error("❌ Missing API Key: GROQ_API_KEY chưa được cấu hình.");
+    import.meta.env.DEV && console.error("❌ Missing API Key: GROQ_API_KEY chưa được cấu hình.");
     return "⚠️ Hệ thống đang cập nhật. Vui lòng liên hệ Admin.";
   }
 
@@ -108,11 +108,11 @@ ${SYSTEM_DATA}
       const errorData = await response.json().catch(() => ({})); // Parse JSON an toàn
 
       // 1. Log chi tiết ra console cho Developer
-      console.group("🚨 GROQ API ERROR REPORT");
-      console.error("Status:", response.status, response.statusText);
-      console.error("Headers:", Object.fromEntries(response.headers.entries()));
-      console.error("Error Body:", errorData);
-      console.groupEnd();
+      import.meta.env.DEV && console.group("🚨 GROQ API ERROR REPORT");
+      import.meta.env.DEV && console.error("Status:", response.status, response.statusText);
+      import.meta.env.DEV && console.error("Headers:", Object.fromEntries(response.headers.entries()));
+      import.meta.env.DEV && console.error("Error Body:", errorData);
+      import.meta.env.DEV && console.groupEnd();
 
       // 2. Trả về thông báo thân thiện cho User
       // Lỗi 429: Rate Limit (Quá tải)
@@ -145,7 +145,7 @@ ${SYSTEM_DATA}
 
   } catch (error: any) {
     // Lỗi mạng (Network Error, Offline, DNS...)
-    console.error("🌐 NETWORK/UNEXPECTED ERROR:", error);
+    import.meta.env.DEV && console.error("🌐 NETWORK/UNEXPECTED ERROR:", error);
 
     if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
       return "📡 Không có kết nối mạng. Vui lòng kiểm tra internet của bạn.";
@@ -398,7 +398,7 @@ export const GroqChatbot = () => {
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error("Chat error:", error);
+      import.meta.env.DEV && console.error("Chat error:", error);
     } finally {
       setIsLoading(false);
     }

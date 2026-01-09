@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Suspense, lazy, type ReactNode } from "react";
 
 import { Provider } from "react-redux";
 import { BrowserRouter, useLocation } from "react-router-dom";
@@ -9,13 +9,18 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { LoadingProvider } from "@/contexts/loading-context";
 import { MenuProvider } from "@/contexts/menu-context";
-import { GroqChatbot } from "@/components/chatbot/groq-chatbot";
+
+const LazyGroqChatbot = lazy(() =>
+  import("@/components/chatbot/groq-chatbot").then((mod) => ({
+    default: mod.GroqChatbot,
+  }))
+);
 
 interface ProvidersProps {
   children: ReactNode;
 }
 
-// Component wrapper để check route và ẩn chatbot trên trang auth / profile / quiz game & result
+// Component wrapper: hide chatbot on auth / profile / quiz game & result pages
 const ChatbotWrapper = () => {
   const location = useLocation();
   const path = location.pathname;
@@ -23,13 +28,17 @@ const ChatbotWrapper = () => {
   const isProfilePage = path === ROUTE_PATH.PROFILE;
   const isQuizGamePage = path.startsWith(ROUTE_PATH.QUIZ.INDEX) && path.includes("/game");
   const isQuizResultPage = path.startsWith(ROUTE_PATH.QUIZ.INDEX) && path.includes("/result");
-  
+
   const shouldHide = isAuthPage || isProfilePage || isQuizGamePage || isQuizResultPage;
-  
-  // Không dùng useMemo trả về JSX, hãy trả về trực tiếp hoặc null
+
+  // No useMemo needed for JSX; return directly or null.
   if (shouldHide) return null;
-  
-  return <GroqChatbot />;
+
+  return (
+    <Suspense fallback={null}>
+      <LazyGroqChatbot />
+    </Suspense>
+  );
 };
 
 export const Providers = ({ children }: ProvidersProps) => {
@@ -49,5 +58,3 @@ export const Providers = ({ children }: ProvidersProps) => {
     </Provider>
   );
 };
-
-
