@@ -62,51 +62,66 @@ const NAVIGATION: NavItem[] = [
 // --- Sub-components (Giữ nguyên code cũ của bạn: SheetOverlay, NavLinkBtn, UserProfileDropdown, MobileMenuItem, MobileUserCard) ---
 interface SheetOverlayProps {
   isOpen: boolean;
+  isMobile: boolean;
   onClose: () => void;
   children: ReactNode;
 }
 
-const SheetOverlay = memo(({ isOpen, onClose, children }: SheetOverlayProps) => (
-  <>
-    <AnimatePresence>
-      {isOpen && (
+const SheetOverlay = memo(
+  ({ isOpen, isMobile, onClose, children }: SheetOverlayProps) => {
+    const overlayDuration = isMobile ? 0.15 : 0.3;
+    const sheetTransition = isMobile
+      ? { type: "tween" as const, duration: 0.2, ease: "easeOut" }
+      : { type: "spring" as const, damping: 30, stiffness: 300 };
+
+    return (
+      <>
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: overlayDuration }}
+              className={cn(
+                "fixed inset-0 z-[10000] transition-opacity duration-300",
+                isMobile ? "bg-black/40" : "bg-black/40 backdrop-blur-md"
+              )}
+              onClick={onClose}
+            />
+          )}
+        </AnimatePresence>
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-[10000] bg-black/40 backdrop-blur-md transition-opacity duration-300"
-          onClick={onClose}
-        />
-      )}
-    </AnimatePresence>
-    <motion.div
-      initial={false}
-      animate={{
-        x: isOpen ? 0 : "100%",
-      }}
-      transition={{
-        type: "spring",
-        damping: 30,
-        stiffness: 300,
-      }}
-      className={cn(
-        "fixed inset-y-0 right-0 h-[100dvh] w-full sm:w-[400px] border-l-4 border-black shadow-[-10px_0px_20px_rgba(0,0,0,0.3)] flex flex-col",
-        isOpen ? "z-[10001] pointer-events-auto" : "z-0 pointer-events-none"
-      )}
-      style={{
-        background: "rgba(255, 249, 240, 0.95)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-      }}
-    >
-      <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-yellow-400 to-red-500 z-10" />
-      <div className="flex h-full flex-col overflow-hidden px-6 py-6 relative z-0">
-        {children}
-      </div>
-    </motion.div>
-  </>
-));
+          initial={false}
+          animate={{
+            x: isOpen ? 0 : "100%",
+          }}
+          transition={sheetTransition}
+          className={cn(
+            "fixed inset-y-0 right-0 h-[100dvh] w-full sm:w-[400px] border-l-4 border-black shadow-[-10px_0px_20px_rgba(0,0,0,0.3)] flex flex-col",
+            isOpen ? "z-[10001] pointer-events-auto" : "z-0 pointer-events-none"
+          )}
+          style={{
+            background: isMobile
+              ? "rgba(255, 249, 240, 1)"
+              : "rgba(255, 249, 240, 0.95)",
+            ...(isMobile
+              ? {}
+              : {
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                }),
+          }}
+        >
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-yellow-400 to-red-500 z-10" />
+          <div className="flex h-full flex-col overflow-hidden px-6 py-6 relative z-0">
+            {children}
+          </div>
+        </motion.div>
+      </>
+    );
+  }
+);
 SheetOverlay.displayName = "SheetOverlay";
 
 const NavLinkBtn = memo(({ item }: { item: NavItem }) => {
@@ -419,6 +434,7 @@ const MobileUserCard = ({ user, onSignOut, onClose }: { user: any, onSignOut: an
 // --- MAIN COMPONENT ---
 export const LandingHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [signOut] = useSignOutMutation();
   const dispatch = useDispatch();
   const shouldReduceMotion = useReducedMotion();
@@ -431,6 +447,13 @@ export const LandingHeader = () => {
   useEffect(() => {
     setIsMenuOpen(isOpen);
   }, [isOpen, setIsMenuOpen]);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -458,7 +481,9 @@ export const LandingHeader = () => {
     <nav
       className={cn(
         "fixed top-0 w-full z-50 transition-all duration-300 font-sans",
-        "bg-transparent py-2 sm:py-3 lg:py-4 border-b-4 border-transparent"
+        scrolled && !isMobile
+          ? "bg-[#fff9f0]/95 backdrop-blur-md py-2 border-b-4 border-black shadow-sm"
+          : "bg-transparent py-2 sm:py-3 lg:py-4 border-b-4 border-transparent"
       )}
       style={{
         background: "transparent",
@@ -540,7 +565,11 @@ export const LandingHeader = () => {
       </div>
 
       {/* MOBILE SHEET CONTENT - SỬ DỤNG COMPONENT MỚI */}
-      <SheetOverlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      <SheetOverlay
+        isOpen={isOpen}
+        isMobile={isMobile}
+        onClose={() => setIsOpen(false)}
+      >
         <div className="flex items-center justify-between mb-5 pb-3 border-b-2 border-black border-dashed">
            <div className="bg-orange-500 text-white px-3 py-1 border-2 border-black shadow-[2px_2px_0px_black] rotate-[-2deg]">
              <span className="font-black text-lg tracking-wider">MENU</span>
@@ -592,6 +621,8 @@ export const LandingHeader = () => {
 // --- HERO BANNER COMPONENT ---
 export const LandingHeroBanner = () => {
   const shouldReduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
+  const reduceMotion = shouldReduceMotion || isMobile;
 
   return (
     <section 
@@ -602,17 +633,15 @@ export const LandingHeroBanner = () => {
     >
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <img
-          src={headerImage}
-          alt="Background"
-          className="hidden md:block w-full h-full object-cover"
-        />
-        <img
-          src={headerImageMobile}
-          alt="Background"
-          className="block md:hidden w-full h-full object-cover"
-        />
-        {/* Overlay giữ nguyên */}
+        <picture className="block w-full h-full">
+          <source media="(min-width: 768px)" srcSet={headerImage} />
+          <img
+            src={headerImageMobile}
+            alt="Background"
+            className="w-full h-full object-cover"
+          />
+        </picture>
+        {/* Overlay gi? nguyˆn */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-500/30 via-transparent to-blue-500/40" />
         <div className="absolute inset-0 bg-[#87CEEB]/60" />
       </div>
@@ -628,19 +657,24 @@ export const LandingHeroBanner = () => {
       <div className="relative z-20 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
          {/* ... code nội dung text ... */}
          <motion.div
-          initial={shouldReduceMotion ? {} : { opacity: 0, y: 30 }}
-          animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+          initial={reduceMotion ? {} : { opacity: 0, y: 30 }}
+          animate={reduceMotion ? {} : { opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="flex flex-col items-center gap-4 z-10 w-full"
         >
           {/* DÒNG 1: HỘP VÀNG */}
           <motion.div
-            initial={shouldReduceMotion ? {} : { scale: 0.9, opacity: 0 }}
-            animate={shouldReduceMotion ? {} : { scale: 1, opacity: 1 }}
+            initial={reduceMotion ? {} : { scale: 0.9, opacity: 0 }}
+            animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             className="relative transform -rotate-1 hover:rotate-0 transition-transform duration-300 w-full px-2"
           >
-            <div className="bg-[#FDE047] border-[3px] md:border-4 border-black px-3 py-2 sm:px-6 sm:py-2 md:px-8 md:py-3 rounded-xl shadow-[6px_6px_0px_black]">
+            <div 
+              className="bg-[#FDE047] border-[3px] md:border-4 border-black px-3 py-2 sm:px-6 sm:py-2 md:px-8 md:py-3 rounded-xl"
+              style={{
+                boxShadow: "6px 6px 0px #FDE047", // Shadow màu xanh dương để tạo contrast đẹp với màu vàng
+              }}
+            >
               <h1 className="text-4xl sm:text-3xl md:text-5xl lg:text-7xl font-black text-slate-900 leading-tight sm:leading-none uppercase tracking-tight break-words overflow-wrap-anywhere">
                 Hành Trang Số
               </h1>
@@ -650,19 +684,78 @@ export const LandingHeroBanner = () => {
             </div>
           </motion.div>
 
-          {/* DÒNG 2: TEXT */}
-          <motion.h2
-            initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
-            animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-2xl sm:text-xl md:text-3xl lg:text-4xl font-black text-white uppercase tracking-wide leading-snug sm:leading-tight md:leading-relaxed mt-3 px-3 sm:px-4 text-center break-words overflow-wrap-anywhere"
-            style={{
-              WebkitTextStroke: "0.8px black",
-              textShadow: "1.5px 1.5px 0px black",
-            }}
-          >
-            Cho Thanh Thiếu Niên Trong Thời Đại Mới
-          </motion.h2>
+          {/* DÒNG 2: TEXT - NHÍ NHẢNH VỚI NEOBRUTALISM */}
+          <div className="flex flex-wrap justify-center items-center gap-x-2 sm:gap-x-3 gap-y-2 mt-3 px-3 sm:px-4">
+            {(() => { 
+              const text = "Cho Thanh Thiếu Niên Trong Thời Đại Mới";
+              const words = text.split(" ");
+              // Màu sắc neobrutalism phù hợp với trang web
+              const neobrutalismColors = [
+                { bg: "#FDE047", text: "#1e293b", border: "#000", shadow: "#FDE047" }, // "Cho" - Vàng với shadow đỏ
+                { bg: "#FDE047", text: "#1e293b", border: "#000", shadow: "#2563EB" }, // "Thanh" - Vàng với shadow xanh dương
+                { bg: "#2563EB", text: "#fff", border: "#000", shadow: "#1e40af" }, // Xanh dương với shadow xanh đậm
+                { bg: "#f97316", text: "#fff", border: "#000", shadow: "#ea580c" }, // Cam với shadow cam đậm
+                { bg: "#ef4444", text: "#fff", border: "#000", shadow: "#dc2626" }, // Đỏ với shadow đỏ đậm
+                { bg: "#22c55e", text: "#fff", border: "#000", shadow: "#16a34a" }, // Xanh lá với shadow xanh đậm
+                { bg: "#a855f7", text: "#fff", border: "#000", shadow: "#9333ea" }, // Tím với shadow tím đậm
+                { bg: "#ec4899", text: "#fff", border: "#000", shadow: "#db2777" }, // Hồng với shadow hồng đậm
+                { bg: "#06b6d4", text: "#fff", border: "#000", shadow: "#0891b2" }, // Cyan với shadow cyan đậm
+              ];
+              
+              return words.map((word, idx) => {
+                const color = neobrutalismColors[idx % neobrutalismColors.length];
+                return (
+                  <motion.span
+                    key={idx}
+                    initial={reduceMotion ? {} : { opacity: 0, y: 20, scale: 0.8 }}
+                    animate={
+                      reduceMotion
+                        ? {}
+                        : {
+                            opacity: 1,
+                            y: [0, -8, 0],
+                            scale: [1, 1.05, 1],
+                            rotate: [0, -2, 2, -1, 1, 0],
+                          }
+                    }
+                    transition={{
+                      opacity: { duration: 0.5, delay: 0.6 + idx * 0.1 },
+                      y: {
+                        duration: 2.5,
+                        repeat: Infinity,
+                        delay: 1.2 + idx * 0.15,
+                        ease: "easeInOut",
+                      },
+                      scale: {
+                        duration: 2,
+                        repeat: Infinity,
+                        delay: 1.2 + idx * 0.15,
+                        ease: "easeInOut",
+                      },
+                      rotate: {
+                        duration: 3,
+                        repeat: Infinity,
+                        delay: 1.2 + idx * 0.15,
+                        ease: "easeInOut",
+                      },
+                    }}
+                    className="inline-block px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border-2 font-black uppercase tracking-wide text-base sm:text-lg md:text-2xl lg:text-3xl"
+                    style={{
+                      backgroundColor: color.bg,
+                      color: color.text,
+                      borderColor: color.border,
+                      borderWidth: "3px",
+                      boxShadow: `4px 4px 0px ${color.shadow}`,
+                      fontFamily: "\"Baloo 2\", cursive",
+                      textShadow: "none",
+                    }}
+                  >
+                    {word}
+                  </motion.span>
+                );
+              });
+            })()}
+          </div>
         </motion.div>
       </div>
     </section>

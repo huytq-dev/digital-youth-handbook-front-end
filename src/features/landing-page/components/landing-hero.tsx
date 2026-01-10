@@ -250,7 +250,7 @@ export const LandingHero = () => {
         {/* HEADER SECTION - BỐ CỤC 2 DÒNG */}
         <motion.div
           className="mb-8 md:mb-12 flex flex-col items-center relative w-full"
-          initial={{ opacity: 0, y: -30 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
@@ -270,7 +270,7 @@ export const LandingHero = () => {
           <div className="flex flex-col items-center gap-6 z-10 w-full">
             {/* Sticker Badge */}
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               className="inline-block"
@@ -285,7 +285,7 @@ export const LandingHero = () => {
 
             {/* Main Heading với Doodle Highlight */}
             <motion.h2
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
               className="relative inline-block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900"
@@ -325,7 +325,7 @@ export const LandingHero = () => {
             p-4 sm:p-5 md:p-8 lg:p-8 
             shadow-[6px_6px_0px_0px_rgba(0,0,0,0.25)] md:shadow-[10px_10px_0px_0px_rgba(0,0,0,0.25)] 
             mb-6 sm:mb-10 z-20 mt-2 mx-2 sm:mx-0"
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={false}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.5, type: "spring" }}
         >
