@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, Star, Sun, Laptop, Rocket, Sparkles } from "lucide-react";
+import { ArrowRight, Star, Sun, Laptop, Rocket } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/primitives";
@@ -160,9 +160,7 @@ const HeroImage = () => {
   return (
     // Thêm padding y để tránh bị cắt bóng đổ khi thu nhỏ trên mobile
     <div className="flex justify-center py-2">
-      <div
-        className="relative w-[85%] sm:w-[80%] md:w-full max-w-4xl overflow-hidden rounded-xl border-4 border-black bg-slate-200 shadow-[6px_6px_0px_black] group-hover:shadow-[8px_8px_0px_black] group-hover:-translate-y-1 transition-all"
-      >
+      <div className="relative w-[85%] sm:w-[80%] md:w-full max-w-4xl overflow-hidden rounded-xl border-4 border-black bg-slate-200 shadow-[6px_6px_0px_black] group-hover:shadow-[8px_8px_0px_black] group-hover:-translate-y-1 transition-all">
         {/* Desktop Image - giữ nguyên */}
         <motion.img
           src={heroImageDesktop}
@@ -201,8 +199,8 @@ export const LandingHero = () => {
 
   return (
     <section
-      className="relative overflow-x-hidden bg-[#87CEEB] 
-        pt-20 sm:pt-28 md:pt-40 lg:pt-28 
+      className="relative overflow-x-hidden bg-[#fff9f0] 
+        pt-4 sm:pt-12 md:pt-20 lg:pt-12 
         pb-16 sm:pb-24 md:pb-32 lg:pb-16
         font-sans text-slate-900 border-b-4 border-black min-h-screen flex flex-col items-center justify-start"
     >
@@ -269,33 +267,54 @@ export const LandingHero = () => {
             />
           </FloatingIcon>
 
-          <div className="flex flex-col items-center gap-4 z-10 w-full">
-            {/* DÒNG 1: HỘP VÀNG "HÀNH TRANG SỐ" */}
-            <div className="relative transform -rotate-1 hover:rotate-0 transition-transform duration-300 w-full px-2">
-              <div className="bg-[#FDE047] border-[3px] md:border-4 border-black px-3 py-2 sm:px-6 sm:py-2 md:px-8 md:py-3 rounded-xl shadow-[6px_6px_0px_black]">
-                <h1 className="text-xl sm:text-3xl md:text-5xl lg:text-7xl font-black text-slate-900 leading-tight sm:leading-none uppercase tracking-tight break-words overflow-wrap-anywhere">
-                  Hành Trang Số
-                </h1>
-              </div>
-              {/* Decor góc hộp */}
-              <div className="absolute -top-2 -left-2 text-white hidden sm:block">
-                <Sparkles
-                  size={24}
-                  className="fill-white stroke-black stroke-2"
-                />
-              </div>
-            </div>
-
-            {/* DÒNG 2: CHỮ NỐI LIỀN - KHÔNG CÓ HỘP */}
-            <h2
-              className="text-base sm:text-xl md:text-3xl lg:text-4xl font-black text-white uppercase tracking-wide leading-snug sm:leading-tight md:leading-relaxed mt-3 px-3 sm:px-4 text-center break-words overflow-wrap-anywhere"
-              style={{
-                WebkitTextStroke: "0.8px black",
-                textShadow: "1.5px 1.5px 0px black",
-              }}
+          <div className="flex flex-col items-center gap-6 z-10 w-full">
+            {/* Sticker Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="inline-block"
             >
-              Cho Thanh Thiếu Niên Trong Thời Đại Mới
-            </h2>
+              {/* <div
+                className="inline-flex items-center justify-center px-3 py-1 font-black text-xs uppercase border-2 border-black shadow-[2px_2px_0px_black] bg-green-300 text-black"
+                style={{ transform: "rotate(-2deg)" }}
+              >
+                NỀN TẢNG GIÁO DỤC SỐ
+              </div> */}
+            </motion.div>
+
+            {/* Main Heading với Doodle Highlight */}
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="relative inline-block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900"
+            >
+              <span className="relative z-10">Nội Dung Chính</span>
+              <svg
+                className="absolute -z-10 -bottom-2 left-0 w-full h-4"
+                viewBox="0 0 100 10"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M0 5 Q 50 10, 100 5"
+                  stroke="#FDE047"
+                  strokeWidth="8"
+                  fill="none"
+                  opacity="0.6"
+                />
+              </svg>
+              <div className="absolute -top-6 -right-8 text-orange-500 hidden md:block animate-spin-slow">
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                </svg>
+              </div>
+            </motion.h2>
           </div>
         </motion.div>
 

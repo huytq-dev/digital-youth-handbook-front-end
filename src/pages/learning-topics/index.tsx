@@ -155,7 +155,7 @@ const LearningTopicsPage = () => {
               </motion.p>
             </header>
 
-            {/* 3. Grid Topics v?i Animation */}
+            {/* 3. Grid Topics với Animation */}
             {isLoading ? (
               <div className="grid gap-8 md:grid-cols-2 lg:gap-10">
                 {Array.from({ length: 6 }).map((_, index) => (
@@ -166,7 +166,7 @@ const LearningTopicsPage = () => {
 
                       <div className="mb-5 flex items-start justify-between">
                         <span className="inline-flex items-center justify-center bg-blue-200 border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black uppercase tracking-widest text-black shadow-[2px_2px_0px_black]">
-                          Ch? d? {index + 1}
+                          Chủ đề {index + 1}
                         </span>
                         <div className="h-7 w-7 rounded bg-slate-200 animate-pulse" />
                       </div>
@@ -194,7 +194,7 @@ const LearningTopicsPage = () => {
                 })}
               >
                 {topics.map((topicItem, index) => (
-                  // B?c Link trong motion.div d?  p d?ng animation cho t?ng item
+                  // Bọc Link trong motion.div để áp dụng animation cho từng item
                   <motion.div key={topicItem.id} variants={cardVariants} className="h-full">
                       <Link
                         to={`/learning-topics/${topicItem.id}`}
@@ -203,20 +203,20 @@ const LearningTopicsPage = () => {
                         onFocus={() => prefetchLearningTopic(topicItem.id)}
                         onTouchStart={() => prefetchLearningTopic(topicItem.id)}
                       >
-                        {/* Shadow Layer (N‚t v? c?ng) */}
+                        {/* Shadow Layer (Nét vẽ cứng) */}
                         <div className="absolute inset-0 bg-black rounded-2xl translate-x-3 translate-y-3 transition-transform group-hover:translate-x-4 group-hover:translate-y-4 border-2 border-black" />
                         
                         {/* Main Card */}
                         <div className="relative h-full flex flex-col rounded-2xl border-2 border-black bg-white p-6 transition-transform group-hover:-translate-y-1 group-hover:-translate-x-1 overflow-hidden">
                           
-                          {/* Doodle Decor g¢c th? */}
+                          {/* Doodle Decor góc thứ */}
                           <div className="absolute top-0 right-0 w-16 h-16 bg-blue-100 rounded-bl-full border-l-2 border-b-2 border-black -z-10 group-hover:bg-yellow-200 transition-colors" />
 
                           {/* Header Card */}
                           <div className="mb-5 flex items-start justify-between">
-                              <span className="inline-flex items-center justify-center bg-blue-200 border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black uppercase tracking-widest text-black shadow-[2px_2px_0px_black] rotate-[-2deg] group-hover:rotate-0 transition-all">
-                                  Ch? d? {index + 1}
-                              </span>
+                        <span className="inline-flex items-center justify-center bg-blue-200 border-2 border-black px-3 py-1.5 rounded-lg text-sm font-black uppercase tracking-widest text-black shadow-[2px_2px_0px_black] rotate-[-2deg] group-hover:rotate-0 transition-all">
+                          Chủ đề {index + 1}
+                        </span>
                               <BookOpen className="text-slate-900 group-hover:text-blue-600 transition-colors" size={28} strokeWidth={2.5} />
                           </div>
 
@@ -233,7 +233,7 @@ const LearningTopicsPage = () => {
                           <div className="mt-auto flex items-center justify-between border-t-2 border-black bg-slate-50 -mx-6 -mb-6 px-6 py-4 group-hover:bg-blue-50 transition-colors">
                             <span className="text-sm font-black text-slate-700 flex items-center gap-2">
                               <Star size={16} className="fill-yellow-400 text-black" strokeWidth={2} />
-                              {topicItem.objectives.length} M?C TIEU
+                              {topicItem.objectives.length} MỤC TIÊU
                             </span>
                             <span className="flex items-center text-base font-black text-blue-700 group-hover:underline decoration-4 underline-offset-4">
                               XEM NGAY <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" strokeWidth={3} />
@@ -256,7 +256,7 @@ const LearningTopicsPage = () => {
         >
           {isLoading ? (
             <div className="flex min-h-[60vh] items-center justify-center px-4 text-center relative z-10">
-              <p className="text-lg font-black text-slate-700">Dang tai...</p>
+              <p className="text-lg font-black text-slate-700">Đang tải...</p>
             </div>
           ) : !topic ? (
             // Not Found State Style Cartoon
@@ -270,7 +270,7 @@ const LearningTopicsPage = () => {
                  <Frown size={80} className="text-black" strokeWidth={2.5} />
               </div>
               <h1 className="mb-4 text-4xl font-black text-black md:text-5xl uppercase tracking-tight bg-white border-2 border-black px-4 py-2 shadow-[4px_4px_0px_black]">
-                Hic! Không tìm thấy chủ đề
+                Ối! Không tìm thấy chủ đề
               </h1>
               <p className="mb-10 max-w-md text-lg font-bold text-slate-700 bg-white/80 p-4 rounded-xl border-2 border-dashed border-black">
                 Có thể đường dẫn đã bị thay đổi hoặc chủ đề này đang đi vắng.
