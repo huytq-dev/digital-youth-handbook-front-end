@@ -28,7 +28,6 @@ import headerImage from "@/assets/landing-images/header.png";
 import headerImageMobile from "@/assets/landing-images/header_mobile.png";
 
 // --- Types & Navigation Data (Giữ nguyên) ---
-// --- Types & Navigation Data (Giữ nguyên) ---
 type NavSubItem = { label: string; href?: string };
 type NavItem = { label: string; href?: string; subItems?: NavSubItem[] };
 
@@ -695,15 +694,16 @@ export const LandingHeroBanner = () => {
               const words = text.split(" ");
               // Màu sắc neobrutalism phù hợp với trang web
               const neobrutalismColors = [
-                { bg: "#FDE047", text: "#1e293b", border: "#000", shadow: "#FDE047" }, // "Cho" - Vàng với shadow đỏ
-                { bg: "#FDE047", text: "#1e293b", border: "#000", shadow: "#2563EB" }, // "Thanh" - Vàng với shadow xanh dương
-                { bg: "#2563EB", text: "#fff", border: "#000", shadow: "#1e40af" }, // Xanh dương với shadow xanh đậm
-                { bg: "#f97316", text: "#fff", border: "#000", shadow: "#ea580c" }, // Cam với shadow cam đậm
-                { bg: "#ef4444", text: "#fff", border: "#000", shadow: "#dc2626" }, // Đỏ với shadow đỏ đậm
-                { bg: "#22c55e", text: "#fff", border: "#000", shadow: "#16a34a" }, // Xanh lá với shadow xanh đậm
-                { bg: "#a855f7", text: "#fff", border: "#000", shadow: "#9333ea" }, // Tím với shadow tím đậm
-                { bg: "#ec4899", text: "#fff", border: "#000", shadow: "#db2777" }, // Hồng với shadow hồng đậm
-                { bg: "#06b6d4", text: "#fff", border: "#000", shadow: "#0891b2" }, // Cyan với shadow cyan đậm
+                { bg: "#2563EB", text: "#ffffff", border: "#000000", shadow: "#1e40af" }, // Blue
+  { bg: "#f97316", text: "#ffffff", border: "#000000", shadow: "#ea580c" }, // Orange
+  { bg: "#ef4444", text: "#ffffff", border: "#000000", shadow: "#dc2626" }, // Red
+  { bg: "#22c55e", text: "#ffffff", border: "#000000", shadow: "#16a34a" }, // Green
+  { bg: "#a855f7", text: "#ffffff", border: "#000000", shadow: "#9333ea" }, // Purple
+  { bg: "#ec4899", text: "#ffffff", border: "#000000", shadow: "#db2777" }, // Pink
+  { bg: "#06b6d4", text: "#ffffff", border: "#000000", shadow: "#0891b2" }, // Cyan
+  { bg: "#14b8a6", text: "#ffffff", border: "#000000", shadow: "#0f766e" }, // Teal
+  { bg: "#f43f5e", text: "#ffffff", border: "#000000", shadow: "#be123c" }, // Rose
+  { bg: "#6366f1", text: "#ffffff", border: "#000000", shadow: "#4338ca" }, // Indigo
               ];
               
               return words.map((word, idx) => {
