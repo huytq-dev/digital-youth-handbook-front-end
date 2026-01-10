@@ -122,12 +122,17 @@ const LearningTopicsPage = () => {
             <header className="mb-16 text-center relative">
               <motion.div 
                 initial={shouldReduceMotion || isMobile ? false : { scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: -3 }}
+                animate={{ scale: 1, rotate: isMobile ? 0 : -3 }}
                 transition={
                   shouldReduceMotion
                     ? { duration: 0 }
                     : isMobile
-                    ? { type: "tween", duration: 0.3, ease: "easeOut", delay: 0.05 }
+                    ? {
+                        type: "tween",
+                        duration: 0.3,
+                        ease: [0, 0, 0.2, 1] as [number, number, number, number],
+                        delay: 0.05,
+                      }
                     : { type: "spring", stiffness: 260, damping: 20, delay: 0.1 }
                 }
                 className="inline-block bg-yellow-300 border-2 border-black px-5 py-2 rounded-tl-xl rounded-br-xl shadow-[4px_4px_0px_black] mb-6 hover:rotate-0 transition-transform cursor-default origin-center"
