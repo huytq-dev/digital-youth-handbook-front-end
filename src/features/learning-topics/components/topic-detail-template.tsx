@@ -266,7 +266,7 @@ const CollapsibleSubSections = ({
               className="overflow-hidden"
             >
               <div className="px-4 py-4 border-t-2 border-sky-100">
-                <p className="text-sm font-medium leading-relaxed text-slate-600 whitespace-pre-line">
+                <p className="text-sm font-medium leading-relaxed text-slate-600 whitespace-pre-line text-justify">
                   {subSection.content}
                 </p>
               </div>
@@ -537,7 +537,7 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                           <div className="p-5">
                             {/* Nếu có content trực tiếp */}
                             {section.content && (
-                              <p className="text-sm font-medium leading-relaxed text-slate-700 whitespace-pre-line">
+                              <p className="text-sm font-medium leading-relaxed text-slate-700 whitespace-pre-line text-justify">
                                 {section.content}
                               </p>
                             )}
@@ -568,7 +568,7 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                   >
                     <motion.p
                       variants={textPVariants}
-                      className="text-sm font-medium leading-relaxed text-slate-700 border-l-4 border-sky-200 pl-4"
+                      className="text-sm font-medium leading-relaxed text-slate-700 border-l-4 border-sky-200 pl-4 text-justify"
                     >
                       {topic.content.summary}
                     </motion.p>

@@ -66,7 +66,7 @@ export const QuizIntroPage = ({ quiz }: QuizIntroPageProps) => {
       }
     } catch (err) {
       setError("Không thể bắt đầu quiz. Vui lòng thử lại.");
-      console.error(err);
+      import.meta.env.DEV && console.error(err);
     }
   };
 

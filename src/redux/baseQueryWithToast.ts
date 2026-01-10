@@ -29,9 +29,9 @@ const baseQuery = fetchBaseQuery({
     
     // Debug: Log token status
     if (endpoint === 'users/profile') {
-      console.log('🔑 [prepareHeaders] Token check for profile update:');
-      console.log('  - Token exists:', !!token);
-      console.log('  - Token value:', token ? `${token.substring(0, 20)}...` : 'null');
+      import.meta.env.DEV && console.log('🔑 [prepareHeaders] Token check for profile update:');
+      import.meta.env.DEV && console.log('  - Token exists:', !!token);
+      import.meta.env.DEV && console.log('  - Token value:', token ? `${token.substring(0, 20)}...` : 'null');
     }
     
     if (token) {
@@ -39,14 +39,14 @@ const baseQuery = fetchBaseQuery({
       
       // Debug: Log header để xác nhận
       if (endpoint === 'users/profile') {
-        console.log('  ✅ Authorization header SET:', `Bearer ${token.substring(0, 20)}...`);
-        console.log('  📤 Header sẽ được gửi trong request');
+        import.meta.env.DEV && console.log('  ✅ Authorization header SET:', `Bearer ${token.substring(0, 20)}...`);
+        import.meta.env.DEV && console.log('  📤 Header sẽ được gửi trong request');
       }
     } else {
       // Debug: Warn if no token
       if (endpoint === 'users/profile') {
-        console.warn('  ⚠️ No access token found in localStorage!');
-        console.warn('  ❌ Authorization header KHÔNG được set');
+        import.meta.env.DEV && console.warn('  ⚠️ No access token found in localStorage!');
+        import.meta.env.DEV && console.warn('  ❌ Authorization header KHÔNG được set');
       }
     }
     
@@ -345,7 +345,7 @@ export const baseQueryWithToast: BaseQueryFn<
         return result;
       } catch (refreshError) {
         // Refresh failed - clear auth and redirect
-        console.error('Token refresh failed:', refreshError);
+        import.meta.env.DEV && console.error('Token refresh failed:', refreshError);
         authService.clearAuthData();
         if (typeof window !== 'undefined') {
           window.location.href = '/auth/sign-in';

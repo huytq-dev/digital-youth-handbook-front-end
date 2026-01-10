@@ -19,9 +19,10 @@ export const lyTuongTopic: LearningTopic = {
     sections: [
       {
         title: "Giới thiệu",
-        content: `Thanh thiếu niên là lực lượng xã hội to lớn, giữ vai trò đặc biệt quan trọng đối với tương lai, vận mệnh của dân tộc. Trong suốt tiến trình cách mạng Việt Nam, Đảng Cộng sản Việt Nam và Chủ tịch Hồ Chí Minh luôn khẳng định thanh thiếu niên là lực lượng xung kích, là người kế tục trung thành sự nghiệp cách mạng của Đảng và dân tộc. 
+        // Đã nối dòng liền mạch, dùng \n\n để tách đoạn
+        content: `Thanh thiếu niên là lực lượng xã hội to lớn, giữ vai trò đặc biệt quan trọng đối với tương lai, vận mệnh của dân tộc. Trong suốt tiến trình cách mạng Việt Nam, Đảng Cộng sản Việt Nam và Chủ tịch Hồ Chí Minh luôn khẳng định thanh thiếu niên là lực lượng xung kích, là người kế tục trung thành sự nghiệp cách mạng của Đảng và dân tộc.
 
-Trong bối cảnh hiện nay, khi đất nước ta đang đẩy mạnh công nghiệp hóa, hiện đại hóa và hội nhập quốc tế sâu rộng, thanh thiếu niên đứng trước nhiều thời cơ thuận lợi để học tập, phát triển và khẳng định bản thân. Tuy nhiên, bên cạnh đó cũng xuất hiện không ít thách thức do tác động của kinh tế thị trường, mặt trái của toàn cầu hóa, sự bùng nổ của mạng xã hội và các luồng tư tưởng phức tạp. 
+Trong bối cảnh hiện nay, khi đất nước ta đang đẩy mạnh công nghiệp hóa, hiện đại hóa và hội nhập quốc tế sâu rộng, thanh thiếu niên đứng trước nhiều thời cơ thuận lợi để học tập, phát triển và khẳng định bản thân. Tuy nhiên, bên cạnh đó cũng xuất hiện không ít thách thức do tác động của kinh tế thị trường, mặt trái của toàn cầu hóa, sự bùng nổ của mạng xã hội và các luồng tư tưởng phức tạp.
 
 Điều này đặt ra yêu cầu cấp thiết phải giữ vững lý tưởng cách mạng và đồng thời phát triển hoài bão, khát vọng vươn lên cho thanh thiếu niên trong thời kỳ mới.`,
       },
@@ -119,11 +120,7 @@ Giữ vững lý tưởng cách mạng và phát triển hoài bão là nhiệm 
     ],
   },
   infographicUrl: "/images/learning-topics/ly-tuong-hoai-bao.jpg",
-  infographicUrls: [
-    lyTuongImage1,
-    lyTuongImage2,
-    lyTuongImage3,
-  ],
+  infographicUrls: [lyTuongImage1, lyTuongImage2, lyTuongImage3],
   quiz: [
     {
       id: 1,

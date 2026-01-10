@@ -39,7 +39,7 @@ export function useSocialLogin(options?: UseSocialLoginOptions) {
         if (isApiResponseSuccess(response)) {
           // Log debug (Development only)
           if (import.meta.env.DEV) {
-            console.log(`=== ${provider} LOGIN SUCCESS ===`, response);
+            import.meta.env.DEV && console.log(`=== ${provider} LOGIN SUCCESS ===`, response);
           }
 
           // Lưu thông tin đăng nhập
@@ -66,7 +66,7 @@ export function useSocialLogin(options?: UseSocialLoginOptions) {
       } catch (error: any) {
         // Log debug
         if (import.meta.env.DEV) {
-          console.error(`=== ${provider} LOGIN ERROR ===`, error);
+          import.meta.env.DEV && console.error(`=== ${provider} LOGIN ERROR ===`, error);
         }
 
         let errorMessage = t('auth.socialLogin.errorMessage') || 'Có lỗi xảy ra.';
@@ -105,7 +105,7 @@ export function useSocialLogin(options?: UseSocialLoginOptions) {
       handleSocialLogin(tokenResponse.access_token, SocialProvider.Google);
     },
     onError: (error) => {
-      console.error('Google Login SDK Error:', error);
+      import.meta.env.DEV && console.error('Google Login SDK Error:', error);
       stopLoading();
       showToast.error('Không thể kết nối với Google.');
       if (options?.onError) {
@@ -142,7 +142,7 @@ export function useSocialLogin(options?: UseSocialLoginOptions) {
       const accessToken = await socialLoginService.signInWithFacebook();
       await handleSocialLogin(accessToken, SocialProvider.Facebook);
     } catch (error: any) {
-      console.error('Facebook Login Error:', error);
+      import.meta.env.DEV && console.error('Facebook Login Error:', error);
       stopLoading();
       showToast.error('Lỗi đăng nhập Facebook', error.message || 'Vui lòng thử lại sau.');
       if (options?.onError) {

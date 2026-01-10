@@ -3,22 +3,22 @@ import { cn } from "@/lib/utils";
 
 // 1. [OPTIMIZATION] Import trực tiếp các component quan trọng (Above the fold)
 // Giúp hiển thị ngay lập tức, tránh loading spinner ở màn hình đầu tiên.
-import { UnifiedHeader } from "@/components/layout/unified-header";
+import { LandingHeader, LandingHeroBanner } from "@/features/landing-page/components/landing-header";
 import { LandingHero } from "@/features/landing-page/components/landing-hero";
 
 // 2. [OPTIMIZATION] Lazy load các component nằm bên dưới (Below the fold)
 // Sử dụng named export pattern như code cũ của bạn
-const LandingIntroduction = lazy(() =>
-  import("@/features/landing-page/components/landing-introduction").then(
-    (module) => ({ default: module.LandingIntroduction })
-  )
-);
+// const LandingIntroduction = lazy(() =>
+//   import("@/features/landing-page/components/landing-introduction").then(
+//     (module) => ({ default: module.LandingIntroduction })
+//   )
+// );
 
-const LandingUSP = lazy(() =>
-  import("@/features/landing-page/components/landing-usp").then((module) => ({
-    default: module.LandingUSP,
-  }))
-);
+// const LandingUSP = lazy(() =>
+//   import("@/features/landing-page/components/landing-usp").then((module) => ({
+//     default: module.LandingUSP,
+//   }))
+// );
 
 const LandingQuote = lazy(() =>
   import("@/features/landing-page/components/landing-quote").then((module) => ({
@@ -54,15 +54,16 @@ function LandingPage() {
         "font-sans antialiased selection:bg-[hsl(var(--accent))] selection:text-white"
       )}
     >
-      <UnifiedHeader />
+      <LandingHeader />
 
       <main className="w-full flex-1" role="main">
+        <LandingHeroBanner />
         <LandingHero />
 
         <Suspense fallback={<ComponentLoader />}>
-          <LandingIntroduction />
+          {/* <LandingIntroduction /> */}
 
-          <LandingUSP />
+          {/* <LandingUSP /> */}
 
           <LandingPromotions />
           <LandingQuote />

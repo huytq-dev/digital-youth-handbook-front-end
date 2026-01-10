@@ -60,7 +60,7 @@ export function parseDateForInput(dateString: string | undefined | null): string
       return date.toISOString().split("T")[0];
     }
   } catch (error) {
-    console.warn("Failed to parse date:", dateString, error);
+    import.meta.env.DEV && console.warn("Failed to parse date:", dateString, error);
   }
 
   return undefined;

@@ -303,7 +303,7 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
         );
       }
     } catch (error) {
-      console.error("Auto-save avatar failed", error);
+      import.meta.env.DEV && console.error("Auto-save avatar failed", error);
       // Nếu lưu thất bại, có thể revert avatar về cũ (tùy chọn) hoặc thông báo lỗi
       showToast.error(
         "Lỗi lưu ảnh",
@@ -315,7 +315,7 @@ export const PersonalInfo = ({ user, onSubmit }: PersonalInfoProps) => {
   const onSubmitForm = async (data: UpdateUserProfileFormData) => {
     // Debug: Kiểm tra token trước khi submit
     const token = authService.getAccessToken();
-    console.log("🔑 Token check before submit:", !!token);
+    import.meta.env.DEV && console.log("🔑 Token check before submit:", !!token);
 
     try {
       // Chỉ gửi các fields có giá trị

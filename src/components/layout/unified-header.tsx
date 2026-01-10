@@ -295,12 +295,26 @@ const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void 
     <div className="mb-3 last:mb-0">
       <div className="relative z-10 bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,0.1)] overflow-hidden group">
         {item.subItems ? (
-          <div className="px-4 py-2.5 bg-yellow-300 border-b-2 border-black flex items-center gap-2">
-             <div className="w-1.5 h-1.5 rounded-full bg-black" />
-             <span className="font-black text-base text-slate-900 uppercase tracking-wide">
-               {item.label}
-             </span>
-          </div>
+          item.href ? (
+            <Link
+              to={item.href}
+              onClick={onClose}
+              className="block px-4 py-2.5 bg-yellow-300 border-b-2 border-black hover:bg-yellow-400 transition-colors flex items-center gap-2 cursor-pointer"
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-black" />
+              <span className="font-black text-base text-slate-900 uppercase tracking-wide flex-1">
+                {item.label}
+              </span>
+              <ArrowRight size={16} />
+            </Link>
+          ) : (
+            <div className="px-4 py-2.5 bg-yellow-300 border-b-2 border-black flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-black" />
+              <span className="font-black text-base text-slate-900 uppercase tracking-wide">
+                {item.label}
+              </span>
+            </div>
+          )
         ) : (
           <Link
             to={item.href || "#"}
@@ -421,7 +435,7 @@ export const UnifiedHeader = () => {
         await signOut({ userId: user.id }).unwrap();
       }
     } catch (error) {
-      console.error("Logout API error:", error);
+      import.meta.env.DEV && console.error("Logout API error:", error);
     } finally {
       dispatch(logout());
     }
