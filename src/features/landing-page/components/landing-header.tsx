@@ -485,7 +485,7 @@ export const LandingHeader = () => {
     <nav
       className={cn(
         "fixed top-0 w-full z-50 transition-all duration-300 font-sans",
-        scrolled && !isMobile
+        scrolled
           ? "bg-[#fff9f0]/95 backdrop-blur-md py-2 border-b-4 border-black shadow-sm"
           : "bg-transparent py-2 sm:py-3 lg:py-4 border-b-4 border-transparent"
       )}
