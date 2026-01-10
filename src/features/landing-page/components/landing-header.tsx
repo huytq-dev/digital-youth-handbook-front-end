@@ -71,7 +71,11 @@ const SheetOverlay = memo(
   ({ isOpen, isMobile, onClose, children }: SheetOverlayProps) => {
     const overlayDuration = isMobile ? 0.15 : 0.3;
     const sheetTransition = isMobile
-      ? { type: "tween" as const, duration: 0.2, ease: "easeOut" }
+      ? {
+          type: "tween" as const,
+          duration: 0.2,
+          ease: [0, 0, 0.2, 1] as [number, number, number, number],
+        }
       : { type: "spring" as const, damping: 30, stiffness: 300 };
 
     return (
