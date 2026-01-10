@@ -11,7 +11,7 @@ import { TopicDetailTemplate } from "@/features/learning-topics/components/topic
 import { BookOpen, ArrowRight, Frown, Sparkles, Star, Zap } from "lucide-react";
 import { AnimatedText } from "@/components/animated-text";
 import { motion } from "framer-motion";
-import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useIsMobile, useReducedMotion } from "@/hooks/use-reduced-motion";
 
 // SVG Doodle Pattern cho nền (Chấm bi vẽ tay)
 const doodleDotPattern = "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2394a3b8' fill-opacity='0.2' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='2'/%3E%3Ccircle cx='13' cy='13' r='2'/%3E%3C/g%3E%3C/svg%3E";
@@ -63,6 +63,7 @@ const LearningTopicsPage = () => {
   const { slug } = useParams<{ slug?: string }>();
   const navigate = useNavigate();
   const shouldReduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
 
   const [topics, setTopics] = useState<LearningTopic[]>([]);
   const [topic, setTopic] = useState<LearningTopic | undefined>(undefined);
@@ -120,9 +121,15 @@ const LearningTopicsPage = () => {
             {/* Header Section */}
             <header className="mb-16 text-center relative">
               <motion.div 
-                initial={{ scale: 0, rotate: -180 }}
+                initial={shouldReduceMotion || isMobile ? false : { scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: -3 }}
-                transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
+                transition={
+                  shouldReduceMotion
+                    ? { duration: 0 }
+                    : isMobile
+                    ? { type: "tween", duration: 0.3, ease: "easeOut", delay: 0.05 }
+                    : { type: "spring", stiffness: 260, damping: 20, delay: 0.1 }
+                }
                 className="inline-block bg-yellow-300 border-2 border-black px-5 py-2 rounded-tl-xl rounded-br-xl shadow-[4px_4px_0px_black] mb-6 hover:rotate-0 transition-transform cursor-default origin-center"
               >
                 <p className="text-sm font-black uppercase tracking-widest text-black flex items-center gap-2">

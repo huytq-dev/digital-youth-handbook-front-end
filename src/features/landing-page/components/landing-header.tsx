@@ -661,16 +661,16 @@ export const LandingHeroBanner = () => {
       <div className="relative z-20 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
          {/* ... code nội dung text ... */}
          <motion.div
-          initial={reduceMotion ? {} : { opacity: 0, y: 30 }}
-          animate={reduceMotion ? {} : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
           className="flex flex-col items-center gap-4 z-10 w-full"
         >
           {/* DÒNG 1: HỘP VÀNG */}
           <motion.div
-            initial={reduceMotion ? {} : { scale: 0.9, opacity: 0 }}
-            animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            initial={reduceMotion ? false : { scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={reduceMotion ? { duration: 0 } : { duration: 0.6, delay: 0.4 }}
             className="relative transform -rotate-1 hover:rotate-0 transition-transform duration-300 w-full px-2"
           >
             <div 
@@ -711,10 +711,14 @@ export const LandingHeroBanner = () => {
                 return (
                   <motion.span
                     key={idx}
-                    initial={reduceMotion ? {} : { opacity: 0, y: 20, scale: 0.8 }}
+                    initial={
+                      reduceMotion
+                        ? { opacity: 1, y: 0, scale: 1, rotate: 0 }
+                        : { opacity: 0, y: 20, scale: 0.8 }
+                    }
                     animate={
                       reduceMotion
-                        ? {}
+                        ? { opacity: 1 }
                         : {
                             opacity: 1,
                             y: [0, -8, 0],
@@ -724,24 +728,30 @@ export const LandingHeroBanner = () => {
                     }
                     transition={{
                       opacity: { duration: 0.5, delay: 0.6 + idx * 0.1 },
-                      y: {
-                        duration: 2.5,
-                        repeat: Infinity,
-                        delay: 1.2 + idx * 0.15,
-                        ease: "easeInOut",
-                      },
-                      scale: {
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: 1.2 + idx * 0.15,
-                        ease: "easeInOut",
-                      },
-                      rotate: {
-                        duration: 3,
-                        repeat: Infinity,
-                        delay: 1.2 + idx * 0.15,
-                        ease: "easeInOut",
-                      },
+                      y: reduceMotion
+                        ? undefined
+                        : {
+                            duration: 2.5,
+                            repeat: Infinity,
+                            delay: 1.2 + idx * 0.15,
+                            ease: "easeInOut",
+                          },
+                      scale: reduceMotion
+                        ? undefined
+                        : {
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: 1.2 + idx * 0.15,
+                            ease: "easeInOut",
+                          },
+                      rotate: reduceMotion
+                        ? undefined
+                        : {
+                            duration: 3,
+                            repeat: Infinity,
+                            delay: 1.2 + idx * 0.15,
+                            ease: "easeInOut",
+                          },
                     }}
                     className="inline-block px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border-2 font-black uppercase tracking-wide text-base sm:text-lg md:text-2xl lg:text-3xl"
                     style={{
