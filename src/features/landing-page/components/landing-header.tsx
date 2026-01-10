@@ -485,6 +485,11 @@ export const LandingHeader = () => {
           ? "bg-[#fff9f0]/95 backdrop-blur-md py-2 border-b-4 border-black shadow-sm"
           : "bg-transparent py-2 sm:py-3 lg:py-4 border-b-4 border-transparent"
       )}
+      style={{
+        background: "transparent",
+        backdropFilter: "none",
+        WebkitBackdropFilter: "none",
+      }}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="flex justify-between items-center h-12 sm:h-14 lg:h-16">
