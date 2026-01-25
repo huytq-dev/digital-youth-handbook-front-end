@@ -68,17 +68,17 @@ const SheetOverlay = memo(({ isOpen, onClose, children }: SheetOverlayProps) => 
   <>
     {isOpen && (
       <div
-        className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+        className="fixed inset-0 z-10000 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
       />
     )}
     <div
       className={cn(
-        "fixed inset-y-0 right-0 h-[100dvh] w-full sm:w-[400px] bg-[#fff9f0] border-l-4 border-black shadow-[-10px_0px_20px_rgba(0,0,0,0.2)] transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col",
-        isOpen ? "z-[10001] translate-x-0 pointer-events-auto" : "z-0 translate-x-full pointer-events-none"
+        "fixed inset-y-0 right-0 h-dvh w-full sm:w-[400px] bg-[#fff9f0] border-l-4 border-black shadow-[-10px_0px_20px_rgba(0,0,0,0.2)] transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col",
+        isOpen ? "z-10001 translate-x-0 pointer-events-auto" : "z-0 translate-x-full pointer-events-none"
       )}
     >
-      <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-yellow-400 to-red-500 z-10" />
+      <div className="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-blue-500 via-yellow-400 to-red-500 z-10" />
       <div className="flex h-full flex-col overflow-hidden px-6 py-6 relative z-0">
         {children}
       </div>
@@ -117,7 +117,7 @@ const NavLinkBtn = memo(({ item }: { item: NavItem }) => {
           {isHovered && (
             <motion.div
               layoutId="nav-highlight"
-              className="absolute inset-0 bg-yellow-300 border-2 border-black rounded-lg -z-0 shadow-[2px_2px_0px_black]"
+              className="absolute inset-0 bg-yellow-300 border-2 border-black rounded-lg z-0 shadow-[2px_2px_0px_black]"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
