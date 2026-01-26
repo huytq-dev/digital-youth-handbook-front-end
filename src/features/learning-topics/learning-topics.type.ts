@@ -9,12 +9,14 @@ export interface LearningTopicQuizQuestion {
 export interface LearningContentSubSection {
   title: string; // Tiêu đề mục con (ví dụ: "4.1. Chủ động học tập...")
   content: string; // Nội dung chi tiết
+  imageUrl?: string; // URL ảnh minh họa cho mục con
 }
 
 // Một phần nội dung trong chủ đề (ví dụ: "Vì sao cần giữ vững lý tưởng...")
 export interface LearningContentSection {
   title: string; // Tiêu đề phần (ví dụ: "Lý tưởng cách mạng là gì?")
   content?: string; // Nội dung chi tiết (optional nếu có subsections)
+  imageUrl?: string; // URL ảnh minh họa cho phần
   subSections?: LearningContentSubSection[]; // Mảng các mục con (4.1, 4.2...)
 }
 

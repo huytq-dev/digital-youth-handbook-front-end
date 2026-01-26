@@ -5,7 +5,7 @@ export const LEARNING_TOPIC_IDS = [
   "tu-tuong",
   "van-hoa",
   "an-toan-mang",
-  "tinh-nguyen",
+  "phong-ngua-bao-luc-xam-hai",
   "chuyen-doi-so",
 ] as const;
 
@@ -14,8 +14,8 @@ export const learningTopicLoaders = {
   "tu-tuong": () => import("./tu-tuong").then((mod) => mod.tuTuongTopic),
   "van-hoa": () => import("./van-hoa").then((mod) => mod.vanHoaTopic),
   "an-toan-mang": () => import("./an-toan-mang").then((mod) => mod.anToanMangTopic),
-  "tinh-nguyen": () => import("./tinh-nguyen").then((mod) => mod.tinhNguyenTopic),
-  "chuyen-doi-so": () => import("./chuyen-doi-so").then((mod) => mod.chuyenDoiSoTopic),
+  "phong-ngua-bao-luc-xam-hai": () => import("./phong-ngua-bao-luc-xam-hai").then((mod) => mod.phongNguaBaoLucXamHaiTopic),
+  "chuyen-doi-so": () => import("../../assets/infographic_chu_de/chu_de_6/chuyen-doi-so").then((mod) => mod.chuyenDoiSoTopic),
 } as const;
 
 export async function loadLearningTopics(): Promise<LearningTopic[]> {

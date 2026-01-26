@@ -40,7 +40,7 @@ const NAVIGATION: NavItem[] = [
       { label: "Tư tưởng & Đạo đức", href: "/learning-topics/tu-tuong" },
       { label: "Văn hóa & Lối sống", href: "/learning-topics/van-hoa" },
       { label: "Mạng xã hội an toàn", href: "/learning-topics/an-toan-mang" },
-      { label: "Thanh niên tình nguyện", href: "/learning-topics/tinh-nguyen" },
+      { label: "Phòng ngừa bạo lực & xâm hại", href: "/learning-topics/phong-ngua-bao-luc-xam-hai" },
       { label: "Chuyển đổi số", href: "/learning-topics/chuyen-doi-so" },
     ],
   },

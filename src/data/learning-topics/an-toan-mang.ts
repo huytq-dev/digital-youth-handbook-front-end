@@ -1,4 +1,16 @@
 import type { LearningTopic } from "@/features/learning-topics/learning-topics.type";
+import anToanMangImageMobile from "@/assets/infographic_chu_de/chu_de_4/Chuong_4_desktop_mobile.png";
+import anToanMangImageDesktop from "@/assets/infographic_chu_de/chu_de_4/Chuong_4_desktop.png";
+import anToanMang1 from "@/assets/infographic_chu_de/chu_de_4/an_toan_mang_1.png";
+import anToanMang21 from "@/assets/infographic_chu_de/chu_de_4/an_toan_mang_2.1.png";
+import anToanMang22 from "@/assets/infographic_chu_de/chu_de_4/an_toan_mang_2.2.png";
+import anToanMang23 from "@/assets/infographic_chu_de/chu_de_4/an_toan_mang_2.3.png";
+import anToanMang31 from "@/assets/infographic_chu_de/chu_de_4/an_toan_mang_3.1.png";
+import anToanMang32 from "@/assets/infographic_chu_de/chu_de_4/an_toan_mang_3.2.png";
+import anToanMang33 from "@/assets/infographic_chu_de/chu_de_4/an_toan_mang_3.3.png";
+import anToanMang34 from "@/assets/infographic_chu_de/chu_de_4/an_toan_mang_3.4.png";
+import anToanMang35 from "@/assets/infographic_chu_de/chu_de_4/an_toan_mang_3.5.png";
+
 
 export const anToanMangTopic: LearningTopic = {
   id: "an-toan-mang",
@@ -26,6 +38,7 @@ Dùng mạng xã hội có mục đích – Chia sẻ có suy nghĩ – Giao ti�
       },
       {
         title: "Lợi ích của mạng xã hội",
+        imageUrl: anToanMang1,
         content: `Mạng xã hội có thể nói là một kho chứa đựng những kiến thức khổng lồ. Nó cũng đóng vai trò rất quan trọng trong lĩnh vực giáo dục, đào tạo. Học sinh có thể học trực tuyến hay đào tạo từ xa thông qua mạng Internet. Nó giúp học sinh tiết kiệm rất nhiều thời gian hay có thể dễ dàng trao đổi trực tuyến với giáo viên khi có những câu hỏi cần được giải đáp. Có thể liên lạc với bạn để chia sẻ tài liệu, trao đổi học tập hay giúp nhau giải đáp thắc mắc ở lớp
 
 Mạng xã hội còn là sợi dây để học sinh được kết nối với những người có cùng sở thích. Rất nhiều hội nhóm trên mạng xã hội như "cộng đồng đam mê hội họa" , "nghệ thuật gấp giấy origami" hay "nhóm chơi rubik" thu hút hàng ngàn lượt tham gia từ các bạn học sinh. Qua việc tham gia các hội nhóm ấy, các con được thể hiện đam mê, phát triển tài năng của mình.
@@ -37,14 +50,17 @@ Các em cũng có thể kết bạn với học sinh trong trường, trong khu 
         subSections: [
           {
             title: "Nguy cơ bị lừa đảo",
+            imageUrl: anToanMang21,
             content: `Mạng xã hội là nơi hoạt động của nhiều đối tượng lừa đảo. Học sinh lại là thành phần còn non nớt về kiến thức cũng như kỹ năng sống nên dễ trở thành mục tiêu của kẻ xấu. Chúng tìm hiểu và tiếp cận với các em học sinh, dò hỏi thông tin cá nhân của trẻ để sử dụng với nhiều mục đích khác nhau. Nếu chúng ta không cảnh giác thì rất dễ bị dụ dỗ, trở thành nạn nhân của các vụ lừa đảo, bắt cóc tống tiền hay bị bán thông tin.`,
           },
           {
             title: "Ảnh hưởng tới sức khỏe",
+            imageUrl: anToanMang22,
             content: `Nghiện mạng xã hội cũng gây ảnh hưởng đến sức khỏe của học sinh. Nhiều em sử dụng mạng xã hội trong thời gian dài gây đau mỏi mắt, đau lưng, mất ngủ. Khi dành nhiều thời gian sử dụng mạng, các hoạt động thể dục thể thao cũng ít được các em quan tâm hơn. Ngày càng có nhiều học sinh bị cận thị, nhược thị, béo phì do nguyên nhân lớn là dùng mạng xã hội, dùng máy tính, điện thoại không kiểm soát.`,
           },
           {
             title: "Ảnh hưởng tới học tập",
+            imageUrl: anToanMang23,
             content: `Mạng xã hội có sức hút rất lớn đối với người dùng, đặc biệt là các bạn trẻ. Mạng xã hội mang tới những thông tin mới lạ, những người bạn từ khắp mọi nơi hay sự dễ dàng trong việc kết nối với bạn bè, người thân. Vì vậy có nhiều bạn bỏ bê học tập, không làm bài về nhà chỉ vì nghiện mạng xã hội. Điều này làm tình hình học tập của các em bị sa sút, lâu dần dẫn tới mất gốc, chán học thậm chí làm nảy sinh tâm lý muốn bỏ học.`,
           },
         ],
@@ -54,6 +70,7 @@ Các em cũng có thể kết bạn với học sinh trong trường, trong khu 
         subSections: [
           {
             title: "Bảo mật thông tin cá nhân",
+            imageUrl: anToanMang31,
             content: `Những thông tin như tên thật, tuổi, trường lớp, địa chỉ nhà, ảnh cá nhân hay các loại mật khẩu là những thông tin cá nhân, cần được bảo mật, không nên chia sẻ những thông tin này trên mạng. Bố mẹ cũng nên hướng dẫn con bảo mật tài khoản 2 lớp để tránh bị lấy cắp tài khoản phục vụ cho những mục đích xấu. Nếu các em còn nhỏ, những bài đăng trên mạng cũng nên giới hạn người xem là bạn bè, để tránh sự nhòm ngó từ người lạ.
 
 Các thông tin sau cần được giữ kín:
@@ -73,6 +90,7 @@ Hãy:
           },
           {
             title: "Suy nghĩ kỹ trước khi chia sẻ bất cứ điều gì",
+            imageUrl: anToanMang32,
             content: `Mạng xã hội vẫn luôn là con dao hai lưỡi, vì vậy trước khi bình luận, chia sẻ hay đăng tải bất cứ thông tin gì, các em cần phải tìm hiểu và suy nghĩ kỹ. Vì những bài đăng trên mạng sẽ có nhiều người xem, có thể con sẽ bị người khác soi mói, đánh giá, bình luận tiêu cực khiến chúng ta cảm thấy buồn hay lo sợ. Trước khi bấm "đăng", "chia sẻ" hay "bình luận", hãy tự hỏi:
 
 - Thông tin này có đúng không?
@@ -89,6 +107,7 @@ Các em có thể nhờ sự giúp đỡ từ bố mẹ để xem thông tin mì
           },
           {
             title: "Ứng xử văn minh trên mạng",
+            imageUrl: anToanMang33,
             content: `Nhiều bạn nghĩ rằng mạng xã hội là ảo, các em có làm gì thì cũng không ảnh hưởng đến bản thân và người khác. Tuy nhiên, mạng cũng là một xã hội thu nhỏ, tất cả những điều các em làm trên mạng đều có thể ảnh hưởng đến bản thân các em và mọi người.
 
 Khi nhìn thấy nội dung bạo lực, em có bình luận cổ vũ không? Nhìn thấy điều không thích, em có để lại những bình luận chê bai, chỉ trích nặng nề? Gặp một chủ đề gây tranh cãi, em có bất chấp tất cả để bảo vệ ý kiến của mình? Hay khi buồn bực, em có trút giận lên những người em thấy trên mạng xã hội không?
@@ -99,10 +118,12 @@ Vì vậy hãy sử dụng mạng xã hội một cách văn minh, không hùa t
           },
           {
             title: "Nhận biết các dạng lừa đảo qua mạng",
+            imageUrl: anToanMang34,
             content: `Hiện này có rất nhiều dạng lừa đảo qua mạng. Kẻ xấu có thể tạo một tài khoản ảo, kết bạn và trò chuyện với các em để lấy lòng tin sau đó dò hỏi những thông tin của các em. Chúng có thể đóng vai một người bạn, muốn em cung cấp thông tin để gửi quà. Tuy nhiên các em luôn nhớ nguyên tắc "không chia sẻ thông tin cá nhân", đặc biệt là chia sẻ trên mạng xã hội để không trở thành nạn nhân của lừa đảo. Bên cạnh đó, các em cũng cần cẩn thận với các trò chơi trúng thưởng, không nên nhấn vào đường link lạ để tránh bị mất tài khoản hay bị đánh cắp thông tin. Nếu có người yêu cầu các em gửi ảnh cá nhân, đặc biệt là ảnh nhạy cảm, hãy từ chối ngay và nói với bố mẹ. Đây cũng là một dạng lạm dụng cần được đề phòng và tránh xa. Im lặng chịu đựng sẽ khiến nguy hiểm lớn hơn.`,
           },
           {
             title: "Giới hạn thời gian sử dụng mạng xã hội",
+            imageUrl: anToanMang35,
             content: `Bố mẹ nên thống nhất và giới hạn thời gian sử dụng mạng xã hội cho con của mình. Các em chỉ nên sử dụng khi có điều cần trao đổi với bạn bè, thầy cô. Hoặc có thể sử dụng mạng xã hội để giải trí sau khi đã hoàn thành các việc cần thiết.
 
 Với các bạn còn nhỏ, bố mẹ nên giới hạn mục đích sử dụng của con, việc dùng mạng xã hội chỉ để liên lạc, trao đổi học tập với bạn và thầy cô dưới sự giám sát của bố mẹ.
@@ -139,16 +160,8 @@ Khi mỗi em biết sống có trách nhiệm trên mạng như ngoài đời, k
   },
   infographicUrl: "/images/learning-topics/mang-xa-hoi-an-toan.jpg",
   infographicUrls: [
-    "https://picsum.photos/seed/mang-xa-hoi-1/800/1000",
-    "https://picsum.photos/seed/mang-xa-hoi-2/800/1000",
-    "https://picsum.photos/seed/mang-xa-hoi-3/800/1000",
-    "https://picsum.photos/seed/mang-xa-hoi-4/800/1000",
-    "https://picsum.photos/seed/mang-xa-hoi-5/800/1000",
-    "https://picsum.photos/seed/mang-xa-hoi-6/800/1000",
-    "https://picsum.photos/seed/mang-xa-hoi-7/800/1000",
-    "https://picsum.photos/seed/mang-xa-hoi-8/800/1000",
-    "https://picsum.photos/seed/mang-xa-hoi-9/800/1000",
-    "https://picsum.photos/seed/mang-xa-hoi-10/800/1000",
+    anToanMangImageMobile,
+    anToanMangImageDesktop,
   ],
   quiz: [
     {

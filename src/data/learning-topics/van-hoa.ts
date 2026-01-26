@@ -1,4 +1,6 @@
 import type { LearningTopic } from "@/features/learning-topics/learning-topics.type";
+import vanHoaImageMobile from "@/assets/infographic_chu_de/chu_de_3/Chuong_3_mobile.png";
+import vanHoaImageDesktop from "@/assets/infographic_chu_de/chu_de_3/Chuong_3_desktop.png";
 
 export const vanHoaTopic: LearningTopic = {
   id: "van-hoa",
@@ -120,16 +122,8 @@ Xây dựng văn hóa học đường là một quá trình lâu dài, mang tín
   },
   infographicUrl: "/images/learning-topics/van-hoa-hoc-duong.jpg",
   infographicUrls: [
-    "https://picsum.photos/seed/van-hoa-1/800/1000",
-    "https://picsum.photos/seed/van-hoa-2/800/1000",
-    "https://picsum.photos/seed/van-hoa-3/800/1000",
-    "https://picsum.photos/seed/van-hoa-4/800/1000",
-    "https://picsum.photos/seed/van-hoa-5/800/1000",
-    "https://picsum.photos/seed/van-hoa-6/800/1000",
-    "https://picsum.photos/seed/van-hoa-7/800/1000",
-    "https://picsum.photos/seed/van-hoa-8/800/1000",
-    "https://picsum.photos/seed/van-hoa-9/800/1000",
-    "https://picsum.photos/seed/van-hoa-10/800/1000",
+    vanHoaImageMobile,
+    vanHoaImageDesktop,
   ],
   quiz: [
     {

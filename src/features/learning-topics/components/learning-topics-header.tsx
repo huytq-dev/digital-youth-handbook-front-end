@@ -42,8 +42,8 @@ const NAVIGATION: NavItem[] = [
         href: "/learning-topics/an-toan-mang",
       },
       {
-        label: "Thanh niên tình nguyện",
-        href: "/learning-topics/tinh-nguyen",
+        label: "Phòng ngừa bạo lực & xâm hại",
+        href: "/learning-topics/phong-ngua-bao-luc-xam-hai",
       },
       {
         label: "Chuyển đổi số",
