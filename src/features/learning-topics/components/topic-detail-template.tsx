@@ -266,6 +266,16 @@ const CollapsibleSubSections = ({
               className="overflow-hidden"
             >
               <div className="px-4 py-4 border-t-2 border-sky-100">
+                {/* Nếu có ảnh cho subSection */}
+                {subSection.imageUrl && (
+                  <div className="mb-4 rounded-lg border-2 border-black overflow-hidden bg-white shadow-[2px_2px_0px_black]">
+                    <img
+                      src={subSection.imageUrl}
+                      alt={subSection.title}
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                )}
                 <p className="text-sm font-medium leading-relaxed text-slate-600 whitespace-pre-line text-justify">
                   {subSection.content}
                 </p>
@@ -535,6 +545,17 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
 
                           {/* Section content */}
                           <div className="p-5">
+                            {/* Nếu có ảnh cho section */}
+                            {section.imageUrl && (
+                              <div className="mb-4 rounded-lg border-2 border-black overflow-hidden bg-white shadow-[2px_2px_0px_black]">
+                                <img
+                                  src={section.imageUrl}
+                                  alt={section.title}
+                                  className="w-full h-auto object-contain"
+                                />
+                              </div>
+                            )}
+
                             {/* Nếu có content trực tiếp */}
                             {section.content && (
                               <p className="text-sm font-medium leading-relaxed text-slate-700 whitespace-pre-line text-justify">
@@ -617,8 +638,12 @@ export const TopicDetailTemplate = ({ topic }: TopicDetailTemplateProps) => {
                     const filteredUrls = infographicUrls.filter((url) => {
                       const fileName =
                         url.split("/").pop()?.toLowerCase() || "";
-                      if (isMobile) return fileName.includes("mobile");
-                      return fileName.includes("desktop");
+                      if (isMobile) {
+                        // Mobile: hiển thị file có "mobile" (bao gồm cả desktop_mobile)
+                        return fileName.includes("mobile");
+                      }
+                      // Desktop: chỉ hiển thị file có "desktop" nhưng KHÔNG có "mobile"
+                      return fileName.includes("desktop") && !fileName.includes("mobile");
                     });
 
                     const displayUrls =

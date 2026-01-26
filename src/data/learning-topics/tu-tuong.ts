@@ -1,4 +1,6 @@
 import type { LearningTopic } from "@/features/learning-topics/learning-topics.type";
+import tuTuongImageMobile from "@/assets/infographic_chu_de/chu_de_2/Chuong_2_mobile.png";
+import tuTuongImageDesktop from "@/assets/infographic_chu_de/chu_de_2/Chuong_2_desktop.png";
 
 export const tuTuongTopic: LearningTopic = {
   id: "tu-tuong",
@@ -95,16 +97,8 @@ Nhìn chung, việc học tập và làm theo tư tưởng, đạo đức Hồ C
   },
   infographicUrl: "/images/learning-topics/hoc-tap-lam-theo-bac.jpg",
   infographicUrls: [
-    "https://picsum.photos/seed/tu-tuong-1/800/1000",
-    "https://picsum.photos/seed/tu-tuong-2/800/1000",
-    "https://picsum.photos/seed/tu-tuong-3/800/1000",
-    "https://picsum.photos/seed/tu-tuong-4/800/1000",
-    "https://picsum.photos/seed/tu-tuong-5/800/1000",
-    "https://picsum.photos/seed/tu-tuong-6/800/1000",
-    "https://picsum.photos/seed/tu-tuong-7/800/1000",
-    "https://picsum.photos/seed/tu-tuong-8/800/1000",
-    "https://picsum.photos/seed/tu-tuong-9/800/1000",
-    "https://picsum.photos/seed/tu-tuong-10/800/1000",
+    tuTuongImageMobile,
+    tuTuongImageDesktop,
   ],
   quiz: [
     {
