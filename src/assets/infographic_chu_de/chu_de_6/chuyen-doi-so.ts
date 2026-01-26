@@ -8,211 +8,174 @@ import chuyenDoiSo41 from "@/assets/infographic_chu_de/chu_de_6/chuyen_doi_so_4.
 
 export const chuyenDoiSoTopic: LearningTopic = {
   id: "chuyen-doi-so",
-  title: "Kỹ năng phòng ngừa bạo lực học đường và xâm hại thân thể dành cho thanh thiếu niên trong bối cảnh hiện nay",
+  title: "Chuyển đổi số và kĩ năng công dân số cho thanh, thiếu niên",
   objectives: [
-    "Nhận diện bạo lực học đường và xâm hại thân thể",
-    "Đặc điểm, xu hướng, hậu quả của bạo lực học đường hiện nay",
-    "Kĩ năng phòng ngừa xâm hại trẻ em",
-    "Kỹ năng phòng ngừa bạo lực học đường và xâm hại thân thể",
+    "Giúp đoàn viên, thanh niên nhận thức rõ vai trò, trách nhiệm của mình trong chuyển đổi số quốc gia",
+    "Trang bị những hiểu biết cơ bản về chuyển đổi số và công dân số trong kỷ nguyên mới",
+    "Hình thành thái độ chủ động, tích cực ứng dụng công nghệ vào học tập, lao động và hoạt động Đoàn",
+    "Bồi dưỡng các kỹ năng công dân số để sử dụng Internet an toàn, hiệu quả, văn minh và có trách nhiệm",
   ],
   content: {
     summary:
-      "Trong tiến trình phát triển nhân cách của thanh thiếu niên, môi trường học đường giữ vai trò đặc biệt quan trọng, không chỉ là nơi truyền thụ tri thức mà còn là không gian hình thành các giá trị đạo đức, hành vi xã hội và kỹ năng sống. Tuy nhiên, thực tiễn giáo dục hiện nay cho thấy, bạo lực học đường và xâm hại thân thể vẫn đang tồn tại dưới nhiều hình thức tinh vi, gây ảnh hưởng nghiêm trọng đến sự phát triển toàn diện của học sinh.\n\nTheo Tổ chức Y tế Thế giới (WHO), bạo lực học đường được xem là một trong những yếu tố nguy cơ hàng đầu tác động tiêu cực đến sức khỏe tâm thần của trẻ em và thanh thiếu niên. Bạo lực học đường và xâm hại thân thể không chỉ gây tổn thương về thể chất mà còn để lại hậu quả nặng nề về tâm lý, làm suy giảm niềm tin, ảnh hưởng lâu dài đến nhân cách, kết quả học tập và sự phát triển toàn diện của thanh thiếu niên. Điều này đặt ra yêu cầu cấp thiết phải giáo dục có hệ thống các kỹ năng phòng ngừa bạo lực học đường và xâm hại thân thể, coi đây là một nội dung trọng tâm trong giáo dục kỹ năng sống hiện nay.",
+      "Trong kỷ nguyên mới – Kỷ nguyên vươn mình của dân tộc, cuộc cách mạng công nghiệp 4.0 đang diễn ra mạnh mẽ trên toàn cầu, chuyển đổi số đã trở thành xu hướng tất yếu và là động lực quan trọng để phát triển đất nước về mọi mặt. Đảng và Nhà nước ta đã xác định chuyển đổi số là nhiệm vụ trọng tâm, là giải pháp then chốt để đưa Việt Nam phát triển nhanh và bền vững. Trong bối cảnh đó, đoàn viên, thanh niên có vai trò hết sức quan trọng đối với chuyển đổi số.\n\nChuyển đổi số là quá trình thay đổi tổng thể và toàn diện của các cá nhân, tổ chức về cách sống, cách làm việc và phương thức sản xuất dựa trên các công nghệ số. Đoàn viên, thanh niên là lực lượng tiên phong trong ứng dụng công nghệ và đổi mới sáng tạo, góp phần xây dựng và phát triển hạ tầng số, nâng cao nhận thức và kỹ năng cho cộng đồng trong quá trình chuyển đổi số.",
     videoUrl: "https://www.youtube.com/embed/bXaYhp-DLF8",
     sections: [
       {
         title: "Giới thiệu",
         imageUrl: chuyenDoiSoGioiThieu,
-        content: `Trong tiến trình phát triển nhân cách của thanh thiếu niên, môi trường học đường giữ vai trò đặc biệt quan trọng, không chỉ là nơi truyền thụ tri thức mà còn là không gian hình thành các giá trị đạo đức, hành vi xã hội và kỹ năng sống. Tuy nhiên, thực tiễn giáo dục hiện nay cho thấy, bạo lực học đường và xâm hại thân thể vẫn đang tồn tại dưới nhiều hình thức tinh vi, gây ảnh hưởng nghiêm trọng đến sự phát triển toàn diện của học sinh.
+        content: `Trong kỷ nguyên mới – Kỷ nguyên vươn mình của dân tộc, cuộc cách mạng công nghiệp 4.0 đang diễn ra mạnh mẽ trên toàn cầu, chuyển đổi số đã trở thành xu hướng tất yếu và là động lực quan trọng để phát triển đất nước về mọi mặt. Đảng và Nhà nước ta đã xác định chuyển đổi số là nhiệm vụ trọng tâm, là giải pháp then chốt để đưa Việt Nam phát triển nhanh và bền vững. Trong bối cảnh đó, đoàn viên, thanh niên có vai trò hết sức quan trọng đối với chuyển đổi số.
 
-Theo Tổ chức Y tế Thế giới (WHO), bạo lực học đường được xem là một trong những yếu tố nguy cơ hàng đầu tác động tiêu cực đến sức khỏe tâm thần của trẻ em và thanh thiếu niên. Tại Việt Nam, nhiều nghiên cứu của Bộ Giáo dục và Đào tạo, Bộ Lao động – Thương binh và Xã hội chỉ ra rằng, không ít vụ việc bạo lực học đường và xâm hại thân thể chỉ được phát hiện khi hậu quả đã xảy ra, do nạn nhân thiếu kỹ năng nhận diện, tự bảo vệ và tìm kiếm sự trợ giúp.
-
-Bạo lực học đường và xâm hại thân thể không chỉ gây tổn thương về thể chất mà còn để lại hậu quả nặng nề về tâm lý, làm suy giảm niềm tin, ảnh hưởng lâu dài đến nhân cách, kết quả học tập và sự phát triển toàn diện của thanh thiếu niên. Đáng lo ngại hơn, nhiều nạn nhân không dám lên tiếng, không biết cách tự bảo vệ hoặc tìm kiếm sự hỗ trợ, dẫn đến tình trạng bạo lực kéo dài, âm ỉ và khó kiểm soát.
-
-Trong bối cảnh xã hội hiện đại, đặc biệt là sự bùng nổ của công nghệ số và mạng xã hội, ranh giới giữa môi trường học đường và đời sống xã hội ngày càng mờ nhạt. Bạo lực không chỉ diễn ra trực tiếp mà còn lan sang không gian mạng, làm gia tăng nguy cơ tổn thương cho thanh thiếu niên. Điều này đặt ra yêu cầu cấp thiết phải giáo dục có hệ thống các kỹ năng phòng ngừa bạo lực học đường và xâm hại thân thể, coi đây là một nội dung trọng tâm trong giáo dục kỹ năng sống hiện nay.`,
+Thủ tướng Phạm Minh Chính chủ trì đối thoại với thanh niên năm 2025 với chủ đề: "Thanh niên Việt Nam tiên phong phát triển khoa học công nghệ, đổi mới sáng tạo và chuyển đổi số quốc gia". Điều này cho thấy sự quan tâm đặc biệt của Đảng và Nhà nước đối với vai trò của thanh niên trong công cuộc chuyển đổi số quốc gia.`,
       },
       {
-        title: "Nhận diện bạo lực học đường và xâm hại thân thể",
+        title: "Chuyển đổi số và tầm quan trọng của chuyển đổi số",
         imageUrl: chuyenDoiSo2,
-        content: `Bạo lực học đường là những hành vi cố ý gây tổn hại về thể chất, tinh thần hoặc danh dự của người khác trong môi trường học tập, bao gồm: đánh đập, đe dọa, bắt nạt, cô lập, xúc phạm, lan truyền thông tin sai lệch, hình ảnh nhạy cảm.
+        content: `Có thể hiểu chuyển đổi số là quá trình thay đổi tổng thể và toàn diện của các cá nhân, tổ chức về cách sống, cách làm việc và phương thức sản xuất dựa trên các công nghệ số. Quá trình này hướng đến mục tiêu thúc đẩy phát triển kinh tế số, xã hội số; làm thay đổi phương thức quản lý nhà nước, mô hình sản xuất kinh doanh, tiêu dùng và đời sống văn hóa, xã hội.
 
-Xâm hại thân thể là những hành vi vi phạm quyền bất khả xâm phạm về thân thể của trẻ em và thanh thiếu niên, có thể xảy ra dưới nhiều hình thức như: sờ mó, ép buộc tiếp xúc thân thể, lạm dụng tình dục, bạo lực thể chất hoặc lợi dụng sự thiếu hiểu biết của nạn nhân.
+Chuyển đổi số quốc gia bao gồm 3 cấu phần chính, lần lượt là chuyển đổi số trong hoạt động của cơ quan nhà nước nhằm phát triển chính phủ số, chuyển đổi số trong hoạt động của doanh nghiệp nhằm phát triển kinh tế số, chuyển đổi số trong hoạt động của người dân nhằm phát triển xã hội số.
 
-Theo các nghiên cứu tâm lý học giáo dục, đa số nạn nhân là những em thiếu kỹ năng tự bảo vệ, thiếu tự tin và không được trang bị kiến thức nhận diện nguy cơ, đặc biệt là trong môi trường mạng và các mối quan hệ xã hội phức tạp.`,
+Đảng và Nhà nước đã và đang đặc biệt quan tâm đến chuyển đổi số trong bối cảnh cuộc Cách mạng công nghiệp lần thứ tư. Ngày 27-9-2019, Bộ Chính trị đã ban hành Nghị quyết số 52-NQ/TW về một số chủ trương, chính sách chủ động tham gia cuộc Cách mạng công nghiệp lần thứ tư. Một trong những quan điểm chỉ đạo quan trọng của Đảng được thể hiện trong Nghị quyết là: "Chủ động, tích cực tham gia cuộc Cách mạng công nghiệp lần thứ tư là yêu cầu tất yếu khách quan; là nhiệm vụ có ý nghĩa chiến lược đặc biệt quan trọng, vừa cấp bách vừa lâu dài của cả hệ thống chính trị và toàn xã hội, gắn chặt với quá trình hội nhập quốc tế sâu rộng; đồng thời nhận thức đầy đủ, đúng đắn về nội hàm, bản chất của cuộc Cách mạng công nghiệp lần thứ tư để quyết tâm đổi mới tư duy và hành động, coi đó là giải pháp đột phá với bước đi và lộ trình phù hợp là cơ hội để Việt Nam bứt phá trong phát triển kinh tế - xã hội".
+
+Trong các văn kiện của Đại hội XIII (Báo cáo chính trị, Chiến lược phát triển kinh tế - xã hội 10 năm 2021-2030; Báo cáo đánh giá kết quả thực hiện nhiệm vụ phát triển kinh tế - xã hội 5 năm 2016-2020 và phương hướng, nhiệm vụ phát triển kinh tế - xã hội 5 năm 2021-2025), có tới 21 lần Đảng nhấn mạnh cụm từ "chuyển đổi số". Trong Chiến lược phát triển kinh tế - xã hội 10 năm 2021-2030, Đảng nhấn mạnh: "Phát triển nhanh và bền vững dựa chủ yếu vào khoa học công nghệ, đổi mới sáng tạo và chuyển đổi số". Phương hướng, nhiệm vụ và giải pháp phát triển kinh tế - xã hội 5 năm 2021 - 2025 cũng xác định: "Hoàn thiện thể chế để thúc đẩy quá trình chuyển đổi số". Điểm qua các văn kiện quan trọng của Đảng tại Đại hội XIII cho thấy, chuyển đổi số quốc gia là vấn đề có tính chiến lược trong đường lối phát triển đất nước, là con đường, cách thức để hiện thực hóa khát vọng phát triển Việt Nam đến năm 2045.
+
+Ngày 22 tháng 12 năm 2024, Tổng Bí thư Tô Lâm đã ký ban hành Nghị quyết số 57-NQ/TW của Bộ Chính trị về đột phá phát triển khoa học, công nghệ, đổi mới sáng tạo và chuyển đổi số quốc gia. Nghị quyết chỉ rõ: "Phát triển khoa học, công nghệ, đổi mới sáng tạo và chuyển đổi số đang là yếu tố quyết định phát triển của các quốc gia; là điều kiện tiên quyết, thời cơ tốt nhất để nước ta phát triển giàu mạnh, hùng cường trong kỷ nguyên mới - kỷ nguyên vươn mình của Dân tộc".
+
+Như vậy, Đảng đã xác định tầm quan trọng của chuyển đổi số, có đó là đột phá quan trọng là điều kiện tiên quyết, thời cơ tốt nhất để nước ta phát triển giàu mạnh, hùng cường trong kỷ nguyên mới - kỷ nguyên vươn mình của Dân tộc.`,
       },
       {
-        title: "Đặc điểm, xu hướng, hậu quả của bạo lực học đường hiện nay",
-        subSections: [
-          {
-            title: "Đặc điểm, xu hướng",
-            content: `- Xảy ra ở mọi cấp học, nhưng phổ biến nhất ở cấp THCS, THPT;
+        title: "Vai trò của đoàn viên, thanh niên đối với chuyển đổi số trong kỷ nguyên mới",
+        content: `Kỷ nguyên mới của dân tộc Việt Nam là thời kỳ lịch sử mới trong tiến trình phát triển của dân tộc Việt Nam mà ở đó các mục tiêu, nhiệm vụ chiến lược được thực hiện, hoàn thành, tạo ra bước ngoặt trong tiến trình phát triển của dân tộc, đất nước ta. Đó là kỷ nguyên dưới sự lãnh đạo của Đảng, xây dựng thành công nước Việt Nam dân giàu, nước mạnh, dân chủ, công bằng, văn minh, phấn đấu đến năm 2030 là nước đang phát triển, có công nghiệp hiện đại, thu nhập trung bình cao; đến năm 2045 trở thành nước phát triển, thu nhập cao vững bước đi lên chủ nghĩa xã hội, "sánh vai với các cường quốc năm châu".
 
-- Xảy ra trong khuân viên nhà trường hoặc bên ngoài (trên đường đến trường, tại các khu dân cư…giữa các nhóm học sinh có mâu thuẫn, xích mích);
+Trong kỷ nguyên mới, đoàn viên, thanh niên có vai trò hết sức quan trọng đối với chuyển đổi số, được thể hiện ở những nội dung cơ bản sau:
 
-- Xảy ra ở cả học sinh nam và học sinh nữ. Trong đó, xu hướng bạo lực trong giới nữ đang gia tăng;
+Một là, đoàn viên, thanh niên là lực lượng tiên phong trong ứng dụng công nghệ và đổi mới sáng tạo. Có thể thấy, đoàn viên thanh niên là nhóm đối tượng nhanh nhạy trong việc tiếp cận và ứng dụng công nghệ mới. Với khả năng học hỏi nhanh, thanh niên có thể nghiên cứu, phát triển và áp dụng các giải pháp công nghệ vào thực tiễn công việc, học tập cũng như cuộc sống hàng ngày. Nhiều sáng kiến, phần mềm, ứng dụng hữu ích được các đoàn viên sáng tạo đã góp phần không nhỏ vào quá trình chuyển đổi số tại địa phương, cơ quan và doanh nghiệp.
 
-- Bạo lực mang tính tự phát, nhất thời bột phát, ít khi có định hướng, động cơ, mục đích rõ ràng;
+Hai là, đoàn viên, thanh niên là lực lượng xung kích tham gia xây dựng và phát triển hạ tầng số. Thanh niên là lực lượng quan trọng trong việc xây dựng, vận hành các nền tảng số, hệ thống dữ liệu lớn (big data) và các phần mềm ứng dụng phục vụ chính phủ điện tử, đô thị thông minh và xã hội số. Đoàn viên, thanh niên có thể tham gia trực tiếp vào các dự án phát triển nền tảng công nghệ, góp phần đảm bảo an ninh mạng và phát triển hạ tầng số của quốc gia.
 
-- Xu hướng sử dụng vũ khí nóng, thiết bị số, mạng xã hội...trong quá trình thực hiện hành vi bạo lực;
+Ba là, đoàn viên, thanh niên là lực lượng góp phần nâng cao nhận thức và kỹ năng cho cộng đồng trong quá trình chuyển đổi số. Đoàn viên, thanh niên không chỉ là người sử dụng công nghệ mà còn là những "người truyền lửa", giúp nâng cao nhận thức về chuyển đổi số cho cộng đồng. Thông qua các hoạt động tình nguyện, đoàn viên có thể hướng dẫn người dân, đặc biệt là ở vùng sâu, vùng xa tiếp cận và sử dụng các dịch vụ công trực tuyến, thanh toán không dùng tiền mặt, ứng dụng thương mại điện tử…
 
-- Xu hướng khẳng định vị trí thủ lĩnh, cầm đầu bằng việc đánh dằn mặt bạn bè, tạo ra nỗi khiếp sợ; xu hướng làm nhục nạn nhân, thể hiện sự tàn nhẫn, vô cảm;
+Bốn là, đoàn viên, thanh niên là lực lượng quan trọng cho khởi nghiệp và phát triển kinh tế số. Đoàn viên thanh niên là lực lượng giàu tinh thần khởi nghiệp và sáng tạo. Nhiều mô hình kinh tế số, thương mại điện tử, và các dự án khởi nghiệp công nghệ đã được các bạn trẻ triển khai thành công, góp phần tạo việc làm và thúc đẩy sự phát triển kinh tế địa phương.
 
-- Xu hướng liên kết giữa các đối tượng trong và ngoài trường học, hình thành các băng nhóm côn đồ càn quấy, phân định đẳng cấp bắt chước xã hội đen;
-
-- Có tính lây lan, kích động, lôi kéo đông người tham gia; sự việc có thể phát triển nguy hiểm nếu không được kiểm soát, ngăn chặn kịp thời;
-
-- Có sự vô cảm nguy hiểm trong cộng đồng học sinh khi chứng kiến bạo lực;`,
-          },
-          {
-            title: "Hậu quả của bạo lực học đường đối với thanh thiếu niên",
-            content: `Bạo lực học đường và xâm hại thân thể gây ra nhiều hệ lụy nghiêm trọng:
-
-- Tổn thương tâm lý kéo dài: lo âu, trầm cảm, sợ hãi, mặc cảm, mất niềm tin vào người khác.
-
-- Sa sút học tập: mất tập trung, chán học, bỏ học, thậm chí có hành vi tự làm hại bản thân.
-
-- Lệch chuẩn hành vi: một số nạn nhân có xu hướng trở thành người gây bạo lực nếu không được can thiệp kịp thời.
-
-- Ảnh hưởng lâu dài đến nhân cách và tương lai của thanh thiếu niên.
-
-Nhiều công trình nghiên cứu đã chỉ ra rằng, học sinh từng là nạn nhân của bạo lực học đường có nguy cơ gặp các vấn đề tâm lý cao gấp 2–3 lần so với nhóm không bị bạo lực.`,
-          },
-          {
-            title: "Một số kĩ năng phòng ngừa bạo lực học đường cho thanh thiếu niên",
-            content: `- Nếu biết trước rằng mình sẽ bị đánh, các em cần chủ động thông báo trước sự việc với Ban giám hiệu, giáo viên chủ nhiệm, hoặc đơn giản là gọi điện cho người nhà, hay báo một số bạn bè của mình biết để bảo vệ. Cũng có thể nhờ người có uy tín với nhóm đối tượng (như học sinh lớp trên...) để nói chuyện trước với họ, hoặc nếu thấy an toàn (có thầy cô giáo, người thân, nhóm bạn...bên cạnh) thì có thể chủ động gặp đối tượng để nói chuyện, nhằm ngăn chặn sự việc xảy ra.
-
-- Luôn đi cùng bạn bè lúc tan học hay khi ra chơi, chứ đừng đi lại một mình. Đông người bao giờ cũng an toàn hơn, nếu có bạn bè ở bên cạnh thì kẻ bắt nạt sẽ không dám làm gì. Lưu ý không ngoan ngoãn đi nói chuyện theo yêu cầu của đối tượng. Trong hoàn cảnh mình yếu hơn, tốt nhất là cố gắng tránh gặp kẻ bắt nạt, ở trường hay ở trên đường, nhưng đừng tỏ cho họ thấy điều đó. Nếu họ biết các em đang sợ hãi, họ sẽ càng lấn tới. Nếu họ cùng đường đi với các em, hãy đi đường khác, vì khi không nhìn thấy thì họ cũng không thể bắt nạt các em. Tình huống buộc phải đối mặt với kẻ bắt nạt và không có sự trợ giúp từ bên ngoài, hãy thể hiện mình là người không dễ bắt nạt, sẵn sàng đương đầu và đối tượng sẽ trả giá thích đáng nếu bắt nạt mình. Vì tâm lý kẻ bắt nạt thích săn những con mồi yếu hơn mình. Nếu cảm thấy không an toàn, chúng sẽ nhụt chí. Đừng để kẻ bắt nạt thấy các em khóc. Nếu thấy phản ứng ủy mị như thế, họ sẽ càng bắt nạt các em nhiều hơn.
-
-- Trước khi tình hình diễn biến phức tạp, việc thủ sẵn trên tay vật dụng nào đó...và thái độ quyết liệt từ cử chỉ đến cách nói, sẽ làm đối tượng chùn bước. Vì sự quyết liệt của nạn nhân sẽ kích hoạt nỗi sợ bên trong kẻ tấn công.
-
-- Khi bị vây, không đứng chịu trận, phó mặc cho số phận. Hãy nhớ nguyên lý chạy chỗ (chạy vòng tròn) nếu đối tượng bắt đầu ra tay. Hãy chống trả quyết liệt bằng tất cả sức mạnh bản năng, chớp cơ hội xô ngã đối tượng yếu nhất rồi bỏ chạy đến nơi an toàn, như phòng giáo viên, ban giám hiệu, phòng hội đồng (nếu bị đánh trong trường học), hoặc trụ sở cơ quan Công an, các tổ CSGT trên đường, nhà dân....khi bị đánh trên đường. Quá trình chống trả, hãy hô hoán thật to, kêu cứu để thu hút sự chú ý của những người xung quanh, đối tượng thường cũng sợ hãi việc đánh người bị bắt quả tang (bị đuổi học, bị xử lý)...Ngay khi thoát khỏi đối tượng, cần tính đến việc các đối tượng tiếp tục phục kích để đánh, hãy gọi điện cho người nhà, báo thầy cô giáo, báo Công an...để chủ động giải quyết sự việc.
-
-- Đối với bạn của nạn nhân, nếu biết tin bạn mình có thể bị đánh, cần báo trước cho nạn nhân biết để chủ động đề phòng và ngăn chặn hậu quả. Khi chứng kiến bạn bị vây đánh, cần gọi người giúp, xét thấy không an toàn thì không xông vào can ngăn, vì như vậy sẽ bị cuốn vào, thậm chí bị đánh hội đồng theo. Vẫn có thể giúp được bạn, bằng cách công khai hô hoán kêu cứu hoặc bấm máy gọi Cảnh sát 113, gọi người lớn trợ giúp. Cách này phù hợp nếu ở gần nhà dân, trường học, gần chỗ có người lớn. Nhưng khi đã can thiệp (gọi trợ giúp), chắc chắn sẽ sinh mâu thuẫn với nhóm đánh hội đồng, có nguy cơ bị trả thù về sau. Vì thế, sau đó phải báo cáo với bố mẹ và thầy cô giáo vì chỉ có họ mới có thể giải quyết được sự việc. Lúc này, bố mẹ làm việc với thầy cô, với từng người trong nhóm đánh hội đồng bạn, với bố mẹ của các đối tượng đó. Thậm chí, nhờ cả Công an vào cuộc, gọi hỏi, bắt viết cam kết... Để ngăn ngừa các hành động mất kiểm soát sau đó. Cách khác an toàn hơn và tránh bị trả thù về sau, là lẳng lặng chạy đi gọi người lớn, hoặc chạy ra khỏi chỗ đó rồi mới gọi Công an, gọi bố mẹ hoặc người lớn, để nhóm đánh hội đồng không biết ai gọi trợ giúp, xử lý vụ việc.`,
-          },
-        ],
+Năm là, đoàn viên, thanh niên là lực lượng đóng góp vào cải cách hành chính và xây dựng chính phủ điện tử. Trong các cơ quan, đoàn viên, thanh niên là lực lượng tiên phong đề xuất và thực hiện các giải pháp số hóa quy trình làm việc, sử dụng phần mềm quản lý dữ liệu, ứng dụng công nghệ trong quản lý và vận hành. Qua đó, góp phần đẩy nhanh quá trình cải cách hành chính, xây dựng nền hành chính hiện đại, minh bạch và hiệu quả.`,
       },
       {
-        title: "Kĩ năng phòng ngừa xâm hại trẻ em",
+        title: "Một số giải pháp phát huy vai trò của thanh niên trong chuyển đổi số công tác Đoàn hiện nay",
+        content: `Nhận thức rõ tầm quan trọng và trách nhiệm lớn lao của lực lượng thanh niên đối với công cuộc chuyển đổi số, thời gian tới, mỗi đoàn viên thanh niên cần thực hiện một số giải pháp đẩy mạnh chuyển đổi số trong tất cả các mặt hoạt động của Đoàn như sau:
+
+Một là, không ngừng học tập, nghiên cứu, tìm hiểu và nâng cao nhận thức về chuyển đổi số; bồi dưỡng và tự trau dồi, nắm vững được những kiến thức cơ bản về chuyển đổi số, các giải pháp chuyển đổi số hiện đang được định hướng triển khai rộng khắp trong hệ thống tổ chức của Đoàn ở các cấp. Tích cực tham gia các hội thảo, hội nghị cho cán bộ, đoàn viên, thanh niên, người lao động tại đơn vị để tuyên truyền, truyền thông về chuyển đổi số. Bên cạnh việc không ngừng học tập, rèn luyện nâng cao trình độ chuyên môn nghiệp vụ, cần thường xuyên trau dồi hiểu biết về tình hình thế giới để có tư duy, hành động phù hợp hơn, góp phần thúc đẩy nhanh và nâng cao hiệu quả chuyển đổi số tại địa phương đơn vị.
+
+Hai là, cần chủ động tham mưu, góp ý cho lãnh đạo tại địa phương, đơn vị mình để đưa ra các giải pháp giúp thúc đẩy công tác chuyển đổi số. Vận dụng vốn kiến thức và năng lực bản thân, không ngừng phát huy tính sáng tạo và phát triển các giải pháp, ý tưởng nâng cao hiệu quả chuyển đổi số tại cơ quan, đơn vị, qua đó, cụ thể hóa chủ trương, nghị quyết, kế hoạch, triển khai các phương án chuyển đổi số khả thi trên tất cả các lĩnh vực trong thời gian sớm nhất. Tăng cường áp dụng khoa học – công nghệ, chuyển đổi số trong tổ chức các hoạt động phong trào trên toàn hệ thống của Đoàn, từng bước nâng cao hiệu quả công việc.
+
+Ba là, tích cực tham gia tổ chức triển khai các nhiệm vụ phong trào, chương trình chuyển đổi số do Đoàn cấp trên phát động; truyền thông, lan tỏa đến đông đảo cán bộ, đoàn viên, thanh niên và mọi người xung quanh. Chủ động tham gia các tổ chuyển đổi số, nhóm chuyển đổi số tại địa phương, đơn vị để luôn nắm bắt được nhanh chóng tình hình chuyển đổi số trên tất cả các lĩnh vực. Cũng như luôn thể hiện được vai trò, tính xung kích, tình nguyện sức trẻ và năng lượng đổi mới trong mọi nhiệm vụ được giao, nhanh chóng và kịp thời trong công tác thực thi chuyển đổi số tại, địa phương, đơn vị đang công tác.
+
+Bốn là, nâng cao năng lực hợp tác, liên kết giữa các cơ quan, đơn vị để giúp nâng cao hiệu quả chuyển đổi số. Các cơ quan đơn vị hoạt động trong lĩnh vực Công nghệ thông tin, cả doanh nghiệp và cơ quan chính quyền có vai trò quan trọng đối với công tác chuyển đổi số. Việc gắn kết, phối hợp sẽ giúp cho các hoạt động của tổ chức Đoàn có nhiều hơn các giải pháp, và thực hiện các giải pháp một cách đồng bộ, nhanh chóng và hiệu quả hơn.
+
+Thanh niên Việt Nam có đầy đủ tiềm năng và năng lực để trở thành lực lượng tiên phong trong quá trình chuyển đổi số của đất nước, từ đó nắm bắt cơ hội này để phát triển bản thân, tạo dựng một tương lai tươi sáng cho chính mình và đóng góp vào sự phát triển của đất nước. Phát huy tinh thần dám nghĩ, dám làm của tuổi trẻ, cán bộ, đoàn viên thanh niên cần chủ động tham mưu, góp ý với cấp ủy, người đứng đầu cơ quan, đơn vị, địa phương về các giải pháp giúp thúc đẩy công tác chuyển đổi số trong mọi lĩnh vực hoạt động. Đồng thời, cán bộ, đoàn viên thanh niên cần tích cực tuyên truyền, vận động người dân áp dụng công nghệ số vào cuộc sống, qua đó góp phần nâng cao hiệu quả triển khai các hoạt động chuyển đổi số ở cơ quan, đơn vị, địa phương, đúng với tinh thần đi đầu của thanh niên.`,
+      },
+      {
+        title: "Phát triển kĩ năng công dân số cho thế hệ trẻ",
         imageUrl: chuyenDoiSo4,
         subSections: [
           {
-            title: "Đặc điểm nhận diện",
+            title: "Công dân số là gì?",
             imageUrl: chuyenDoiSo41,
-            content: `Đối tượng thực hiện hành vi xâm hại trẻ em đa dạng về lứa tuổi, thành phần xã hội, phần lớn trình độ văn hóa thấp, nhận thức pháp luật và xã hội còn hạn chế; lợi dụng mối quan hệ từ trước với trẻ em (bạn bè, hàng xóm, họ hàng, bạn của bố, mẹ, người thân trong gia đình…) nên các em thường không có ý thức tạo khoảng cách, phòng vệ hoặc ở trong tình trạng không thể phòng vệ được, từ đó thực hiện các hành vi xâm hại như:
+            content: `Trong bối cảnh công nghệ thông tin phát triển mạnh mẽ trên toàn thế giới, chuyển đổi số được sử dụng tối ưu ở tất cả các lĩnh vực trong đó có giáo dục và đào tạo. Điều này đỏi hỏi cấp thiết về việc trang bị cho các em những kiến thức và kỹ năng cần thiết để sử dụng công nghệ một cách hiệu quả, an toàn.
 
-- Mua bán trẻ em;
-- Xâm hại tính mạng, sức khỏe trẻ em;
-- Xâm hại tình dục trẻ em;
-- Lạm dụng, bóc lột sức lao động của trẻ em;
-- Lợi dụng, dụ dỗ hoặc đe dọa để chiếm đoạt tài sản của trẻ em;
-- Rủ rê, lôi kéo, ép buộc trẻ em sử dụng các chất ma túy hoặc vận chuyển hàng cấm.
-
-Nhận diện xâm hại trẻ em cần dựa trên các dấu hiệu bất thường về thể chất (vết bầm, thương tích vùng kín, đau khi đi vệ sinh) và tâm lý/hành vi (sợ hãi người quen, rối loạn giấc ngủ, thay đổi tính cách, học hành sa sút, kiến thức tình dục không phù hợp). Cần chú ý 90% thủ phạm là người quen biết và gọi ngay 111 khi phát hiện.`,
+Công dân số (Digital Citizen) là những cá nhân sử dụng công nghệ số một cách có trách nhiệm, an toàn và hiệu quả trong học tập, làm việc, giao tiếp và tham gia vào các hoạt động trực tuyến. Một công dân số không chỉ biết cách sử dụng Internet, mạng xã hội hay các thiết bị thông minh mà còn có trách nhiệm trong việc bảo vệ dữ liệu cá nhân, tuân thủ đạo đức số và hiểu rõ quyền lợi cũng như nghĩa vụ của mình trên không gian mạng.`,
           },
           {
-            title: "Dấu hiệu thể chất",
-            content: `- Vết thương khó giải thích: Vết bầm tím, trầy xước, chảy máu ở vùng kín, hậu môn, miệng, đùi, hoặc vùng nhạy cảm.
+            title: "Đặc điểm của công dân số",
+            content: `- Hiểu biết về công nghệ: Biết cách sử dụng Internet, phần mềm và công cụ số.
 
-- Rối loạn vệ sinh: Đi tiêu/tiểu khó, đau rát, tiểu không tự chủ, nhiễm trùng bộ phận sinh dục.
+- Tư duy phản biện: Đánh giá thông tin trực tuyến một cách khách quan và tránh tin giả.
 
-- Dấu hiệu khác: Quần áo rách, dính máu hoặc vết bẩn lạ; trẻ sợ tắm, sợ thay đồ hoặc không cho người khác đụng vào người.`,
+- Bảo vệ thông tin cá nhân: Có ý thức về bảo mật và quyền riêng tư trên mạng.
+
+- Giao tiếp số có trách nhiệm: Biết cách ứng xử lịch sự và có đạo đức khi tương tác trực tuyến.
+
+- Sử dụng Internet một cách lành mạnh: Không bị nghiện công nghệ, biết quản lý thời gian và sử dụng mạng một cách hiệu quả.`,
           },
           {
-            title: "Dấu hiệu tâm lý và hành vi",
-            content: `- Sợ hãi/lẩn tránh: Sợ hãi một người cụ thể, sợ đi học, sợ ở nơi vắng người hoặc nơi từng bị xâm hại.
+            title: "Tại sao giáo dục công dân số quan trọng?",
+            content: `- Thế giới đang số hóa nhanh chóng: Hầu hết các hoạt động từ học tập, làm việc đến giải trí đều chuyển dịch sang môi trường số.
 
-- Thay đổi tính cách: Đột ngột trở nên bám víu, lo âu, trầm cảm, hoặc hung dữ, cáu giận bất thường.
+- Nhiều rủi ro trên Internet: Tin giả, lừa đảo trực tuyến, mất an toàn thông tin cá nhân là những vấn đề đáng lo ngại.
 
-- Hành vi tình dục không phù hợp: Trẻ có hành vi, ngôn ngữ, hoặc kiến thức tình dục vượt quá độ tuổi (ví dụ: chơi trò chơi tình dục, vẽ tranh nhạy cảm).
+- Giao tiếp và tương tác toàn cầu: Công dân số cần biết cách làm việc và hợp tác với những người từ nhiều nền văn hóa khác nhau.
 
-- Rối loạn sinh hoạt: Mất ngủ, ác mộng, chán ăn, hoặc bỏ học.`,
+- Hỗ trợ phát triển cá nhân và nghề nghiệp: Biết cách sử dụng công nghệ một cách hiệu quả giúp nâng cao cơ hội học tập và làm việc trong tương lai.`,
           },
           {
-            title: "Hậu quả của việc bị xâm hại",
-            content: `- Trẻ bị tổn thương về tinh thần và ảnh hưởng đến tương lai, dễ bị mặc cảm, phát triển không bình, khó hòa nập với xã hội và đặc biệt là tổn tương về sức khỏe thể chất; việc bị xâm hại tình dục trong khi các đặc diểm sinh học, thể chất chưa hoàn thiện có thể gây ra những tổn thương năng nề tại bộ phận sinh dục hoặc các tổn thương thể chất khác, có thể mang thai ngoài ý muốn gây nguy hiểm cho bản thân và thai nhi vì cơ thể các em chưa phát triển hoàn chỉnh, hoặc là nguyên nhân dẫn đến vô sinh, ảnh hưởng trực tiếp đến sức khỏe sinh sản và hạnh phúc gia đình của các em về sau.
+            title: "Các nguyên tắc của giáo dục công dân số",
+            content: `- Nhận thức về an toàn mạng: Biết cách bảo vệ bản thân trước những nguy cơ trên Internet.
 
-- Nhiều trẻ sau khi bị xâm hại tình dục có sự hoảng loạn, xuất hiện các ảo giác bệnh lý (luôn có ảm giác bất an, giật mình….nghiêm trọng hơn, có em sau khi bị xâm hại có suy nghĩ tìm đến cái chết do bị sốc về mặt tinh thần; các em rơi vào trạng thái hoảng sợ và cảm thấy bế tắc, không dám kể với người khác, gánh nặng tâm lý ngày càng nghiêm trọng.
+- Tôn trọng quyền riêng tư và thông tin cá nhân: Không chia sẻ dữ liệu nhạy cảm mà không có sự đồng ý.
 
-Có thể nói, tội phạm xâm hại tình dục trẻ em trước hết tác động trực tiếp đến sức khỏe, tính mạng, danh dự, nhân phẩm, sự phát triển bình thường của trẻ về tam lý, giới tính cũng như tương lai của các em sau này; làm tăng các bệnh lây qua đường tình dục; làm ảnh hưởng xấu đến thuần phong mỹ tục, truyền thống đạo đức của dân tộc...`,
+- Ứng xử văn minh trên không gian mạng: Không bắt nạt trực tuyến, không phát tán nội dung độc hại.
+
+- Hiểu về quyền và trách nhiệm của công dân số: Tôn trọng luật pháp, tránh vi phạm bản quyền và gian lận trực tuyến.`,
           },
           {
-            title: "Một số giải pháp phòng ngừa xâm hại",
-            content: `Trang bị cho các em kỹ năng phòng tránh nguy cơ bị xâm hại:
+            title: "Các kỹ năng công dân số cần trang bị trong xã hội hiện đại",
+            content: `Trong thời đại số, việc trở thành một công dân số có trách nhiệm đòi hỏi mỗi cá nhân phải có những kỹ năng quan trọng để sử dụng công nghệ một cách an toàn, hiệu quả và có đạo đức. Dưới đây là phân tích chi tiết về các kỹ năng công dân số mà mỗi người cần trang bị:
 
-+ Không ở một mình nơi tăm tối, vắng vẻ.
-+ Không ở lại trong phòng kín một mình với người lạ. Nếu đó là người quen của gia đình thì của phòng phải luôn mở.
-+ Không nhận tiền, quà hoặc nhận sự giúp đỡ đặc biệt của người khác mà không có lý do rõ ràng.
-+ Không đi nhờ xe người lạ hoặc sử dụng đồ ăn, dồ uống của người lạ đưa.
-+ Không để người lạ vào nhà nhất là khi chỉ có một mình ở nhà.
-+ Tuyệt đối không cho ai tùy tiện động chạm, sờ mó vào chỗ kín của cơ thể hoặc có bất kỳ hành động thô lỗ nào dối với các em.
-+ Không ăn mặc hở hang, không gần gũi quá mức với người lạ, kể cả những người thân, họ hàng. Phân biệt cử chỉ thân mật đúng mực với cử chỉ sàm sỡ, quấy rối hoặc lợi dụng để xâm hại tình dục.
-+ Tự mình phòng ngừa, giúp bạn bè cùng phòng ngùa, cảnh giác, cân nhắc trước hiện tượng "lòng tốt" mà chưa rõ nguyên nhân (tặng quà, rủ đi chơi…).
-+ Không dễ dãi kết bạn, làm quen với người lạ, người mới quen chưa rõ nhân thân, lai lịch, người quen trên mạng xã hội; chia sẻ, tham vấn với bạn bè, người thân cẩn thận, cân nhắc khi tiếp xúc, kết bạn với người lạ trên môi trường mạng.
-+ Tin và linh tính của bản thân khi thấy điều gì không bình thường cần cảnh giác và chủ động nghĩ cách phòng tránh để thoát khỏi tình huống đó.
+**Kỹ năng sử dụng công nghệ và thiết bị số**
 
-Những chỉ dẫn giúp các em tránh nguy cơ bị động chạm không an toàn, bị xâm hại:
+Công nghệ hiện nay có mặt ở khắp mọi lĩnh vực, từ giáo dục, y tế, kinh tế cho đến giải trí. Một công dân số cần biết cách sử dụng các thiết bị công nghệ để phục vụ cho việc học tập, làm việc và giao tiếp hiệu quả.
 
-+ Hãy luôn nhớ rằng, cơ thể của các em là do cha mẹ sinh ra thuộc về chính mình, không cho bất cứ một người nào có quyền động chạm, sờ vào chỗ kín của cơ thể hay có bất kỳ hành động thô lỗ nào dối với các em.
-+ Khi gặp các tình huống mà các em cảm thấy không bình thường, có thể gây nguy hại cho minh, các em nên từ chối và kiên quyết nói "Không" để tự bảo vệ mình.
-+ Các em nên tránh xã những tình huống không có lợi; tránh xa những ai và những nới nào mà các em cảm thấy không an toàn hoặc bị đe dọa hay các em cảm thấy sợ hãi.
-+ Không nên giữ bí mật về những gì làm cho các em sợ hãi hay đau đớn. Nên kể cho những người lớn mà các em tin cậy biết để họ có thể giúp đỡ, bảo vệ các em và trừng phạt kẻ có tội.`,
-          },
-        ],
-      },
-      {
-        title: "Kỹ năng phòng ngừa bạo lực học đường và xâm hại thân thể",
-        subSections: [
-          {
-            title: "Kỹ năng nhận diện nguy cơ",
-            content: `Thanh thiếu niên cần được trang bị khả năng nhận biết sớm các dấu hiệu bạo lực và xâm hại như: lời nói đe dọa, hành vi kiểm soát, ép buộc, động chạm không phù hợp, tin nhắn quấy rối, rủ rê đến nơi vắng vẻ. Việc nhận diện sớm giúp các em tránh xa nguy hiểm ngay từ đầu.`,
-          },
-          {
-            title: "Kỹ năng tự bảo vệ bản thân",
-            content: `- Biết nói "không" rõ ràng trước những yêu cầu không phù hợp.
+Những yêu cầu cơ bản của kỹ năng này:
+- Thành thạo các thiết bị số: Biết cách sử dụng máy tính, điện thoại thông minh, máy tính bảng và các thiết bị hỗ trợ khác.
+- Làm quen với các nền tảng số: Biết sử dụng email, Google Drive, Zoom, Microsoft Teams để làm việc trực tuyến.
+- Ứng dụng công nghệ vào học tập và công việc: Biết cách sử dụng công cụ như Microsoft Office (Word, Excel, PowerPoint), Google Docs để tối ưu hóa năng suất làm việc.
+- Làm quen với trí tuệ nhân tạo (AI) và tự động hóa: Ứng dụng AI trong công việc như sử dụng chatbot, công cụ dịch thuật hoặc phần mềm nhận diện giọng nói.
 
-- Không đi theo người lạ, không ở một mình tại những nơi thiếu an toàn.
+**Kỹ năng an toàn và bảo mật thông tin số**
 
-- Giữ khoảng cách an toàn, tránh tiếp xúc thân thể không cần thiết.
+Môi trường Internet có nhiều rủi ro như tấn công mạng, lừa đảo trực tuyến và đánh cắp thông tin cá nhân. Công dân số cần có kiến thức và kỹ năng để bảo vệ bản thân trước các nguy cơ này.
 
-- Trên môi trường mạng: không chia sẻ thông tin cá nhân, hình ảnh riêng tư; không gặp gỡ người quen qua mạng khi chưa có sự đồng ý của gia đình.`,
-          },
-          {
-            title: "Kỹ năng tìm kiếm sự trợ giúp",
-            content: `Một trong những nguyên nhân khiến bạo lực kéo dài là nạn nhân im lặng chịu đựng. Vì vậy, các em cần được giáo dục:
+Những yêu cầu cơ bản của kỹ năng này:
+- Bảo vệ tài khoản cá nhân: Sử dụng mật khẩu mạnh, đổi mật khẩu thường xuyên, kích hoạt xác thực hai lớp để ngăn chặn truy cập trái phép.
+- Nhận diện lừa đảo trực tuyến: Không nhấp vào các liên kết lạ, không cung cấp thông tin cá nhân cho các trang web không đáng tin cậy.
+- Kiểm soát quyền riêng tư: Hiểu rõ các cài đặt bảo mật trên mạng xã hội như Facebook, TikTok, Instagram để giới hạn ai có thể xem thông tin cá nhân của mình.
+- Bảo vệ dữ liệu quan trọng: Biết cách sao lưu dữ liệu quan trọng lên nền tảng đám mây như Google Drive hoặc OneDrive.
 
-- Khi gặp nguy hiểm, phải báo ngay cho người lớn đáng tin cậy: cha mẹ, thầy cô, cán bộ Đoàn – Đội.
+**Kỹ năng tìm kiếm và đánh giá thông tin trên Internet**
 
-- Ghi nhớ các đường dây nóng bảo vệ trẻ em. (Tổng đài bảo vệ trẻ em quốc gia 111)
+Trong thế giới số, có hàng triệu thông tin được đăng tải mỗi ngày, nhưng không phải thông tin nào cũng chính xác. Một công dân số cần biết cách tìm kiếm thông tin đáng tin cậy và tránh bị ảnh hưởng bởi tin giả.
 
-- Không sợ bị chê cười hay trách phạt khi nói ra sự thật.`,
-          },
-          {
-            title: "Kỹ năng ứng xử tích cực và giải quyết mâu thuẫn",
-            content: `Giáo dục cho các em cách giao tiếp hòa nhã, kiểm soát cảm xúc, không dùng bạo lực để giải quyết mâu thuẫn; biết lắng nghe, đối thoại và tìm đến sự hỗ trợ khi xảy ra xung đột.`,
-          },
-          {
-            title: "Vai trò của nhà trường, gia đình và tổ chức Đoàn – Đội",
-            content: `Các nghiên cứu giáo dục hiện đại đều khẳng định: phòng ngừa bạo lực hiệu quả phải là sự phối hợp đồng bộ giữa nhà trường – gia đình – xã hội.
+Những yêu cầu cơ bản của kỹ năng này:
+- Sử dụng công cụ tìm kiếm hiệu quả: Biết cách dùng Google, Bing hoặc DuckDuckGo với các từ khóa phù hợp để tìm kiếm thông tin chính xác.
+- Phân biệt tin giả và tin thật: Kiểm tra nguồn tin, xác minh bằng nhiều nguồn khác nhau trước khi chia sẻ thông tin.
+- Nhận diện nội dung giật gân, sai lệch: Tránh những trang web có nội dung không rõ nguồn gốc hoặc giật tít câu view.
 
-- Nhà trường: xây dựng môi trường học đường an toàn, thân thiện; lồng ghép giáo dục kỹ năng phòng chống bạo lực trong các môn học, hoạt động trải nghiệm.
+**Kỹ năng giao tiếp và ứng xử trên không gian số**
 
-- Gia đình: quan tâm, lắng nghe, làm chỗ dựa tinh thần cho con em; dạy trẻ kỹ năng tự bảo vệ từ sớm.
+Giao tiếp trên mạng khác với giao tiếp trực tiếp. Công dân số cần có kỹ năng giao tiếp trực tuyến một cách lịch sự, tôn trọng và hiệu quả.
 
-- Tổ chức Đoàn – Đội: phát huy vai trò giáo dục, tổ chức các chuyên đề, diễn đàn, mô hình "bạn giúp bạn", "trường học hạnh phúc", tạo môi trường tích cực để thanh thiếu niên phát triển.`,
-          },
-          {
-            title: "Ý nghĩa của việc giáo dục kỹ năng phòng ngừa bạo lực và xâm hại",
-            content: `Việc trang bị kỹ năng phòng ngừa bạo lực học đường và xâm hại thân thể giúp thanh thiếu niên:
+Những yêu cầu cơ bản của kỹ năng này:
+- Sử dụng ngôn ngữ lịch sự khi bình luận và trao đổi trên mạng xã hội.
+- Không tham gia vào các cuộc tranh cãi vô bổ hoặc bắt nạt trực tuyến.
+- Biết cách làm việc nhóm trực tuyến: Sử dụng các nền tảng như Google Docs, Trello, Slack để hợp tác với đồng nghiệp hoặc bạn học.
 
-- Biết tự bảo vệ mình và người khác.
+**Kỹ năng quản lý thời gian và cân bằng cuộc sống số**
 
-- Xây dựng lối sống lành mạnh, nhân ái, tôn trọng pháp luật.
+Việc lạm dụng công nghệ có thể dẫn đến nghiện Internet, ảnh hưởng đến sức khỏe tinh thần và thể chất. Biết cách quản lý thời gian sử dụng công nghệ giúp mỗi người đạt hiệu quả cao hơn trong công việc và cuộc sống.
 
-- Góp phần hình thành môi trường học đường an toàn, văn minh.
+Những yêu cầu cơ bản của kỹ năng này:
+- Giới hạn thời gian sử dụng mạng xã hội: Không để bản thân bị cuốn vào việc lướt Facebook, TikTok quá lâu.
+- Lập kế hoạch thời gian hợp lý: Phân chia thời gian giữa làm việc, giải trí và vận động thể chất.
+- Tham gia các hoạt động ngoài trời: Không để công nghệ chiếm toàn bộ cuộc sống mà vẫn duy trì các hoạt động thực tế.
 
-- Đáp ứng yêu cầu giáo dục toàn diện con người trong giai đoạn hiện nay.
+**Kỹ năng tôn trọng bản quyền và sử dụng nội dung số đúng luật**
 
-Bạo lực học đường và xâm hại thân thể không phải là vấn đề cá nhân mà là trách nhiệm của toàn xã hội. Giáo dục kỹ năng phòng ngừa cho thanh thiếu niên chính là đầu tư cho tương lai, giúp các em lớn lên an toàn, tự tin và nhân văn. Khi mỗi học sinh biết nói không với bạo lực, biết tự bảo vệ mình và lan tỏa yêu thương, trường học sẽ thực sự trở thành nơi an toàn để học tập, rèn luyện và trưởng thành.`,
+Trên Internet, nội dung như hình ảnh, video, tài liệu đều có chủ sở hữu. Công dân số cần biết tôn trọng bản quyền và tránh vi phạm pháp luật.
+
+Những yêu cầu cơ bản của kỹ năng này:
+- Không sử dụng tài liệu mà không có sự cho phép của tác giả.
+- Luôn ghi nguồn khi sử dụng nội dung của người khác.
+- Hiểu luật về bản quyền số để tránh bị phạt hoặc bị xóa nội dung.
+
+Việc trang bị các kỹ năng công dân số là vô cùng cần thiết trong xã hội hiện đại. Khi có đầy đủ những kỹ năng này, mỗi cá nhân không chỉ bảo vệ bản thân khỏi những rủi ro trực tuyến mà còn có thể tận dụng công nghệ để phát triển sự nghiệp và cuộc sống một cách hiệu quả. Một công dân số có trách nhiệm là người sử dụng Internet một cách thông minh, an toàn và có đạo đức!`,
           },
         ],
       },
@@ -226,65 +189,169 @@ Bạo lực học đường và xâm hại thân thể không phải là vấn �
   quiz: [
     {
       id: 1,
-      question: "Bạo lực học đường là gì?",
+      question: "Chuyển đổi số được hiểu đúng nhất là:",
       options: [
-        "Những hành vi cố ý gây tổn hại về thể chất, tinh thần hoặc danh dự của người khác trong môi trường học tập",
-        "Chỉ là những trò đùa giữa học sinh",
-        "Chỉ xảy ra ở ngoài trường học",
-        "Không ảnh hưởng đến học sinh",
+        "Thay thế con người bằng máy móc",
+        "Sử dụng máy tính trong công việc",
+        "Thay đổi toàn diện cách sống, làm việc, sản xuất dựa trên công nghệ số",
+        "Đưa Internet đến mọi nơi",
       ],
-      correctAnswerIndex: 0,
+      correctAnswerIndex: 2,
     },
     {
       id: 2,
-      question: "Khi biết trước mình sẽ bị đánh, học sinh nên làm gì?",
-      options: [
-        "Im lặng và chờ đợi",
-        "Chủ động thông báo với Ban giám hiệu, giáo viên chủ nhiệm hoặc người nhà",
-        "Tự mình đối phó một mình",
-        "Bỏ học để tránh",
-      ],
+      question: "Chuyển đổi số quốc gia gồm mấy cấu phần chính?",
+      options: ["2", "3", "4", "5"],
       correctAnswerIndex: 1,
     },
     {
       id: 3,
-      question: "Dấu hiệu nào sau đây có thể cho thấy trẻ bị xâm hại?",
+      question: "Ba cấu phần của chuyển đổi số quốc gia là:",
       options: [
-        "Vết bầm tím, thương tích ở vùng kín",
-        "Học tập tốt hơn",
-        "Vui vẻ, hoạt bát",
-        "Kết bạn nhiều hơn",
+        "Chính phủ số – Công nghiệp số – Giáo dục số",
+        "Nhà nước số – Kinh tế số – Công nghệ số",
+        "Chính phủ số – Kinh tế số – Xã hội số",
+        "Cơ quan số – Doanh nghiệp số – Trường học số",
       ],
-      correctAnswerIndex: 0,
+      correctAnswerIndex: 2,
     },
     {
       id: 4,
-      question: "Khi chứng kiến bạn bị đánh hội đồng, học sinh nên:",
+      question: "Theo các Nghị quyết của Đảng, chuyển đổi số có vai trò như thế nào?",
       options: [
-        "Xông vào can ngăn ngay",
-        "Gọi người lớn trợ giúp hoặc gọi Cảnh sát 113",
-        "Quay video để đăng lên mạng",
-        "Bỏ chạy và không làm gì",
+        "Là nhiệm vụ riêng của ngành CNTT",
+        "Là nhiệm vụ ngắn hạn của thanh niên",
+        "Là nhiệm vụ chiến lược, điều kiện tiên quyết để phát triển đất nước",
+        "Chỉ áp dụng ở thành phố lớn",
       ],
-      correctAnswerIndex: 1,
+      correctAnswerIndex: 2,
     },
     {
       id: 5,
-      question: "Tổng đài bảo vệ trẻ em quốc gia là số nào?",
-      options: ["110", "111", "112", "113"],
+      question: "Vai trò nổi bật nhất của đoàn viên, thanh niên trong chuyển đổi số là:",
+      options: [
+        "Người quản lý hệ thống",
+        "Lực lượng tiên phong, xung kích",
+        "Người thụ hưởng thụ động",
+        "Người giám sát",
+      ],
       correctAnswerIndex: 1,
     },
     {
       id: 6,
-      question: "Để phòng ngừa xâm hại, học sinh không nên:",
+      question: "Một nhóm đoàn viên lập ứng dụng giúp người dân nộp hồ sơ trực tuyến nhanh hơn. Vai trò này thể hiện rõ nhất đặc điểm nào của thanh niên?",
       options: [
-        "Ở một mình nơi tăm tối, vắng vẻ",
-        "Nói Không với những yêu cầu không phù hợp",
-        "Báo cho người lớn đáng tin cậy khi gặp nguy hiểm",
-        "Giữ khoảng cách an toàn với người lạ",
+        "Lực lượng tiêu dùng công nghệ",
+        "Lực lượng bảo vệ môi trường",
+        "Lực lượng tiên phong đổi mới sáng tạo",
+        "Lực lượng tuyên truyền văn hóa",
       ],
-      correctAnswerIndex: 0,
+      correctAnswerIndex: 2,
+    },
+    {
+      id: 7,
+      question: "Hành động nào sau đây góp phần xây dựng xã hội số?",
+      options: [
+        "Chỉ dùng tiền mặt khi mua hàng",
+        "Tránh sử dụng dịch vụ công trực tuyến",
+        "Hướng dẫn người dân thanh toán không tiền mặt",
+        "Không tham gia mạng xã hội",
+      ],
+      correctAnswerIndex: 2,
+    },
+    {
+      id: 8,
+      question: '"Công dân số" là người:',
+      options: [
+        "Sử dụng Internet thường xuyên",
+        "Có nhiều tài khoản mạng xã hội",
+        "Sử dụng công nghệ an toàn, hiệu quả, có trách nhiệm",
+        "Biết lập trình máy tính",
+      ],
+      correctAnswerIndex: 2,
+    },
+    {
+      id: 9,
+      question: "Kỹ năng quan trọng giúp tránh tin giả là:",
+      options: [
+        "Giao tiếp trực tuyến",
+        "Tư duy phản biện và đánh giá nguồn tin",
+        "Sử dụng mạng xã hội thường xuyên",
+        "Ghi nhớ thông tin nhanh",
+      ],
+      correctAnswerIndex: 1,
+    },
+    {
+      id: 10,
+      question: "Khi nhận được tin nhắn trúng thưởng yêu cầu cung cấp mã OTP, em nên:",
+      options: [
+        "Cung cấp ngay để nhận quà",
+        "Hỏi bạn bè rồi cung cấp",
+        "Bỏ qua và báo cho người lớn",
+        "Chia sẻ lên mạng xã hội",
+      ],
+      correctAnswerIndex: 2,
+    },
+    {
+      id: 11,
+      question: "Việc đặt mật khẩu mạnh và xác thực hai lớp giúp:",
+      options: [
+        "Tăng tốc độ truy cập mạng",
+        "Trang trí tài khoản đẹp hơn",
+        "Bảo vệ tài khoản khỏi bị xâm nhập",
+        "Thu hút nhiều người theo dõi",
+      ],
+      correctAnswerIndex: 2,
+    },
+    {
+      id: 12,
+      question: "Hành vi nào thể hiện ứng xử văn minh trên không gian mạng?",
+      options: [
+        "Bình luận xúc phạm khi không đồng ý",
+        "Chia sẻ thông tin chưa kiểm chứng",
+        "Góp ý lịch sự, tôn trọng người khác",
+        "Tham gia tranh cãi gay gắt",
+      ],
+      correctAnswerIndex: 2,
+    },
+    {
+      id: 13,
+      question: "Một học sinh dùng nhạc có bản quyền đăng video mà không xin phép. Hành vi này vi phạm:",
+      options: [
+        "Quy tắc giao tiếp",
+        "Quyền riêng tư",
+        "Bản quyền số",
+        "An toàn mạng",
+      ],
+      correctAnswerIndex: 2,
+    },
+    {
+      id: 14,
+      question: "Để tránh nghiện mạng xã hội, học sinh nên:",
+      options: [
+        "Sử dụng điện thoại mọi lúc rảnh",
+        "Đặt giới hạn thời gian sử dụng",
+        "Không tham gia hoạt động ngoài trời",
+        "Chỉ học trực tuyến",
+      ],
+      correctAnswerIndex: 1,
+    },
+    {
+      id: 15,
+      question: "Một đoàn viên hướng dẫn người dân tạo tài khoản dịch vụ công trực tuyến. Việc làm này thể hiện:",
+      options: [
+        "Vai trò quản lý hành chính",
+        "Vai trò truyền cảm hứng và lan tỏa chuyển đổi số",
+        "Vai trò giám sát xã hội",
+        "Vai trò kinh doanh",
+      ],
+      correctAnswerIndex: 1,
+    },
+  ],
+  references: [
+    {
+      id: 1,
+      text: "Nguồn: Internet",
     },
   ],
 };
-
