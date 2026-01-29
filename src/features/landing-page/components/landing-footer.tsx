@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   Star, Facebook, Globe,
   MapPin, Phone, Mail, Send, Heart, Cloud,
-  Eye, TrendingUp
+  TrendingUp
 } from "lucide-react";
 import { Input } from "@/components/ui/primitives";
 import { cn } from "@/lib/utils";
