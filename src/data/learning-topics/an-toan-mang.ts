@@ -23,7 +23,7 @@ export const anToanMangTopic: LearningTopic = {
   content: {
     summary:
       "Trong thời đại số, mỗi học sinh hôm nay đều đang sống trong 'hai thế giới': thế giới thật và thế giới mạng. Chỉ với một chiếc điện thoại thông minh, các em có thể học tập, giải trí, kết nối bạn bè khắp nơi. Mạng xã hội vì thế không còn là điều xa lạ mà đã trở thành một phần của đời sống học sinh. Tuy nhiên, đi cùng với cơ hội là những thách thức và hiểm họa khó lường: lừa đảo, tin giả, bạo lực mạng, nghiện Internet, tổn thương tâm lý…\n\nVấn đề không phải là có dùng mạng xã hội hay không, mà là dùng như thế nào. Nếu thiếu hiểu biết và kỹ năng, các em rất dễ trở thành nạn nhân của thế giới ảo. Ngược lại, nếu biết sử dụng đúng cách, mạng xã hội sẽ trở thành công cụ học tập hiệu quả, là môi trường lan tỏa điều tốt đẹp và nuôi dưỡng ước mơ.\n\nVì vậy, mỗi học sinh cần hình thành cho mình bản lĩnh số và phương châm hành động rõ ràng: Dùng mạng xã hội có mục đích – Chia sẻ có suy nghĩ – Giao tiếp có văn hóa – Tự bảo vệ bản thân.\n\nĐó chính là chìa khóa để các em bước vào không gian mạng một cách an toàn, thông minh và trưởng thành.",
-    videoUrl: "https://www.youtube.com/embed/qNBNzL1RM0A",
+      videoUrl: "https://www.youtube.com/embed/cvnUVlLzK6Y",
     sections: [
       {
         title: "Giới thiệu",
