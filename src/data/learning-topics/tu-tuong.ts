@@ -14,7 +14,7 @@ export const tuTuongTopic: LearningTopic = {
   content: {
     summary:
       "Trong di sản tư tưởng mà Chủ tịch Hồ Chí Minh để lại, tư tưởng về giáo dục con người và bồi dưỡng thế hệ trẻ chiếm vị trí đặc biệt quan trọng. Người luôn coi giáo dục là con đường căn bản để xây dựng đất nước và phát triển con người, trong đó giáo dục đạo đức, lối sống giữ vai trò nền tảng trong quá trình hình thành nhân cách. Hồ Chí Minh từng khẳng định: 'Có tài mà không có đức là người vô dụng, có đức mà không có tài thì làm việc gì cũng khó'. Lời dạy ấy cho thấy đạo đức là nền tảng định hướng cho việc phát huy tài năng của mỗi con người.",
-    videoUrl: "https://www.youtube.com/embed/xn7vF_1r4yg",
+    videoUrl: "https://www.youtube.com/embed/TswFy6rlgQY",
     sections: [
       {
         title: "Giới thiệu",
