@@ -84,8 +84,8 @@ const SheetOverlay = memo(
 
     // Mobile dùng tween (nhẹ), PC dùng spring (nảy)
     const drawerTransition = isMobile
-      ? { type: "tween", ease: "circOut", duration: 0.3 }
-      : { type: "spring", damping: 30, stiffness: 300, mass: 0.8 };
+      ? { type: "tween" as const, ease: "circOut" as const, duration: 0.3 }
+      : { type: "spring" as const, damping: 30, stiffness: 300, mass: 0.8 };
 
     return (
       <AnimatePresence mode="wait">
