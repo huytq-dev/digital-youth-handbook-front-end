@@ -168,7 +168,7 @@ const QuizResultPageWrapper = () => {
                     {animatedScore}
                   </span>
                   <span className="text-4xl font-bold text-slate-600">
-                    / {resultData.totalQuestions || 0}
+                    / 100
                   </span>
                 </div>
               </div>
