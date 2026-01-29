@@ -14,7 +14,8 @@ export const ROUTE_PATH = {
       RESET_PASSWORD: "/auth/reset-password",
       VERIFY_EMAIL: "/auth/verify-email",
     },
-  
+    
+    
     // Protected Routes
     HOME: "/home",
     ADMIN: "/admin",

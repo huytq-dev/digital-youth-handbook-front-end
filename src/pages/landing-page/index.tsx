@@ -32,11 +32,7 @@ const LandingPromotions = lazy(() =>
   )
 );
 
-const LandingFooter = lazy(() =>
-  import("@/features/landing-page/components/landing-footer").then(
-    (module) => ({ default: module.LandingFooter })
-  )
-);
+import { LandingFooter } from "@/features/landing-page/components/landing-footer";
 
 // Loader Component gọn nhẹ hơn
 const ComponentLoader = () => (
@@ -70,9 +66,7 @@ function LandingPage() {
         </Suspense>
       </main>
 
-      <Suspense fallback={<div className="h-20 bg-white" />}>
-        <LandingFooter />
-      </Suspense>
+      <LandingFooter />
     </div>
   );
 }

@@ -61,9 +61,7 @@ function HomePage() {
         </Suspense>
       </main>
 
-      <Suspense fallback={<div className="h-20 bg-white" />}>
-        <LandingFooter />
-      </Suspense>
+      <LandingFooter />
     </div>
   );
 }

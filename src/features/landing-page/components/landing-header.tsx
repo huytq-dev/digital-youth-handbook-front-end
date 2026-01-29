@@ -27,7 +27,7 @@ import { useMenu } from "@/contexts/menu-context";
 import headerImage from "@/assets/landing-images/header.png";
 import headerImageMobile from "@/assets/landing-images/header_mobile.png";
 
-// --- Types & Navigation Data (Giữ nguyên) ---
+// --- Types & Navigation Data ---
 type NavSubItem = { label: string; href?: string };
 type NavItem = { label: string; href?: string; subItems?: NavSubItem[] };
 
@@ -58,7 +58,9 @@ const NAVIGATION: NavItem[] = [
   { label: "Thi hay", href: "/quizzes" },
 ];
 
-// --- Sub-components (Giữ nguyên code cũ của bạn: SheetOverlay, NavLinkBtn, UserProfileDropdown, MobileMenuItem, MobileUserCard) ---
+// --- Sub-components ---
+
+// 1. SHEET OVERLAY - ĐÃ TỐI ƯU LOGIC
 interface SheetOverlayProps {
   isOpen: boolean;
   isMobile: boolean;
@@ -68,68 +70,81 @@ interface SheetOverlayProps {
 
 const SheetOverlay = memo(
   ({ isOpen, isMobile, onClose, children }: SheetOverlayProps) => {
-    const overlayDuration = isMobile ? 0.15 : 0.3;
-    const sheetTransition = isMobile
-      ? {
-          type: "tween" as const,
-          duration: 0.2,
-          ease: [0, 0, 0.2, 1] as [number, number, number, number],
-        }
-      : { type: "spring" as const, damping: 30, stiffness: 300 };
+    // Animation variants tách biệt để quản lý dễ hơn
+    const variants = {
+      overlay: {
+        open: { opacity: 1 },
+        closed: { opacity: 0 },
+      },
+      drawer: {
+        open: { x: 0 },
+        closed: { x: "100%" },
+      },
+    };
+
+    // Mobile dùng tween (nhẹ), PC dùng spring (nảy)
+    const drawerTransition = isMobile
+      ? { type: "tween", ease: "circOut", duration: 0.3 }
+      : { type: "spring", damping: 30, stiffness: 300, mass: 0.8 };
 
     return (
-      <>
-        <AnimatePresence initial={false}>
-          {isOpen && (
+      <AnimatePresence mode="wait">
+        {isOpen && (
+          <>
+            {/* Backdrop Layer */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: overlayDuration }}
+              key="overlay"
+              initial="closed"
+              animate="open"
+              exit="closed"
+              variants={variants.overlay}
+              transition={{ duration: 0.2 }}
               className={cn(
-                "fixed inset-0 z-[10000] transition-opacity duration-300",
+                "fixed inset-0 z-[10000] cursor-pointer", // cursor-pointer để user biết bấm vào đây sẽ đóng
                 isMobile ? "bg-black/40" : "bg-black/40 backdrop-blur-md"
               )}
               onClick={onClose}
             />
-          )}
-        </AnimatePresence>
-        <motion.div
-          initial={false}
-          animate={{
-            x: isOpen ? 0 : "100%",
-          }}
-          transition={sheetTransition}
-          className={cn(
-            "fixed inset-y-0 right-0 h-[100dvh] w-full sm:w-[400px] border-l-4 border-black shadow-[-10px_0px_20px_rgba(0,0,0,0.3)] flex flex-col",
-            isOpen ? "z-[10001] pointer-events-auto" : "z-0 pointer-events-none"
-          )}
-          style={{
-            background: isMobile
-              ? "rgba(255, 249, 240, 1)"
-              : "rgba(255, 249, 240, 0.95)",
-            ...(isMobile
-              ? {}
-              : {
-                  backdropFilter: "blur(20px)",
-                  WebkitBackdropFilter: "blur(20px)",
-                }),
-          }}
-        >
-          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-yellow-400 to-red-500 z-10" />
-          <div className="flex h-full flex-col overflow-hidden px-6 py-6 relative z-0">
-            {children}
-          </div>
-        </motion.div>
-      </>
+
+            {/* Drawer Layer */}
+            <motion.div
+              key="drawer"
+              initial="closed"
+              animate="open"
+              exit="closed"
+              variants={variants.drawer}
+              transition={drawerTransition}
+              className="fixed inset-y-0 right-0 h-[100dvh] w-full sm:w-[400px] border-l-4 border-black shadow-[-10px_0px_20px_rgba(0,0,0,0.3)] flex flex-col z-[10001]"
+              style={{
+                background: isMobile
+                  ? "rgba(255, 249, 240, 1)"
+                  : "rgba(255, 249, 240, 0.95)",
+                ...(isMobile
+                  ? {}
+                  : {
+                    backdropFilter: "blur(20px)",
+                    WebkitBackdropFilter: "blur(20px)",
+                  }),
+              }}
+              // Ngăn chặn nổi bọt sự kiện click từ drawer ra overlay (tránh đóng nhầm khi bấm vào menu)
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-yellow-400 to-red-500 z-10" />
+              <div className="flex h-full flex-col overflow-hidden px-6 py-6 relative z-0">
+                {children}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     );
   }
 );
 SheetOverlay.displayName = "SheetOverlay";
 
+// 2. NAV LINK BUTTON
 const NavLinkBtn = memo(({ item }: { item: NavItem }) => {
   const [isHovered, setIsHovered] = useState(false);
-
   return (
     <div
       className="relative group h-full flex items-center"
@@ -165,7 +180,6 @@ const NavLinkBtn = memo(({ item }: { item: NavItem }) => {
           )}
         </Button>
       </Link>
-
       <AnimatePresence>
         {item.subItems && isHovered && (
           <motion.div
@@ -198,22 +212,20 @@ const NavLinkBtn = memo(({ item }: { item: NavItem }) => {
 });
 NavLinkBtn.displayName = "NavLinkBtn";
 
+// 3. USER PROFILE DROPDOWN
 interface UserProfileDropdownProps {
   user: UserDomainModel;
   onSignOut: () => void;
 }
-
 const UserProfileDropdown = memo(
   ({ user, onSignOut }: UserProfileDropdownProps) => {
     const [isOpen, setIsOpen] = useState(false);
-
     useEffect(() => {
       if (!isOpen) return;
       const handleClickOutside = () => setIsOpen(false);
       setTimeout(() => window.addEventListener("click", handleClickOutside), 0);
       return () => window.removeEventListener("click", handleClickOutside);
     }, [isOpen]);
-
     const initials =
       user.name
         ?.split(" ")
@@ -222,7 +234,6 @@ const UserProfileDropdown = memo(
         .toUpperCase()
         .slice(0, 2) || "U";
     const displayName = user.name?.trim().split(" ").pop() || user.name;
-
     return (
       <div className="relative">
         <button
@@ -234,7 +245,7 @@ const UserProfileDropdown = memo(
           className={cn(
             "flex items-center gap-2 rounded-full border-2 border-black bg-white pl-1 pr-3 py-1 shadow-[3px_3px_0px_black] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[1px_1px_0px_black] transition-all",
             isOpen &&
-              "translate-y-[2px] translate-x-[2px] shadow-[1px_1px_0px_black] bg-blue-50"
+            "translate-y-[2px] translate-x-[2px] shadow-[1px_1px_0px_black] bg-blue-50"
           )}
         >
           <div className="h-8 w-8 overflow-hidden rounded-full border border-black bg-gray-200 flex items-center justify-center text-xs font-bold">
@@ -268,7 +279,6 @@ const UserProfileDropdown = memo(
             )}
           />
         </button>
-
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -290,7 +300,6 @@ const UserProfileDropdown = memo(
                   {user.username}
                 </p>
               </div>
-
               <div className="flex flex-col p-1.5 gap-1">
                 <Link
                   to="/profile"
@@ -330,6 +339,7 @@ const UserProfileDropdown = memo(
 );
 UserProfileDropdown.displayName = "UserProfileDropdown";
 
+// 4. MOBILE ITEMS
 const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void }) => {
   return (
     <div className="mb-3 last:mb-0">
@@ -365,7 +375,6 @@ const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void 
             <ArrowRight size={16} />
           </Link>
         )}
-
         {item.subItems && (
           <div className="bg-white p-1.5">
             <div className="flex flex-col gap-0.5">
@@ -377,7 +386,7 @@ const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void 
                   className="group/sub flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-all border border-transparent hover:border-black/10"
                 >
                   <div className="w-6 flex justify-center">
-                     <div className="w-1 h-1 rounded-full bg-slate-300 group-hover/sub:bg-blue-600 group-hover/sub:scale-125 transition-all" />
+                    <div className="w-1 h-1 rounded-full bg-slate-300 group-hover/sub:bg-blue-600 group-hover/sub:scale-125 transition-all" />
                   </div>
                   <span className="font-bold text-slate-600 group-hover/sub:text-blue-700 text-sm">
                     {subItem.label}
@@ -394,43 +403,41 @@ const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void 
 
 const MobileUserCard = ({ user, onSignOut, onClose }: { user: any, onSignOut: any, onClose: any }) => (
   <div className="bg-white border-2 border-black rounded-xl p-4 shadow-[3px_3px_0px_black] relative overflow-hidden mt-4">
-      <div className="absolute top-0 left-0 w-full h-14 bg-blue-600 border-b-2 border-black" />
-      <div className="absolute top-2 right-2 flex gap-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-red-500 border border-black" />
-          <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 border border-black" />
-          <div className="w-1.5 h-1.5 rounded-full bg-green-500 border border-black" />
+    <div className="absolute top-0 left-0 w-full h-14 bg-blue-600 border-b-2 border-black" />
+    <div className="absolute top-2 right-2 flex gap-1">
+      <div className="w-1.5 h-1.5 rounded-full bg-red-500 border border-black" />
+      <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 border border-black" />
+      <div className="w-1.5 h-1.5 rounded-full bg-green-500 border border-black" />
+    </div>
+    <div className="relative flex flex-col items-center mt-6">
+      <div className="w-14 h-14 rounded-xl border-2 border-black bg-white p-0.5 mb-2 shadow-sm">
+        <div className="w-full h-full rounded-lg bg-gray-200 overflow-hidden">
+          {user.picture ? (
+            <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center font-black text-lg text-slate-400">
+              {user.name?.charAt(0)}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="relative flex flex-col items-center mt-6">
-          <div className="w-14 h-14 rounded-xl border-2 border-black bg-white p-0.5 mb-2 shadow-sm">
-             <div className="w-full h-full rounded-lg bg-gray-200 overflow-hidden">
-                {user.picture ? (
-                  <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center font-black text-lg text-slate-400">
-                    {user.name?.charAt(0)}
-                  </div>
-                )}
-             </div>
-          </div>
-          
-          <h3 className="font-black text-base text-slate-900">{user.name}</h3>
-          <p className="font-bold text-xs text-slate-500 mb-3">@{user.username}</p>
-
-          <div className="grid grid-cols-2 gap-2 w-full">
-             <Link to="/profile" onClick={onClose}>
-                <button className="w-full py-1.5 bg-yellow-300 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all">
-                   Hồ sơ
-                </button>
-             </Link>
-             <button 
-                onClick={() => { onSignOut(); onClose(); }}
-                className="w-full py-1.5 bg-red-100 text-red-700 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
-             >
-                Đăng xuất
-             </button>
-          </div>
+      <h3 className="font-black text-base text-slate-900">{user.name}</h3>
+      <p className="font-bold text-xs text-slate-500 mb-3">@{user.username}</p>
+      <div className="grid grid-cols-2 gap-2 w-full">
+        <Link to="/profile" onClick={onClose}>
+          <button className="w-full py-1.5 bg-yellow-300 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all">
+            Hồ sơ
+          </button>
+        </Link>
+        <button
+          onClick={() => { onSignOut(); onClose(); }}
+          className="w-full py-1.5 bg-red-100 text-red-700 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
+        >
+          Đăng xuất
+        </button>
       </div>
+    </div>
   </div>
 );
 
@@ -443,14 +450,15 @@ export const LandingHeader = () => {
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useIsMobile();
   const { setIsMenuOpen } = useMenu();
-
   const user = useSelector(selectCurrentUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
+  // Sync menu state
   useEffect(() => {
     setIsMenuOpen(isOpen);
   }, [isOpen, setIsMenuOpen]);
 
+  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     handleScroll();
@@ -458,12 +466,13 @@ export const LandingHeader = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Handle body scroll lock - Fixed logic
   useEffect(() => {
     if (isOpen) {
-      const original = document.body.style.overflow;
+      const originalStyle = window.getComputedStyle(document.body).overflow;
       document.body.style.overflow = "hidden";
       return () => {
-        document.body.style.overflow = original;
+        document.body.style.overflow = originalStyle;
       };
     }
   }, [isOpen]);
@@ -489,9 +498,9 @@ export const LandingHeader = () => {
           : "bg-transparent py-2 sm:py-3 lg:py-4 border-b-4 border-transparent"
       )}
       style={{
-        background: "transparent",
-        backdropFilter: "none",
-        WebkitBackdropFilter: "none",
+        background: scrolled ? undefined : "transparent",
+        backdropFilter: scrolled ? undefined : "none",
+        WebkitBackdropFilter: scrolled ? undefined : "none",
       }}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
@@ -525,14 +534,12 @@ export const LandingHeader = () => {
               </span>
             </div>
           </Link>
-
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1 xl:gap-2">
             {NAVIGATION.map((item) => (
               <NavLinkBtn key={item.label} item={item} />
             ))}
           </div>
-
           {/* Right Side: Auth Buttons or User Avatar */}
           <div className="hidden lg:flex items-center gap-3 xl:gap-4">
             {!isAuthenticated ? (
@@ -552,7 +559,6 @@ export const LandingHeader = () => {
               <UserProfileDropdown user={user} onSignOut={handleSignOut} />
             ) : null}
           </div>
-
           {/* Mobile/Tablet Toggle Button */}
           <div className="lg:hidden">
             <Button
@@ -567,16 +573,16 @@ export const LandingHeader = () => {
         </div>
       </div>
 
-      {/* MOBILE SHEET CONTENT - SỬ DỤNG COMPONENT MỚI */}
+      {/* MOBILE SHEET CONTENT */}
       <SheetOverlay
         isOpen={isOpen}
         isMobile={isMobile}
         onClose={() => setIsOpen(false)}
       >
         <div className="flex items-center justify-between mb-5 pb-3 border-b-2 border-black border-dashed">
-           <div className="bg-orange-500 text-white px-3 py-1 border-2 border-black shadow-[2px_2px_0px_black] rotate-[-2deg]">
-             <span className="font-black text-lg tracking-wider">MENU</span>
-           </div>
+          <div className="bg-orange-500 text-white px-3 py-1 border-2 border-black shadow-[2px_2px_0px_black] rotate-[-2deg]">
+            <span className="font-black text-lg tracking-wider">MENU</span>
+          </div>
           <Button
             variant="ghost"
             size="icon"
@@ -586,35 +592,33 @@ export const LandingHeader = () => {
             <X size={20} strokeWidth={3} />
           </Button>
         </div>
-
         <div className="flex-1 overflow-y-auto pr-1 pb-4 custom-scrollbar">
           <div className="flex flex-col">
-             {NAVIGATION.map((item) => (
-                <MobileMenuItem key={item.label} item={item} onClose={() => setIsOpen(false)} />
-             ))}
+            {NAVIGATION.map((item) => (
+              <MobileMenuItem key={item.label} item={item} onClose={() => setIsOpen(false)} />
+            ))}
           </div>
         </div>
-
         <div className="mt-2">
-           {!isAuthenticated ? (
-              <div className="flex flex-col gap-3 pt-4 border-t-2 border-black border-dashed">
-                 <p className="text-center font-bold text-slate-500 text-xs">Tham gia cùng cộng đồng Gen Z!</p>
-                 <div className="grid grid-cols-2 gap-2">
-                    <Link to="/auth/sign-in" onClick={() => setIsOpen(false)}>
-                       <button className="w-full h-10 rounded-lg border-2 border-black bg-white font-black text-sm shadow-[4px_4px_0px_black] transition-all hover:bg-gray-50 active:translate-y-[4px] active:translate-x-[4px] active:shadow-none">
-                          Đăng nhập
-                       </button>
-                    </Link>
-                    <Link to="/auth/sign-up" onClick={() => setIsOpen(false)}>
-                       <button className="w-full h-10 rounded-lg border-2 border-black bg-blue-600 text-white font-black text-sm shadow-[4px_4px_0px_black] transition-all hover:bg-blue-700 active:translate-y-[4px] active:translate-x-[4px] active:shadow-none">
-                          Đăng ký
-                       </button>
-                    </Link>
-                 </div>
+          {!isAuthenticated ? (
+            <div className="flex flex-col gap-3 pt-4 border-t-2 border-black border-dashed">
+              <p className="text-center font-bold text-slate-500 text-xs">Tham gia cùng cộng đồng Gen Z!</p>
+              <div className="grid grid-cols-2 gap-2">
+                <Link to="/auth/sign-in" onClick={() => setIsOpen(false)}>
+                  <button className="w-full h-10 rounded-lg border-2 border-black bg-white font-black text-sm shadow-[4px_4px_0px_black] transition-all hover:bg-gray-50 active:translate-y-[4px] active:translate-x-[4px] active:shadow-none">
+                    Đăng nhập
+                  </button>
+                </Link>
+                <Link to="/auth/sign-up" onClick={() => setIsOpen(false)}>
+                  <button className="w-full h-10 rounded-lg border-2 border-black bg-blue-600 text-white font-black text-sm shadow-[4px_4px_0px_black] transition-all hover:bg-blue-700 active:translate-y-[4px] active:translate-x-[4px] active:shadow-none">
+                    Đăng ký
+                  </button>
+                </Link>
               </div>
-           ) : user ? (
-             <MobileUserCard user={user} onSignOut={handleSignOut} onClose={() => setIsOpen(false)} />
-           ) : null}
+            </div>
+          ) : user ? (
+            <MobileUserCard user={user} onSignOut={handleSignOut} onClose={() => setIsOpen(false)} />
+          ) : null}
         </div>
       </SheetOverlay>
     </nav>
@@ -626,12 +630,9 @@ export const LandingHeroBanner = () => {
   const shouldReduceMotion = useReducedMotion();
   const isMobile = useIsMobile();
   const reduceMotion = shouldReduceMotion || isMobile;
-
   return (
-    <section 
-      // SỬA Ở ĐÂY:
-      // 1. Dùng items-center để căn giữa dọc
-      // 2. Bỏ các class pt-... để không bị đẩy lệch xuống
+    <section
+      // Đã thêm items-center để căn giữa dọc nội dung trên mobile
       className="relative w-full min-h-[45vh] sm:min-h-[55vh] md:min-h-[70vh] overflow-hidden flex items-center justify-center"
     >
       {/* Background Image */}
@@ -644,22 +645,19 @@ export const LandingHeroBanner = () => {
             className="w-full h-full object-cover"
           />
         </picture>
-        {/* Overlay gi? nguyˆn */}
+        {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-500/30 via-transparent to-blue-500/40" />
         <div className="absolute inset-0 bg-[#87CEEB]/60" />
       </div>
 
-      {/* ... Phần còn lại của code (Cloud Decorations và Content) giữ nguyên không đổi ... */}
-      
       {/* Cloud Decorations */}
       <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-        {/* ... code mây ... */}
+        {/* (Bạn có thể thêm code mây ở đây nếu cần) */}
       </div>
 
       {/* Content */}
       <div className="relative z-20 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-         {/* ... code nội dung text ... */}
-         <motion.div
+        <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={reduceMotion ? { duration: 0 } : { duration: 0.8, delay: 0.2 }}
@@ -672,10 +670,10 @@ export const LandingHeroBanner = () => {
             transition={reduceMotion ? { duration: 0 } : { duration: 0.6, delay: 0.4 }}
             className="relative transform -rotate-1 hover:rotate-0 transition-transform duration-300 w-full px-2"
           >
-            <div 
+            <div
               className="bg-[#FDE047] border-[3px] md:border-4 border-black px-3 py-2 sm:px-6 sm:py-2 md:px-8 md:py-3 rounded-xl"
               style={{
-                boxShadow: "6px 6px 0px #FDE047", // Shadow màu xanh dương để tạo contrast đẹp với màu vàng
+                boxShadow: "6px 6px 0px #FDE047",
               }}
             >
               <h1 className="text-4xl sm:text-3xl md:text-5xl lg:text-7xl font-black text-slate-900 leading-tight sm:leading-none uppercase tracking-tight break-words overflow-wrap-anywhere">
@@ -686,26 +684,24 @@ export const LandingHeroBanner = () => {
               <Sparkles size={24} className="fill-white stroke-black stroke-2" />
             </div>
           </motion.div>
-
           {/* DÒNG 2: TEXT - NHÍ NHẢNH VỚI NEOBRUTALISM */}
           <div className="flex flex-wrap justify-center items-center gap-x-2 sm:gap-x-3 gap-y-2 mt-3 px-3 sm:px-4">
-            {(() => { 
+            {(() => {
               const text = "Cho Thanh Thiếu Niên Trong Thời Đại Mới";
               const words = text.split(" ");
-              // Màu sắc neobrutalism phù hợp với trang web
               const neobrutalismColors = [
-                { bg: "#2563EB", text: "#ffffff", border: "#000000", shadow: "#1e40af" }, // Blue
-  { bg: "#f97316", text: "#ffffff", border: "#000000", shadow: "#ea580c" }, // Orange
-  { bg: "#ef4444", text: "#ffffff", border: "#000000", shadow: "#dc2626" }, // Red
-  { bg: "#22c55e", text: "#ffffff", border: "#000000", shadow: "#16a34a" }, // Green
-  { bg: "#a855f7", text: "#ffffff", border: "#000000", shadow: "#9333ea" }, // Purple
-  { bg: "#ec4899", text: "#ffffff", border: "#000000", shadow: "#db2777" }, // Pink
-  { bg: "#06b6d4", text: "#ffffff", border: "#000000", shadow: "#0891b2" }, // Cyan
-  { bg: "#14b8a6", text: "#ffffff", border: "#000000", shadow: "#0f766e" }, // Teal
-  { bg: "#f43f5e", text: "#ffffff", border: "#000000", shadow: "#be123c" }, // Rose
-  { bg: "#6366f1", text: "#ffffff", border: "#000000", shadow: "#4338ca" }, // Indigo
+                { bg: "#2563EB", text: "#ffffff", border: "#000000", shadow: "#1e40af" },
+                { bg: "#f97316", text: "#ffffff", border: "#000000", shadow: "#ea580c" },
+                { bg: "#ef4444", text: "#ffffff", border: "#000000", shadow: "#dc2626" },
+                { bg: "#22c55e", text: "#ffffff", border: "#000000", shadow: "#16a34a" },
+                { bg: "#a855f7", text: "#ffffff", border: "#000000", shadow: "#9333ea" },
+                { bg: "#ec4899", text: "#ffffff", border: "#000000", shadow: "#db2777" },
+                { bg: "#06b6d4", text: "#ffffff", border: "#000000", shadow: "#0891b2" },
+                { bg: "#14b8a6", text: "#ffffff", border: "#000000", shadow: "#0f766e" },
+                { bg: "#f43f5e", text: "#ffffff", border: "#000000", shadow: "#be123c" },
+                { bg: "#6366f1", text: "#ffffff", border: "#000000", shadow: "#4338ca" },
               ];
-              
+
               return words.map((word, idx) => {
                 const color = neobrutalismColors[idx % neobrutalismColors.length];
                 return (
@@ -720,38 +716,38 @@ export const LandingHeroBanner = () => {
                       reduceMotion
                         ? { opacity: 1 }
                         : {
-                            opacity: 1,
-                            y: [0, -8, 0],
-                            scale: [1, 1.05, 1],
-                            rotate: [0, -2, 2, -1, 1, 0],
-                          }
+                          opacity: 1,
+                          y: [0, -8, 0],
+                          scale: [1, 1.05, 1],
+                          rotate: [0, -2, 2, -1, 1, 0],
+                        }
                     }
                     transition={{
                       opacity: { duration: 0.5, delay: 0.6 + idx * 0.1 },
                       y: reduceMotion
                         ? undefined
                         : {
-                            duration: 2.5,
-                            repeat: Infinity,
-                            delay: 1.2 + idx * 0.15,
-                            ease: "easeInOut",
-                          },
+                          duration: 2.5,
+                          repeat: Infinity,
+                          delay: 1.2 + idx * 0.15,
+                          ease: "easeInOut",
+                        },
                       scale: reduceMotion
                         ? undefined
                         : {
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: 1.2 + idx * 0.15,
-                            ease: "easeInOut",
-                          },
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: 1.2 + idx * 0.15,
+                          ease: "easeInOut",
+                        },
                       rotate: reduceMotion
                         ? undefined
                         : {
-                            duration: 3,
-                            repeat: Infinity,
-                            delay: 1.2 + idx * 0.15,
-                            ease: "easeInOut",
-                          },
+                          duration: 3,
+                          repeat: Infinity,
+                          delay: 1.2 + idx * 0.15,
+                          ease: "easeInOut",
+                        },
                     }}
                     className="inline-block px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border-2 font-black uppercase tracking-wide text-base sm:text-lg md:text-2xl lg:text-3xl"
                     style={{
