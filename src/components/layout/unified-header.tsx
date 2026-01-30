@@ -44,17 +44,9 @@ const NAVIGATION: NavItem[] = [
       { label: "Chuyển đổi số", href: "/learning-topics/chuyen-doi-so" },
     ],
   },
-  {
-    label: "Tài nguyên",
-    subItems: [
-      { label: "Ebook & Tài liệu" },
-      { label: "Podcast chia sẻ" },
-      { label: "Công cụ hỗ trợ" },
-      { label: "Template mẫu" },
-    ],
-  },
   { label: "Vinh danh", href: "/honor" },
   { label: "Thi hay", href: "/quizzes" },
+  { label: "Điều em muốn nói", href: "/#" },
 ];
 
 // --- Sub-components (Giữ nguyên code cũ của bạn: SheetOverlay, NavLinkBtn, UserProfileDropdown, MobileMenuItem, MobileUserCard) ---
@@ -194,7 +186,7 @@ const UserProfileDropdown = memo(
           className={cn(
             "flex items-center gap-2 rounded-full border-2 border-black bg-white pl-1 pr-3 py-1 shadow-[3px_3px_0px_black] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-[1px_1px_0px_black] transition-all",
             isOpen &&
-              "translate-y-[2px] translate-x-[2px] shadow-[1px_1px_0px_black] bg-blue-50"
+            "translate-y-[2px] translate-x-[2px] shadow-[1px_1px_0px_black] bg-blue-50"
           )}
         >
           <div className="h-8 w-8 overflow-hidden rounded-full border border-black bg-gray-200 flex items-center justify-center text-xs font-bold">
@@ -337,7 +329,7 @@ const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void 
                   className="group/sub flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-all border border-transparent hover:border-black/10"
                 >
                   <div className="w-6 flex justify-center">
-                     <div className="w-1 h-1 rounded-full bg-slate-300 group-hover/sub:bg-blue-600 group-hover/sub:scale-125 transition-all" />
+                    <div className="w-1 h-1 rounded-full bg-slate-300 group-hover/sub:bg-blue-600 group-hover/sub:scale-125 transition-all" />
                   </div>
                   <span className="font-bold text-slate-600 group-hover/sub:text-blue-700 text-sm">
                     {subItem.label}
@@ -354,43 +346,43 @@ const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void 
 
 const MobileUserCard = ({ user, onSignOut, onClose }: { user: any, onSignOut: any, onClose: any }) => (
   <div className="bg-white border-2 border-black rounded-xl p-4 shadow-[3px_3px_0px_black] relative overflow-hidden mt-4">
-      <div className="absolute top-0 left-0 w-full h-14 bg-blue-600 border-b-2 border-black" />
-      <div className="absolute top-2 right-2 flex gap-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-red-500 border border-black" />
-          <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 border border-black" />
-          <div className="w-1.5 h-1.5 rounded-full bg-green-500 border border-black" />
+    <div className="absolute top-0 left-0 w-full h-14 bg-blue-600 border-b-2 border-black" />
+    <div className="absolute top-2 right-2 flex gap-1">
+      <div className="w-1.5 h-1.5 rounded-full bg-red-500 border border-black" />
+      <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 border border-black" />
+      <div className="w-1.5 h-1.5 rounded-full bg-green-500 border border-black" />
+    </div>
+
+    <div className="relative flex flex-col items-center mt-6">
+      <div className="w-14 h-14 rounded-xl border-2 border-black bg-white p-0.5 mb-2 shadow-sm">
+        <div className="w-full h-full rounded-lg bg-gray-200 overflow-hidden">
+          {user.picture ? (
+            <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center font-black text-lg text-slate-400">
+              {user.name?.charAt(0)}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="relative flex flex-col items-center mt-6">
-          <div className="w-14 h-14 rounded-xl border-2 border-black bg-white p-0.5 mb-2 shadow-sm">
-             <div className="w-full h-full rounded-lg bg-gray-200 overflow-hidden">
-                {user.picture ? (
-                  <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center font-black text-lg text-slate-400">
-                    {user.name?.charAt(0)}
-                  </div>
-                )}
-             </div>
-          </div>
-          
-          <h3 className="font-black text-base text-slate-900">{user.name}</h3>
-          <p className="font-bold text-xs text-slate-500 mb-3">@{user.username}</p>
+      <h3 className="font-black text-base text-slate-900">{user.name}</h3>
+      <p className="font-bold text-xs text-slate-500 mb-3">@{user.username}</p>
 
-          <div className="grid grid-cols-2 gap-2 w-full">
-             <Link to="/profile" onClick={onClose}>
-                <button className="w-full py-1.5 bg-yellow-300 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all">
-                   Hồ sơ
-                </button>
-             </Link>
-             <button 
-                onClick={() => { onSignOut(); onClose(); }}
-                className="w-full py-1.5 bg-red-100 text-red-700 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
-             >
-                Đăng xuất
-             </button>
-          </div>
+      <div className="grid grid-cols-2 gap-2 w-full">
+        <Link to="/profile" onClick={onClose}>
+          <button className="w-full py-1.5 bg-yellow-300 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all">
+            Hồ sơ
+          </button>
+        </Link>
+        <button
+          onClick={() => { onSignOut(); onClose(); }}
+          className="w-full py-1.5 bg-red-100 text-red-700 border-2 border-black rounded-lg font-bold text-sm shadow-[2px_2px_0px_black] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
+        >
+          Đăng xuất
+        </button>
       </div>
+    </div>
   </div>
 );
 
@@ -526,9 +518,9 @@ export const UnifiedHeader = () => {
       {/* MOBILE SHEET CONTENT - SỬ DỤNG COMPONENT MỚI */}
       <SheetOverlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <div className="flex items-center justify-between mb-5 pb-3 border-b-2 border-black border-dashed">
-           <div className="bg-orange-500 text-white px-3 py-1 border-2 border-black shadow-[2px_2px_0px_black] rotate-[-2deg]">
-             <span className="font-black text-lg tracking-wider">MENU</span>
-           </div>
+          <div className="bg-orange-500 text-white px-3 py-1 border-2 border-black shadow-[2px_2px_0px_black] rotate-[-2deg]">
+            <span className="font-black text-lg tracking-wider">MENU</span>
+          </div>
           <Button
             variant="ghost"
             size="icon"
@@ -541,32 +533,32 @@ export const UnifiedHeader = () => {
 
         <div className="flex-1 overflow-y-auto pr-1 pb-4 custom-scrollbar">
           <div className="flex flex-col">
-             {NAVIGATION.map((item) => (
-                <MobileMenuItem key={item.label} item={item} onClose={() => setIsOpen(false)} />
-             ))}
+            {NAVIGATION.map((item) => (
+              <MobileMenuItem key={item.label} item={item} onClose={() => setIsOpen(false)} />
+            ))}
           </div>
         </div>
 
         <div className="mt-2">
-           {!isAuthenticated ? (
-              <div className="flex flex-col gap-3 pt-4 border-t-2 border-black border-dashed">
-                 <p className="text-center font-bold text-slate-500 text-xs">Tham gia cùng cộng đồng Gen Z!</p>
-                 <div className="grid grid-cols-2 gap-2">
-                    <Link to="/auth/sign-in" onClick={() => setIsOpen(false)}>
-                       <button className="w-full h-10 rounded-lg border-2 border-black bg-white font-black text-sm shadow-[4px_4px_0px_black] transition-all hover:bg-gray-50 active:translate-y-[4px] active:translate-x-[4px] active:shadow-none">
-                          Đăng nhập
-                       </button>
-                    </Link>
-                    <Link to="/auth/sign-up" onClick={() => setIsOpen(false)}>
-                       <button className="w-full h-10 rounded-lg border-2 border-black bg-blue-600 text-white font-black text-sm shadow-[4px_4px_0px_black] transition-all hover:bg-blue-700 active:translate-y-[4px] active:translate-x-[4px] active:shadow-none">
-                          Đăng ký
-                       </button>
-                    </Link>
-                 </div>
+          {!isAuthenticated ? (
+            <div className="flex flex-col gap-3 pt-4 border-t-2 border-black border-dashed">
+              <p className="text-center font-bold text-slate-500 text-xs">Tham gia cùng cộng đồng Gen Z!</p>
+              <div className="grid grid-cols-2 gap-2">
+                <Link to="/auth/sign-in" onClick={() => setIsOpen(false)}>
+                  <button className="w-full h-10 rounded-lg border-2 border-black bg-white font-black text-sm shadow-[4px_4px_0px_black] transition-all hover:bg-gray-50 active:translate-y-[4px] active:translate-x-[4px] active:shadow-none">
+                    Đăng nhập
+                  </button>
+                </Link>
+                <Link to="/auth/sign-up" onClick={() => setIsOpen(false)}>
+                  <button className="w-full h-10 rounded-lg border-2 border-black bg-blue-600 text-white font-black text-sm shadow-[4px_4px_0px_black] transition-all hover:bg-blue-700 active:translate-y-[4px] active:translate-x-[4px] active:shadow-none">
+                    Đăng ký
+                  </button>
+                </Link>
               </div>
-           ) : user ? (
-             <MobileUserCard user={user} onSignOut={handleSignOut} onClose={() => setIsOpen(false)} />
-           ) : null}
+            </div>
+          ) : user ? (
+            <MobileUserCard user={user} onSignOut={handleSignOut} onClose={() => setIsOpen(false)} />
+          ) : null}
         </div>
       </SheetOverlay>
     </nav>

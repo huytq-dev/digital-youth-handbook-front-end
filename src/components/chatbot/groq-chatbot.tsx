@@ -441,9 +441,9 @@ export const GroqChatbot = () => {
             }}
             id="gemini-chatbot-trigger"
             style={{ touchAction: "manipulation" }}
-            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[99999] flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full border-2 border-black bg-blue-600 text-white shadow-[4px_4px_0px_black] hover:bg-blue-700 hover:shadow-[2px_2px_0px_black] transition-colors"
+            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[99999] flex h-16 w-16 sm:h-16 sm:w-16 items-center justify-center rounded-full border-2 border-black bg-blue-600 text-white shadow-[4px_4px_0px_black] hover:bg-blue-700 hover:shadow-[2px_2px_0px_black] transition-colors"
           >
-            <Bot size={36} className="w-7 h-7 sm:w-8 sm:h-8" />
+            <Bot size={40} className="w-9 h-9 sm:w-8 sm:h-8" />
           </motion.button>
         )}
       </AnimatePresence>

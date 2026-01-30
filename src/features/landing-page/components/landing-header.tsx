@@ -45,17 +45,9 @@ const NAVIGATION: NavItem[] = [
       { label: "Chuyển đổi số", href: "/learning-topics/chuyen-doi-so" },
     ],
   },
-  {
-    label: "Tài nguyên",
-    subItems: [
-      { label: "Ebook & Tài liệu" },
-      { label: "Podcast chia sẻ" },
-      { label: "Công cụ hỗ trợ" },
-      { label: "Template mẫu" },
-    ],
-  },
   { label: "Vinh danh", href: "/honor" },
   { label: "Thi hay", href: "/quizzes" },
+  { label: "Điều em muốn nói", href: "/#" },
 ];
 
 // --- Sub-components ---

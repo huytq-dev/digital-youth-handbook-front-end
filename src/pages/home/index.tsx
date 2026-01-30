@@ -27,12 +27,19 @@ const LandingQuote = lazy(() =>
   )
 );
 
+const LandingContact = lazy(() =>
+  import("@/features/landing-page/components/landing-contact").then(
+    (module) => ({ default: module.LandingContact })
+  )
+);
+
 const LandingFooter = lazy(() =>
   import("@/features/landing-page/components/landing-footer").then(
     (module) => ({ default: module.LandingFooter })
   )
 );
 
+// Loader Component
 const ComponentLoader = () => (
   <div className="flex min-h-[300px] w-full items-center justify-center bg-gray-50/50">
     <div className="h-8 w-8 animate-spin rounded-full border-2 border-[hsl(var(--primary))] border-t-transparent" />
@@ -58,14 +65,16 @@ function HomePage() {
           <LandingUSP />
           <LandingPromotions />
           <LandingQuote />
+          
+          <LandingContact />
         </Suspense>
       </main>
 
-      <LandingFooter />
+      <Suspense fallback={<div className="h-20" />}>
+        <LandingFooter />
+      </Suspense>
     </div>
   );
 }
 
 export default HomePage;
-
-

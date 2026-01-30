@@ -32,6 +32,11 @@ const LandingPromotions = lazy(() =>
   )
 );
 
+const LandingContact = lazy(() =>
+  import("@/features/landing-page/components/landing-contact").then(
+    (module) => ({ default: module.LandingContact })
+  )
+);
 import { LandingFooter } from "@/features/landing-page/components/landing-footer";
 
 // Loader Component gọn nhẹ hơn
@@ -63,6 +68,7 @@ function LandingPage() {
 
           <LandingPromotions />
           <LandingQuote />
+          <LandingContact />
         </Suspense>
       </main>
 
