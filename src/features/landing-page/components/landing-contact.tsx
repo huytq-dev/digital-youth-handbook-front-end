@@ -1,6 +1,6 @@
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { motion, useInView } from "framer-motion";
-import { Mail, MapPin, MessageSquare, Send } from "lucide-react";
+import { Mail, MessageSquare, Send } from "lucide-react";
 import { useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { baseUrl } from "@/config";
