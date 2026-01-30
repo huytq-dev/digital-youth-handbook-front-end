@@ -195,11 +195,11 @@ export const LandingFooter = () => {
             <div className="space-y-3">
               <div className="flex items-start gap-3 text-sm text-slate-600 font-medium group">
                 <MapPin size={18} className="shrink-0 text-red-500 fill-red-100 group-hover:bounce" />
-                <span>Trường THCS Nguyễn Thị Minh Khai, Phường Thanh Khê, Đà Nẵng</span>
+                <span>Nhóm thực hiện đề tài Hành trang số cho thanh thiếu niên trong thời kì mới.</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-slate-600 font-medium group">
                 <Phone size={18} className="shrink-0 text-green-600 fill-green-100" />
-                <span className="font-bold text-slate-900">(+84) 28 3997 1234</span>
+                <span className="font-bold text-slate-900">0934315198, 0933482997, 0359030344</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-slate-600 font-medium group cursor-pointer">
                 <Mail size={18} className="shrink-0 text-blue-500 fill-blue-100" />
