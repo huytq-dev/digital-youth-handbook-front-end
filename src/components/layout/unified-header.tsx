@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { memo, useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; // [UPDATED] Thêm hooks router
 import {
   Menu,
   ChevronDown,
@@ -25,8 +25,7 @@ import type { UserDomainModel } from "@/features/common/common.type";
 import { useIsMobile, useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useMenu } from "@/contexts/menu-context";
 
-// --- Types & Navigation Data (Giữ nguyên) ---
-// --- Types & Navigation Data (Giữ nguyên) ---
+// --- Types & Navigation Data ---
 type NavSubItem = { label: string; href?: string };
 type NavItem = { label: string; href?: string; subItems?: NavSubItem[] };
 
@@ -46,10 +45,12 @@ const NAVIGATION: NavItem[] = [
   },
   { label: "Vinh danh", href: "/honor" },
   { label: "Thi hay", href: "/quizzes" },
-  { label: "Điều em muốn nói", href: "/#" },
+  // [UPDATED] Đổi href thành ID selector
+  { label: "Điều em muốn nói", href: "#landing-contact" },
 ];
 
-// --- Sub-components (Giữ nguyên code cũ của bạn: SheetOverlay, NavLinkBtn, UserProfileDropdown, MobileMenuItem, MobileUserCard) ---
+// --- Sub-components ---
+
 interface SheetOverlayProps {
   isOpen: boolean;
   onClose: () => void;
@@ -79,7 +80,8 @@ const SheetOverlay = memo(({ isOpen, onClose, children }: SheetOverlayProps) => 
 ));
 SheetOverlay.displayName = "SheetOverlay";
 
-const NavLinkBtn = memo(({ item }: { item: NavItem }) => {
+// [UPDATED] Thêm prop onNavClick
+const NavLinkBtn = memo(({ item, onNavClick }: { item: NavItem; onNavClick: (e: React.MouseEvent, href?: string) => void }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -88,7 +90,11 @@ const NavLinkBtn = memo(({ item }: { item: NavItem }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link to={item.href || "#"}>
+      <Link
+        to={item.href || "#"}
+        // [UPDATED] Gắn sự kiện click
+        onClick={(e) => onNavClick(e, item.href)}
+      >
         <Button
           variant="ghost"
           className="relative font-bold text-slate-700 hover:text-black hover:bg-transparent px-4 text-base"
@@ -134,6 +140,7 @@ const NavLinkBtn = memo(({ item }: { item: NavItem }) => {
                   key={subItem.label}
                   to={subItem.href || "#"}
                   className="block"
+                  onClick={(e) => onNavClick(e, subItem.href)}
                 >
                   <div className="px-4 py-3 hover:bg-blue-50 hover:text-blue-700 rounded-lg font-bold text-sm transition-colors border-2 border-transparent hover:border-black/10 flex items-center justify-between group/item">
                     {subItem.label}
@@ -282,7 +289,8 @@ const UserProfileDropdown = memo(
 );
 UserProfileDropdown.displayName = "UserProfileDropdown";
 
-const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void }) => {
+// [UPDATED] Thêm prop onNavClick
+const MobileMenuItem = ({ item, onClose, onNavClick }: { item: NavItem; onClose: () => void; onNavClick: (e: React.MouseEvent, href?: string) => void }) => {
   return (
     <div className="mb-3 last:mb-0">
       <div className="relative z-10 bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_rgba(0,0,0,0.1)] overflow-hidden group">
@@ -290,7 +298,11 @@ const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void 
           item.href ? (
             <Link
               to={item.href}
-              onClick={onClose}
+              // [UPDATED] Xử lý click
+              onClick={(e) => {
+                onNavClick(e, item.href);
+                onClose();
+              }}
               className="block px-4 py-2.5 bg-yellow-300 border-b-2 border-black hover:bg-yellow-400 transition-colors flex items-center gap-2 cursor-pointer"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-black" />
@@ -310,7 +322,11 @@ const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void 
         ) : (
           <Link
             to={item.href || "#"}
-            onClick={onClose}
+            // [UPDATED] Xử lý click
+            onClick={(e) => {
+              onNavClick(e, item.href);
+              onClose();
+            }}
             className="block px-4 py-2.5 bg-white hover:bg-yellow-50 transition-colors font-black text-base text-slate-900 flex items-center justify-between"
           >
             {item.label}
@@ -325,7 +341,11 @@ const MobileMenuItem = ({ item, onClose }: { item: NavItem; onClose: () => void 
                 <Link
                   key={subItem.label}
                   to={subItem.href || "#"}
-                  onClick={onClose}
+                  // [UPDATED] Xử lý click
+                  onClick={(e) => {
+                    onNavClick(e, subItem.href);
+                    onClose();
+                  }}
                   className="group/sub flex items-center gap-3 p-2 rounded-lg hover:bg-blue-50 transition-all border border-transparent hover:border-black/10"
                 >
                   <div className="w-6 flex justify-center">
@@ -401,6 +421,10 @@ export const UnifiedHeader = () => {
   const user = useSelector(selectCurrentUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
+  // [UPDATED] Hooks cho navigation
+  const location = useLocation();
+  const navigate = useNavigate();
+
   useEffect(() => {
     setIsMenuOpen(isOpen);
   }, [isOpen, setIsMenuOpen]);
@@ -433,6 +457,39 @@ export const UnifiedHeader = () => {
     }
   }, [signOut, user?.id, dispatch]);
 
+  // [UPDATED] Logic xử lý cuộn trang mượt
+  const handleNavClick = useCallback((e: React.MouseEvent, href?: string) => {
+    if (href?.startsWith("#")) {
+      e.preventDefault();
+
+      const targetId = href.replace("#", "");
+
+      if (location.pathname === "/") {
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        navigate("/" + href);
+      }
+
+      setIsOpen(false);
+    } else {
+      setIsOpen(false);
+    }
+  }, [location.pathname, navigate]);
+
+  // [UPDATED] Scroll khi chuyển route có hash (vd: /#landing-contact)
+  useEffect(() => {
+    if (location.pathname !== "/" || !location.hash) return;
+    const targetId = location.hash.replace("#", "");
+    const element = document.getElementById(targetId);
+    if (!element) return;
+    requestAnimationFrame(() => {
+      element.scrollIntoView({ behavior: "smooth" });
+    });
+  }, [location.pathname, location.hash]);
+
   return (
     <nav
       className={cn(
@@ -448,6 +505,7 @@ export const UnifiedHeader = () => {
           <Link
             to="/"
             className="flex items-center gap-2 sm:gap-3 cursor-pointer group select-none flex-shrink-0"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
             <div className="relative">
               <div className="bg-blue-600 w-9 sm:w-10 lg:w-11 h-9 sm:h-10 lg:h-11 rounded-lg border-2 border-black flex items-center justify-center text-white shadow-[2px_2px_0px_black] sm:shadow-[3px_3px_0px_black] group-hover:translate-x-0.5 group-hover:translate-y-0.5 group-hover:shadow-none transition-all">
@@ -477,7 +535,11 @@ export const UnifiedHeader = () => {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1 xl:gap-2">
             {NAVIGATION.map((item) => (
-              <NavLinkBtn key={item.label} item={item} />
+              <NavLinkBtn
+                key={item.label}
+                item={item}
+                onNavClick={handleNavClick} // [UPDATED] Truyền hàm xử lý
+              />
             ))}
           </div>
 
@@ -515,7 +577,7 @@ export const UnifiedHeader = () => {
         </div>
       </div>
 
-      {/* MOBILE SHEET CONTENT - SỬ DỤNG COMPONENT MỚI */}
+      {/* MOBILE SHEET CONTENT */}
       <SheetOverlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <div className="flex items-center justify-between mb-5 pb-3 border-b-2 border-black border-dashed">
           <div className="bg-orange-500 text-white px-3 py-1 border-2 border-black shadow-[2px_2px_0px_black] rotate-[-2deg]">
@@ -534,7 +596,12 @@ export const UnifiedHeader = () => {
         <div className="flex-1 overflow-y-auto pr-1 pb-4 custom-scrollbar">
           <div className="flex flex-col">
             {NAVIGATION.map((item) => (
-              <MobileMenuItem key={item.label} item={item} onClose={() => setIsOpen(false)} />
+              <MobileMenuItem
+                key={item.label}
+                item={item}
+                onClose={() => setIsOpen(false)}
+                onNavClick={handleNavClick} // [UPDATED] Truyền hàm xử lý
+              />
             ))}
           </div>
         </div>
