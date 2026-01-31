@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   Star, Facebook, Globe,
-  MapPin, Phone, Mail, Send, Heart, Cloud,
+  MapPin, Phone, Send, Heart, Cloud,
   TrendingUp
 } from "lucide-react";
 import { Input } from "@/components/ui/primitives";
