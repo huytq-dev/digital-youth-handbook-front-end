@@ -201,12 +201,12 @@ export const LandingFooter = () => {
                 <Phone size={18} className="shrink-0 text-green-600 fill-green-100" />
                 <span className="font-bold text-slate-900">0934315198, 0933482997, 0359030344</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-600 font-medium group cursor-pointer">
+              {/* <div className="flex items-center gap-3 text-sm text-slate-600 font-medium group cursor-pointer">
                 <Mail size={18} className="shrink-0 text-blue-500 fill-blue-100" />
                 <span className="group-hover:text-blue-600 group-hover:underline decoration-2 underline-offset-2">
                   banbientap@tuoitre.vn
                 </span>
-              </div>
+              </div> */}
               <div className="flex items-center gap-3 text-sm text-slate-600 font-medium group">
                 <a
                   href="http://thanhdoandanang.org.vn/"
