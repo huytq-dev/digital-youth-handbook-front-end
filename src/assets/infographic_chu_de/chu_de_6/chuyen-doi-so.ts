@@ -18,7 +18,7 @@ export const chuyenDoiSoTopic: LearningTopic = {
   content: {
     summary:
       "Trong kỷ nguyên mới – Kỷ nguyên vươn mình của dân tộc, cuộc cách mạng công nghiệp 4.0 đang diễn ra mạnh mẽ trên toàn cầu, chuyển đổi số đã trở thành xu hướng tất yếu và là động lực quan trọng để phát triển đất nước về mọi mặt. Đảng và Nhà nước ta đã xác định chuyển đổi số là nhiệm vụ trọng tâm, là giải pháp then chốt để đưa Việt Nam phát triển nhanh và bền vững. Trong bối cảnh đó, đoàn viên, thanh niên có vai trò hết sức quan trọng đối với chuyển đổi số.\n\nChuyển đổi số là quá trình thay đổi tổng thể và toàn diện của các cá nhân, tổ chức về cách sống, cách làm việc và phương thức sản xuất dựa trên các công nghệ số. Đoàn viên, thanh niên là lực lượng tiên phong trong ứng dụng công nghệ và đổi mới sáng tạo, góp phần xây dựng và phát triển hạ tầng số, nâng cao nhận thức và kỹ năng cho cộng đồng trong quá trình chuyển đổi số.",
-    videoUrl: "https://www.youtube.com/embed/bXaYhp-DLF8",
+    videoUrl: "https://www.youtube.com/embed/cT4bYOnAS7U",
     sections: [
       {
         title: "Giới thiệu",
