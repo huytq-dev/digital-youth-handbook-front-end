@@ -17,7 +17,7 @@ export const vanHoaTopic: LearningTopic = {
   content: {
     summary:
       "Trong những năm gần đây, cùng với yêu cầu đổi mới căn bản, toàn diện giáo dục và đào tạo, việc chú trọng giáo dục đạo đức, lối sống, nhân cách cho học sinh ngày càng được xác định là nhiệm vụ trọng tâm của các cơ sở giáo dục. Thực tiễn cho thấy, bên cạnh những kết quả tích cực vẫn còn tồn tại một số biểu hiện lệch chuẩn trong hành vi, ứng xử và ý thức trách nhiệm của học sinh đòi hỏi nhà trường phải có những giải pháp giáo dục mang tính bền vững và lâu dài.\n\nCác nghiên cứu giáo dục hiện đại khẳng định rằng văn hóa học đường giữ vai trò nền tảng, quyết định chất lượng giáo dục toàn diện trong nhà trường. Trường học không chỉ là nơi truyền thụ tri thức mà còn là một thiết chế văn hóa đặc thù, nơi hình thành, duy trì và lan tỏa các giá trị đạo đức, chuẩn mực ứng xử và lối sống cho học sinh. Xuất phát từ yêu cầu lý luận và thực tiễn đó, việc xây dựng văn hóa học đường nhằm giáo dục đạo đức, lối sống cho học sinh là hết sức cần thiết, có ý nghĩa thiết thực đối với công tác giáo dục trong nhà trường hiện nay.",
-    videoUrl: "https://www.youtube.com/embed/_YtLrWVbzGY",
+    videoUrl: "https://www.youtube.com/embed/asdasd",
     sections: [
       {
         title: "Giới thiệu",
