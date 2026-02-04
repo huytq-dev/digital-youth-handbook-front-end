@@ -18,7 +18,7 @@ export const phongNguaBaoLucXamHaiTopic: LearningTopic = {
   content: {
     summary:
       "Trong tiến trình phát triển nhân cách của thanh thiếu niên, môi trường học đường giữ vai trò đặc biệt quan trọng, không chỉ là nơi truyền thụ tri thức mà còn là không gian hình thành các giá trị đạo đức, hành vi xã hội và kỹ năng sống. Tuy nhiên, thực tiễn giáo dục hiện nay cho thấy, bạo lực học đường và xâm hại thân thể vẫn đang tồn tại dưới nhiều hình thức tinh vi, gây ảnh hưởng nghiêm trọng đến sự phát triển toàn diện của học sinh.\n\nTheo Tổ chức Y tế Thế giới (WHO), bạo lực học đường được xem là một trong những yếu tố nguy cơ hàng đầu tác động tiêu cực đến sức khỏe tâm thần của trẻ em và thanh thiếu niên. Bạo lực học đường và xâm hại thân thể không chỉ gây tổn thương về thể chất mà còn để lại hậu quả nặng nề về tâm lý, làm suy giảm niềm tin, ảnh hưởng lâu dài đến nhân cách, kết quả học tập và sự phát triển toàn diện của thanh thiếu niên. Điều này đặt ra yêu cầu cấp thiết phải giáo dục có hệ thống các kỹ năng phòng ngừa bạo lực học đường và xâm hại thân thể, coi đây là một nội dung trọng tâm trong giáo dục kỹ năng sống hiện nay.",
-    videoUrl: "https://www.youtube.com/embed/_YtLrWVbzG",
+    videoUrl: "https://www.youtube.com/embed/_YtLrWVbzGY",
     sections: [
       {
         title: "Giới thiệu",
