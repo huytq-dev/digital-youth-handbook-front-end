@@ -48,6 +48,7 @@ export interface QuizResultData {
   attemptId: string;
   totalScore: number;
   isPassed: boolean;
+  correctCount: number;
   totalQuestions: number;
   answeredQuestions: number;
   completedAt: Date;

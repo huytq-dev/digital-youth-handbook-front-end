@@ -8,6 +8,8 @@ export interface LeaderboardItem {
   schoolName?: string;
   className?: string;
   totalScore: number;
+  correctCount: number;
+  totalQuestions: number;
   durationSeconds: number;
   completedAt: string; // ISO 8601 DateTime
 }

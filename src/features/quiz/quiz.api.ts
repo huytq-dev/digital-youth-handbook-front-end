@@ -60,6 +60,8 @@ export interface SubmitQuizResponse {
   attemptId: string;
   totalScore: number;
   isPassed: boolean;
+  correctCount: number;
+  totalQuestions: number;
 }
 
 export interface QuestionOptionDetail {

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Trophy, Flame, Clock, GraduationCap } from "lucide-react";
+import { Trophy, CheckCircle2, Clock, GraduationCap } from "lucide-react";
 import type { LeaderboardItem } from "../honor.type";
 
 interface LeaderboardCardProps {
@@ -78,8 +78,10 @@ export const LeaderboardCard = ({ item, isCompact = false }: LeaderboardCardProp
         {/* Stats Compact */}
         <div className="flex flex-col items-end gap-0.5 flex-shrink-0 pl-1">
           <div className="flex items-center gap-1">
-            <Flame size={10} className="text-orange-600 sm:w-3 sm:h-3" />
-            <span className="font-black text-xs sm:text-sm">{item.totalScore.toFixed(1)}</span>
+            <CheckCircle2 size={10} className="text-emerald-600 sm:w-3 sm:h-3" />
+            <span className="font-black text-xs sm:text-sm">
+              {item.correctCount}/{item.totalQuestions}
+            </span>
           </div>
           <div className="flex items-center gap-1 text-slate-500">
             <Clock size={8} className="sm:w-2.5 sm:h-2.5" />
@@ -166,10 +168,11 @@ export const LeaderboardCard = ({ item, isCompact = false }: LeaderboardCardProp
           {/* Stats Row */}
           <div className="flex justify-between items-end">
             <div className="flex flex-col">
-              <span className="text-[8px] sm:text-[10px] uppercase font-bold text-black/60">Điểm số</span>
+              <span className="text-[8px] sm:text-[10px] uppercase font-bold text-black/60">Đúng</span>
               <div className="flex items-center gap-0.5 sm:gap-1">
-                <Flame size={12} className="text-red-600 sm:w-4 sm:h-4" fill="currentColor" />
-                <span className="font-black text-base sm:text-lg md:text-xl leading-none">{item.totalScore.toFixed(1)}</span>
+                <span className="font-black text-base sm:text-lg md:text-xl leading-none">
+                  {item.correctCount}/{item.totalQuestions}
+                </span>
               </div>
             </div>
             <div className="flex flex-col items-end">
