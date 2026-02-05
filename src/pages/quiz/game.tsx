@@ -64,12 +64,13 @@ const QuizGamePageWrapper = () => {
         answers: currentAttempt.answers,
       }).unwrap();
 
-      if (isApiResponseSuccess(response) && response.data) {
+        if (isApiResponseSuccess(response) && response.data) {
         dispatch(submitAttempt({
           attemptId: response.data.attemptId,
           totalScore: response.data.totalScore,
           isPassed: response.data.isPassed,
-          totalQuestions: currentAttempt.questions.length,
+          correctCount: response.data.correctCount ?? 0,
+          totalQuestions: response.data.totalQuestions ?? currentAttempt.questions.length,
           answeredQuestions: currentAttempt.answers.length,
           completedAt: new Date(),
         }));

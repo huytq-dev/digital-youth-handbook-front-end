@@ -67,7 +67,7 @@ const QuizResultPageWrapper = () => {
 
   // Gọi Hook để lấy giá trị số đang chạy (duration 2s) - số câu đúng
   // Lưu ý: Nếu resultData null thì mặc định là 0
-  const animatedScore = useCountUp(resultData?.totalScore || 0, 2000);
+  const animatedCorrect = useCountUp(resultData?.correctCount || 0, 2000);
 
   // Style chung Neo-Brutalism
   const cardStyle =
@@ -113,7 +113,7 @@ const QuizResultPageWrapper = () => {
   }
 
   // --- RENDER GIAO DIỆN CHÍNH ---
-  const { isPassed, totalScore } = resultData;
+  const { isPassed, totalScore, correctCount, totalQuestions } = resultData;
   const statusColor = isPassed ? "bg-[#A3E635]" : "bg-[#FF8888]";
   
   // Icon
@@ -159,16 +159,16 @@ const QuizResultPageWrapper = () => {
             <div className="p-8 bg-white">
               <div className="flex flex-col items-center mb-10">
                 <span className="text-sm font-black uppercase tracking-widest text-slate-500 mb-2">
-                  Tổng điểm của bạn
+                  Số câu đúng
                 </span>
                 
-                {/* PHẦN HIỂN THỊ ĐIỂM SỐ DẠNG 7/10 */}
+                {/* PHẦN HIỂN THỊ SỐ CÂU ĐÚNG DẠNG 7/10 */}
                 <div className="flex items-baseline gap-2">
                   <span className="text-8xl font-black text-black">
-                    {animatedScore}
+                    {animatedCorrect}
                   </span>
                   <span className="text-4xl font-bold text-slate-600">
-                    / 100
+                    / {totalQuestions}
                   </span>
                 </div>
               </div>

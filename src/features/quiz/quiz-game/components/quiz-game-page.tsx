@@ -74,17 +74,18 @@ export const QuizGamePage = ({ currentAttempt }: QuizGamePageProps) => {
         answers: currentAttempt.answers,
       }).unwrap();
 
-      if (isApiResponseSuccess(response) && response.data) {
-        const result = response.data;
-        // Save result to Redux
-        dispatch(submitAttempt({
-          attemptId: result.attemptId,
-          totalScore: result.totalScore,
-          isPassed: result.isPassed,
-          totalQuestions: currentAttempt.questions.length,
-          answeredQuestions: currentAttempt.answers.length,
-          completedAt: new Date(),
-        }));
+        if (isApiResponseSuccess(response) && response.data) {
+          const result = response.data;
+          // Save result to Redux
+          dispatch(submitAttempt({
+            attemptId: result.attemptId,
+            totalScore: result.totalScore,
+            isPassed: result.isPassed,
+            correctCount: result.correctCount ?? 0,
+            totalQuestions: result.totalQuestions ?? currentAttempt.questions.length,
+            answeredQuestions: currentAttempt.answers.length,
+            completedAt: new Date(),
+          }));
 
         // Navigate to result page
         navigate(`/quizzes/${currentAttempt.quizId}/result`);
