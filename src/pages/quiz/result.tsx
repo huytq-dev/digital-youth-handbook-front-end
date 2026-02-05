@@ -113,7 +113,7 @@ const QuizResultPageWrapper = () => {
   }
 
   // --- RENDER GIAO DIỆN CHÍNH ---
-  const { isPassed, totalScore, correctCount, totalQuestions } = resultData;
+  const { isPassed, totalScore, totalQuestions } = resultData;
   const statusColor = isPassed ? "bg-[#A3E635]" : "bg-[#FF8888]";
   
   // Icon
