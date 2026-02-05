@@ -4,6 +4,7 @@ import { UnifiedHeader } from "@/components/layout/unified-header";
 import { useGetQuizByIdQuery } from "@/features/quiz/quiz.api";
 import { isApiResponseSuccess } from "@/features/common/common.type";
 import { QuizIntroPage } from "@/features/quiz/quiz-intro/components/quiz-intro-page";
+import { getFakeQuizPlays } from "@/features/quiz/quiz.utils";
 
 // Trang chi tiết quiz trước khi bắt đầu làm bài
 const QuizIntroPageWrapper = () => {
@@ -13,7 +14,13 @@ const QuizIntroPageWrapper = () => {
     skip: !id,
   });
 
-  const quiz = apiResponse && isApiResponseSuccess(apiResponse) ? apiResponse.data : null;
+  const rawQuiz = apiResponse && isApiResponseSuccess(apiResponse) ? apiResponse.data : null;
+  const quiz = rawQuiz
+    ? {
+        ...rawQuiz,
+        plays: getFakeQuizPlays(rawQuiz.id),
+      }
+    : null;
 
   if (isLoading) {
     return (
@@ -58,4 +65,3 @@ const QuizIntroPageWrapper = () => {
 };
 
 export default QuizIntroPageWrapper;
-

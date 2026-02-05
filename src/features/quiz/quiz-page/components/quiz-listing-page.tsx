@@ -4,6 +4,7 @@ import { QuizGrid } from "./quiz-grid";
 import { useGetQuizzesQuery } from "@/features/quiz/quiz.api";
 import { isApiResponseSuccess } from "@/features/common/common.type";
 import type { QuizSummary } from "@/features/quiz/quiz.type";
+import { getFakeQuizPlays } from "@/features/quiz/quiz.utils";
 
 const QuizListingPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,7 +21,10 @@ const QuizListingPage = () => {
   // Extract quiz items from API response
   const quizzes: QuizSummary[] = useMemo(() => {
     if (apiResponse && isApiResponseSuccess(apiResponse) && apiResponse.data?.items) {
-      return apiResponse.data.items;
+      return apiResponse.data.items.map((quiz) => ({
+        ...quiz,
+        plays: getFakeQuizPlays(quiz.id),
+      }));
     }
     return [];
   }, [apiResponse]);

@@ -1,7 +1,5 @@
-import highlightEnv from "@/assets/promotions-images/nang_cao.jpg";
 import highlightVolunteer from "@/assets/promotions-images/hoi_nghi_thang_1.jpg";
 import highlightTraining from "@/assets/promotions-images/ban_thuong_vu.jpg";
-import highlightClub from "@/assets/promotions-images/doi_rac_lay_qua.jpg";
 
 export interface ThanhDoanArticle {
   id: number;
