@@ -4,7 +4,7 @@ import { QuizGrid } from "./quiz-grid";
 import { useGetQuizzesQuery } from "@/features/quiz/quiz.api";
 import { isApiResponseSuccess } from "@/features/common/common.type";
 import type { QuizSummary } from "@/features/quiz/quiz.type";
-import { getFakeQuizPlays } from "@/features/quiz/quiz.utils";
+import { getDisplayQuizPlays } from "@/features/quiz/quiz.utils";
 
 const QuizListingPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,7 +23,7 @@ const QuizListingPage = () => {
     if (apiResponse && isApiResponseSuccess(apiResponse) && apiResponse.data?.items) {
       return apiResponse.data.items.map((quiz) => ({
         ...quiz,
-        plays: getFakeQuizPlays(quiz.id),
+        plays: getDisplayQuizPlays(quiz.plays),
       }));
     }
     return [];
